@@ -16,10 +16,30 @@
     "currency": "GBP (£)"
   },
   "financialBreakdown": [
-    { "category": "Conference Ticket Sales", "amountGBP": 26400, "count": 220, "trend": "+18%" },
-    { "category": "Annual Membership Subscriptions", "amountGBP": 12250, "count": 140, "trend": "+24%" },
-    { "category": "Certified Online CPD Courses", "amountGBP": 6700, "count": 134, "trend": "+12%" },
-    { "category": "Award Nominations & Processing", "amountGBP": 1500, "count": 25, "trend": "+8%" }
+    {
+      "category": "Conference Ticket Sales",
+      "amountGBP": 26400,
+      "count": 220,
+      "trend": "+18%"
+    },
+    {
+      "category": "Annual Membership Subscriptions",
+      "amountGBP": 12250,
+      "count": 140,
+      "trend": "+24%"
+    },
+    {
+      "category": "Certified Online CPD Courses",
+      "amountGBP": 6700,
+      "count": 134,
+      "trend": "+12%"
+    },
+    {
+      "category": "Award Nominations & Processing",
+      "amountGBP": 1500,
+      "count": 25,
+      "trend": "+8%"
+    }
   ],
   "eventRegistrations": [
     {
