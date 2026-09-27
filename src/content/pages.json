@@ -24,7 +24,13 @@
         "price": 240,
         "period": "annual",
         "description": "For senior academics, professors, researchers with 10+ years experience, and institutional leaders.",
-        "perks": ["Post-nominal letters FGIRSD", "20% discount on all conferences and courses", "Eligibility to chair conference sessions", "Direct research mentorship opportunities", "Exclusive quarterly research briefings"]
+        "perks": [
+          "Post-nominal letters FGIRSD",
+          "20% discount on all conferences and courses",
+          "Eligibility to chair conference sessions",
+          "Direct research mentorship opportunities",
+          "Exclusive quarterly research briefings"
+        ]
       },
       {
         "id": "member",
@@ -32,7 +38,12 @@
         "price": 120,
         "period": "annual",
         "description": "For practicing researchers, lecturers, and industry professionals.",
-        "perks": ["Post-nominal letters MGIRSD", "20% discount on all events & masterclasses", "Free certificate verification", "Directory profile listing"]
+        "perks": [
+          "Post-nominal letters MGIRSD",
+          "20% discount on all events & masterclasses",
+          "Free certificate verification",
+          "Directory profile listing"
+        ]
       },
       {
         "id": "student",
@@ -40,7 +51,11 @@
         "price": 60,
         "period": "annual",
         "description": "For doctoral candidates, master's students, and researchers within 3 years of qualification.",
-        "perks": ["20% discount on conferences and workshops", "Career mentorship access", "CPD accredited certificate pathways"]
+        "perks": [
+          "20% discount on conferences and workshops",
+          "Career mentorship access",
+          "CPD accredited certificate pathways"
+        ]
       }
     ]
   },
