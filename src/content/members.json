@@ -1,5 +1,30 @@
 [
   {
+    "id": "GRSD-MEM-5323",
+    "name": "Shahul Hameed",
+    "email": "shahulofficial16@gmail.com",
+    "phone": "+91989455270",
+    "location": "London, United Kingdom",
+    "institution": "",
+    "title": "Research Scholar & Candidate",
+    "tier": "Candidate Scholar",
+    "status": "Active",
+    "since": "2026-09-27",
+    "renewsAt": "2027-09-27",
+    "annualFee": 149,
+    "paymentStatus": "Paid (Stripe)",
+    "cvAttached": false,
+    "cvFileName": "",
+    "profileCompletion": 60,
+    "disciplines": [
+      "Multidisciplinary Research"
+    ],
+    "eventsRegistered": [],
+    "coursesEnrolled": [],
+    "certificatesIssued": 0,
+    "notes": ""
+  },
+  {
     "id": "GRSD-MEM-1001",
     "name": "Dr. Eleanor Vance",
     "email": "e.vance@ucl.ac.uk",
@@ -16,9 +41,18 @@
     "cvAttached": true,
     "cvFileName": "Dr_Eleanor_Vance_Fellowship_CV.pdf",
     "profileCompletion": 100,
-    "disciplines": ["Multidisciplinary Research", "Bioinformatics", "Data Analytics"],
-    "eventsRegistered": ["ICMDR 2026", "ICRIET 2026"],
-    "coursesEnrolled": ["AI in Cybersecurity"],
+    "disciplines": [
+      "Multidisciplinary Research",
+      "Bioinformatics",
+      "Data Analytics"
+    ],
+    "eventsRegistered": [
+      "ICMDR 2026",
+      "ICRIET 2026"
+    ],
+    "coursesEnrolled": [
+      "AI in Cybersecurity"
+    ],
     "certificatesIssued": 3,
     "notes": "Confirmed Keynote speaker at ICMDR 2026 London Symposium."
   },
@@ -39,9 +73,17 @@
     "cvAttached": true,
     "cvFileName": "Prof_Alistair_MacIntyre_CV.pdf",
     "profileCompletion": 95,
-    "disciplines": ["Information Technology", "Artificial Intelligence", "Systems Analysis"],
-    "eventsRegistered": ["ICRIET 2026"],
-    "coursesEnrolled": ["Data Science with Python"],
+    "disciplines": [
+      "Information Technology",
+      "Artificial Intelligence",
+      "Systems Analysis"
+    ],
+    "eventsRegistered": [
+      "ICRIET 2026"
+    ],
+    "coursesEnrolled": [
+      "Data Science with Python"
+    ],
     "certificatesIssued": 2,
     "notes": "Scientific Advisory Board & Peer Review Committee Chair."
   },
@@ -62,9 +104,19 @@
     "cvAttached": true,
     "cvFileName": "Amina_ElSayed_Academic_CV.pdf",
     "profileCompletion": 90,
-    "disciplines": ["Healthcare Informatics", "Machine Learning", "Public Health"],
-    "eventsRegistered": ["ICASH 2026", "ICMDR 2026"],
-    "coursesEnrolled": ["Data Science with Python", "Business Analysis & Systems"],
+    "disciplines": [
+      "Healthcare Informatics",
+      "Machine Learning",
+      "Public Health"
+    ],
+    "eventsRegistered": [
+      "ICASH 2026",
+      "ICMDR 2026"
+    ],
+    "coursesEnrolled": [
+      "Data Science with Python",
+      "Business Analysis & Systems"
+    ],
     "certificatesIssued": 2,
     "notes": "CPD Accredited Certificate recipient #788000."
   },
@@ -85,9 +137,17 @@
     "cvAttached": true,
     "cvFileName": "Marcus_Zhang_Doctoral_CV.docx",
     "profileCompletion": 85,
-    "disciplines": ["Environmental Science", "Sustainable Development", "Remote Sensing"],
-    "eventsRegistered": ["ICRIET 2026"],
-    "coursesEnrolled": ["Prompt Engineering for Scholars"],
+    "disciplines": [
+      "Environmental Science",
+      "Sustainable Development",
+      "Remote Sensing"
+    ],
+    "eventsRegistered": [
+      "ICRIET 2026"
+    ],
+    "coursesEnrolled": [
+      "Prompt Engineering for Scholars"
+    ],
     "certificatesIssued": 1,
     "notes": "Student travel grant applicant for ICRIET 2026."
   },
@@ -108,8 +168,14 @@
     "cvAttached": true,
     "cvFileName": "Sarah_Jenkins_CV_2026.pdf",
     "profileCompletion": 80,
-    "disciplines": ["Operations Management", "Event Logistics", "Multidisciplinary Studies"],
-    "eventsRegistered": ["ICMDR 2026"],
+    "disciplines": [
+      "Operations Management",
+      "Event Logistics",
+      "Multidisciplinary Studies"
+    ],
+    "eventsRegistered": [
+      "ICMDR 2026"
+    ],
     "coursesEnrolled": [],
     "certificatesIssued": 0,
     "notes": "Candidate applicant for Multidisciplinary Events & Operations Intern."
@@ -131,8 +197,15 @@
     "cvAttached": true,
     "cvFileName": "Prof_Kenji_Takahashi_Publications_CV.pdf",
     "profileCompletion": 100,
-    "disciplines": ["Robotics", "Mechatronics", "Neural Engineering"],
-    "eventsRegistered": ["ICRIET 2026", "ICMDR 2026"],
+    "disciplines": [
+      "Robotics",
+      "Mechatronics",
+      "Neural Engineering"
+    ],
+    "eventsRegistered": [
+      "ICRIET 2026",
+      "ICMDR 2026"
+    ],
     "coursesEnrolled": [],
     "certificatesIssued": 4,
     "notes": "Global RSD International Awards 2026 Nominee."
@@ -154,9 +227,17 @@
     "cvAttached": true,
     "cvFileName": "Dr_Priya_Sundaram_CV.pdf",
     "profileCompletion": 90,
-    "disciplines": ["Renewable Energy", "Photovoltaics", "Materials Engineering"],
-    "eventsRegistered": ["ICRIET 2026"],
-    "coursesEnrolled": ["Data Science with Python"],
+    "disciplines": [
+      "Renewable Energy",
+      "Photovoltaics",
+      "Materials Engineering"
+    ],
+    "eventsRegistered": [
+      "ICRIET 2026"
+    ],
+    "coursesEnrolled": [
+      "Data Science with Python"
+    ],
     "certificatesIssued": 1,
     "notes": "Presenter for Green Technology symposium."
   },
@@ -177,9 +258,15 @@
     "cvAttached": false,
     "cvFileName": "",
     "profileCompletion": 45,
-    "disciplines": ["Cybersecurity", "Network Architecture", "Cryptography"],
+    "disciplines": [
+      "Cybersecurity",
+      "Network Architecture",
+      "Cryptography"
+    ],
     "eventsRegistered": [],
-    "coursesEnrolled": ["AI in Cybersecurity"],
+    "coursesEnrolled": [
+      "AI in Cybersecurity"
+    ],
     "certificatesIssued": 0,
     "notes": "Student ID verification document uploaded, pending Secretariat sign-off."
   },
@@ -200,9 +287,17 @@
     "cvAttached": true,
     "cvFileName": "Dr_Hannah_Becker_CV.pdf",
     "profileCompletion": 95,
-    "disciplines": ["Urban Planning", "Sustainable Systems", "GIS"],
-    "eventsRegistered": ["ICMDR 2026"],
-    "coursesEnrolled": ["Project Management in Research"],
+    "disciplines": [
+      "Urban Planning",
+      "Sustainable Systems",
+      "GIS"
+    ],
+    "eventsRegistered": [
+      "ICMDR 2026"
+    ],
+    "coursesEnrolled": [
+      "Project Management in Research"
+    ],
     "certificatesIssued": 1,
     "notes": "Co-authoring cross-institutional policy brief."
   },
@@ -223,8 +318,14 @@
     "cvAttached": true,
     "cvFileName": "David_Mwangi_Agribusiness_CV.pdf",
     "profileCompletion": 85,
-    "disciplines": ["Agricultural Economics", "Rural Development", "Sustainable Agri-Food"],
-    "eventsRegistered": ["ICASH 2026"],
+    "disciplines": [
+      "Agricultural Economics",
+      "Rural Development",
+      "Sustainable Agri-Food"
+    ],
+    "eventsRegistered": [
+      "ICASH 2026"
+    ],
     "coursesEnrolled": [],
     "certificatesIssued": 1,
     "notes": "Renewal notification reminder sent via email."
