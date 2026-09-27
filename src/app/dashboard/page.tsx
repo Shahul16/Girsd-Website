@@ -528,6 +528,17 @@ export default function DashboardPage() {
                     </div>
                   </button>
 
+                  <Link
+                    href="/feedback"
+                    className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100/70 hover:text-navy transition"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>
+                      <span>Website Feedback</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-navy bg-navy/5 px-2 py-0.5 rounded-full">IEEE Form</span>
+                  </Link>
+
                   <button
                     onClick={() => void logout()}
                     className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
@@ -1361,33 +1372,110 @@ export default function DashboardPage() {
             {activeTab === "support" && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="font-display text-xl font-bold text-navy">Candidate Support Desk</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Contact the London registry or connect directly via WhatsApp.</p>
+                  <h2 className="font-display text-xl font-bold text-navy">Candidate Support Desk &amp; Directory</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Contact the London Secretariat, connect via WhatsApp, or submit website feedback.</p>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-3">
-                    <h3 className="text-sm font-bold text-navy">Direct Department Directory</h3>
-                    <ul className="space-y-2 text-xs text-slate-600">
-                      <li><strong>General &amp; Student Help:</strong> <a href="mailto:info@globalrsd.co.uk" className="text-navy font-semibold underline">info@globalrsd.co.uk</a></li>
-                      <li><strong>Conferences &amp; Submissions:</strong> <a href="mailto:research@globalrsd.co.uk" className="text-navy font-semibold underline">research@globalrsd.co.uk</a></li>
-                      <li><strong>Careers &amp; Internships:</strong> <a href="mailto:hr@globalrsd.co.uk" className="text-navy font-semibold underline">hr@globalrsd.co.uk</a></li>
-                    </ul>
-                  </div>
-
-                  <div className="rounded-2xl border border-emerald-200/90 bg-emerald-50/70 p-6 shadow-xs space-y-3">
-                    <h3 className="text-sm font-bold text-emerald-950">Official WhatsApp Community</h3>
-                    <p className="text-xs text-emerald-800 leading-relaxed">
-                      Instant announcements, peer discussion, and direct conference coordination.
-                    </p>
+                <div className="grid gap-6 md:grid-cols-3">
+                  {/* WhatsApp Community */}
+                  <div className="rounded-2xl border border-emerald-200/90 bg-emerald-50/70 p-6 shadow-xs space-y-3 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 text-emerald-950">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                        </span>
+                        <h3 className="text-sm font-bold">Official WhatsApp Community</h3>
+                      </div>
+                      <p className="mt-2 text-xs text-emerald-800 leading-relaxed">
+                        Join 2,500+ global scholars, co-authors, and candidates. Real-time conference announcements, call-for-papers alerts, and rapid coordinator access.
+                      </p>
+                    </div>
                     <a
                       href={WHATSAPP_COMMUNITY_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-navy inline-block text-xs py-2 px-5 font-bold"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-2.5 px-4 font-bold transition shadow-xs"
                     >
-                      Open WhatsApp Community →
+                      <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.587 1.961.954 2.896.954 3.181 0 5.768-2.587 5.768-5.766.001-3.187-2.575-5.77-5.868-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.077-1.127-.061-.758-.242-1.743-.889-2.586-1.733-.844-.844-1.491-1.829-1.734-2.587-.138-.429-.106-.815-.06-1.127.049-.333.418-1.026.823-1.17.135-.045.27-.03.361.015.09.045.18.135.225.225.225.45.675 1.62.721 1.755.045.135.03.27-.045.361-.075.09-.135.15-.225.225-.09.09-.18.18-.09.36.18.361.54 1.036 1.171 1.576.63.54 1.261.765 1.576.855.18.045.27-.045.36-.135.09-.09.18-.225.27-.315.09-.09.225-.09.36-.045.135.045 1.305.63 1.53.765.225.135.27.225.27.315 0 .09-.045.54-.18.945zM12 2C6.477 2 2 6.477 2 12c0 1.82.487 3.53 1.338 5L2.05 22l5.165-1.355A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" /></svg>
+                      <span>Join WhatsApp Community</span>
                     </a>
+                  </div>
+
+                  {/* Website Feedback Form Card */}
+                  <div className="rounded-2xl border border-blue-200/90 bg-blue-50/60 p-6 shadow-xs space-y-3 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 text-navy">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-navy text-white text-xs font-bold">
+                          ★
+                        </span>
+                        <h3 className="text-sm font-bold text-navy">Website Feedback Form</h3>
+                      </div>
+                      <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                        Modeled on IEEE academic benchmarks. Share your user experience, rate portal navigation, and recommend improvements directly to our QA team.
+                      </p>
+                    </div>
+                    <Link
+                      href="/feedback"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-navy hover:bg-navy-light text-white text-xs py-2.5 px-4 font-bold transition shadow-xs"
+                    >
+                      <span>Submit Website Feedback →</span>
+                    </Link>
+                  </div>
+
+                  {/* Direct Contact Phone & Address */}
+                  <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-3 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-navy">London Headquarters</h3>
+                      <div className="mt-2 space-y-1.5 text-xs text-slate-600">
+                        <p><strong>Registry:</strong> 23 Kinnaird Avenue, Bromley BR1 4HG, England</p>
+                        <p><strong>Hotline:</strong> <a href="tel:+447586261118" className="text-navy font-semibold hover:underline">+44 7586 261118</a></p>
+                        <p><strong>Provider Code:</strong> CPD Provider #788000</p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/contact"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-navy text-xs py-2.5 px-4 font-semibold transition"
+                    >
+                      <span>View Full Directory →</span>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Complete Department Email Directory */}
+                <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
+                  <h3 className="text-sm font-bold text-navy mb-4">Official Department Email Matrix</h3>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-xs">
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                      <p className="font-bold text-navy">General Secretariat &amp; Verification</p>
+                      <a href="mailto:info@globalrsd.co.uk" className="font-semibold text-navy hover:underline block mt-0.5">info@globalrsd.co.uk</a>
+                      <p className="text-[10px] text-slate-400 mt-1">Aliases: verify@, help@, support@, contact@</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                      <p className="font-bold text-navy">Research &amp; Conferences</p>
+                      <a href="mailto:research@globalrsd.co.uk" className="font-semibold text-navy hover:underline block mt-0.5">research@globalrsd.co.uk</a>
+                      <p className="text-[10px] text-slate-400 mt-1">Aliases: papers@, events@, conferences@</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                      <p className="font-bold text-navy">Membership &amp; Fellowship</p>
+                      <a href="mailto:membership@globalrsd.co.uk" className="font-semibold text-navy hover:underline block mt-0.5">membership@globalrsd.co.uk</a>
+                      <p className="text-[10px] text-slate-400 mt-1">Aliases: fellowship@, committee@</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                      <p className="font-bold text-navy">Awards &amp; Nominations</p>
+                      <a href="mailto:awards@globalrsd.co.uk" className="font-semibold text-navy hover:underline block mt-0.5">awards@globalrsd.co.uk</a>
+                      <p className="text-[10px] text-slate-400 mt-1">Aliases: nominations@globalrsd.co.uk</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                      <p className="font-bold text-navy">Careers &amp; Human Resources</p>
+                      <a href="mailto:hr@globalrsd.co.uk" className="font-semibold text-navy hover:underline block mt-0.5">hr@globalrsd.co.uk</a>
+                      <p className="text-[10px] text-slate-400 mt-1">Aliases: jobs@, cv@, careers@</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                      <p className="font-bold text-navy">Finance, Accounts &amp; Refunds</p>
+                      <a href="mailto:finance@globalrsd.co.uk" className="font-semibold text-navy hover:underline block mt-0.5">finance@globalrsd.co.uk</a>
+                      <p className="text-[10px] text-slate-400 mt-1">Aliases: refunds@, accounts@, billing@</p>
+                    </div>
                   </div>
                 </div>
               </div>

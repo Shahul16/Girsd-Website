@@ -158,6 +158,12 @@ export async function POST(req: NextRequest) {
     to = SITE.hrEmail;
   } else if (selectedSubject === "Conference / event enquiry") {
     to = SITE.researchEmail;
+  } else if (
+    formName === "Website feedback" ||
+    formName === "Website Feedback Form" ||
+    formName === "Quick Website Feedback"
+  ) {
+    to = SITE.email;
   }
 
   const from = process.env.LEAD_FROM_EMAIL || `Globalrsd <${SITE.leadsEmail}>`;

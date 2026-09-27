@@ -8,6 +8,7 @@ import ScrollProgress from "@/components/ScrollProgress";
 import CookieConsent from "@/components/CookieConsent";
 import RecaptchaLoader from "@/components/RecaptchaLoader";
 import TurnstileLoader from "@/components/TurnstileLoader";
+import FeedbackWidget from "@/components/FeedbackWidget";
 import { AuthProvider } from "@/lib/auth";
 import { SITE } from "@/lib/site";
 
@@ -122,6 +123,7 @@ export default function RootLayout({
           <main id="main">{children}</main>
           <Footer />
           <WhatsAppFloat />
+          <FeedbackWidget />
           <CookieConsent />
         </AuthProvider>
       </body>

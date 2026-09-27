@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/legal/refunds",
     "/legal/data-protection",
     "/legal/cookies",
+    "/feedback",
   ].map((path) => ({
     url: `${SITE.domain}${path}`,
     lastModified: new Date(),

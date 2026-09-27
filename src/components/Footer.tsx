@@ -8,6 +8,7 @@ const institute = [
   { href: "/news", label: "News" },
   { href: "/careers", label: "Careers" },
   { href: "/partner", label: "Partner With Us" },
+  { href: "/feedback", label: "Website Feedback" },
   { href: "/contact", label: "Contact" },
 ];
 const programmes = [
@@ -23,6 +24,7 @@ const legal = [
   { href: "/legal/refunds", label: "Refunds" },
   { href: "/legal/data-protection", label: "Data Protection" },
   { href: "/legal/cookies", label: "Cookies" },
+  { href: "/feedback", label: "Feedback" },
 ];
 
 function Social() {
