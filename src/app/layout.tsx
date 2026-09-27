@@ -3,7 +3,6 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
 import ScrollProgress from "@/components/ScrollProgress";
 import CookieConsent from "@/components/CookieConsent";
 import RecaptchaLoader from "@/components/RecaptchaLoader";
@@ -122,7 +121,6 @@ export default function RootLayout({
           <Header />
           <main id="main">{children}</main>
           <Footer />
-          <WhatsAppFloat />
           <FeedbackWidget />
           <CookieConsent />
         </AuthProvider>

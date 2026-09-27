@@ -1,0 +1,174 @@
+{
+  "summary": {
+    "totalMembers": 140,
+    "activeMembers": 128,
+    "fellowMembers": 24,
+    "candidateUsers": 312,
+    "totalConferences": 7,
+    "totalDelegatesRegistered": 485,
+    "totalCourseStudents": 194,
+    "cpdCertificatesIssued": 182,
+    "abstractsSubmitted": 156,
+    "internshipApplications": 38,
+    "websiteFeedbackReceived": 42,
+    "averageSatisfactionScore": 4.8,
+    "totalGrossRevenueGBP": 46850,
+    "currency": "GBP (£)"
+  },
+  "financialBreakdown": [
+    { "category": "Conference Ticket Sales", "amountGBP": 26400, "count": 220, "trend": "+18%" },
+    { "category": "Annual Membership Subscriptions", "amountGBP": 12250, "count": 140, "trend": "+24%" },
+    { "category": "Certified Online CPD Courses", "amountGBP": 6700, "count": 134, "trend": "+12%" },
+    { "category": "Award Nominations & Processing", "amountGBP": 1500, "count": 25, "trend": "+8%" }
+  ],
+  "eventRegistrations": [
+    {
+      "id": "REG-2026-101",
+      "event": "ICMDR 2026",
+      "delegate": "Dr. Eleanor Vance",
+      "email": "e.vance@ucl.ac.uk",
+      "tier": "Academic Presenter",
+      "amountGBP": 240,
+      "date": "2026-02-14",
+      "paymentStatus": "Paid",
+      "attendance": "In-Person (London)"
+    },
+    {
+      "id": "REG-2026-102",
+      "event": "ICRIET 2026",
+      "delegate": "Prof. Alistair MacIntyre",
+      "email": "a.macintyre@ox.ac.uk",
+      "tier": "Keynote Speaker",
+      "amountGBP": 0,
+      "date": "2026-02-18",
+      "paymentStatus": "Complimentary",
+      "attendance": "In-Person (London)"
+    },
+    {
+      "id": "REG-2026-103",
+      "event": "ICRIET 2026",
+      "delegate": "Marcus Zhang",
+      "email": "m.zhang@cantab.ac.uk",
+      "tier": "Student Delegate",
+      "amountGBP": 120,
+      "date": "2026-02-25",
+      "paymentStatus": "Paid",
+      "attendance": "Virtual / Online"
+    },
+    {
+      "id": "REG-2026-104",
+      "event": "ICASH 2026",
+      "delegate": "Dr. Amina El-Sayed",
+      "email": "amina.elsayed@imperial.ac.uk",
+      "tier": "Standard Delegate",
+      "amountGBP": 180,
+      "date": "2026-03-02",
+      "paymentStatus": "Paid",
+      "attendance": "In-Person (London)"
+    },
+    {
+      "id": "REG-2026-105",
+      "event": "ICMDR 2026",
+      "delegate": "Sarah Jenkins",
+      "email": "s.jenkins@manchester.ac.uk",
+      "tier": "Candidate Observer",
+      "amountGBP": 60,
+      "date": "2026-03-08",
+      "paymentStatus": "Paid",
+      "attendance": "Virtual / Online"
+    }
+  ],
+  "candidateSubmissions": [
+    {
+      "id": "ABS-2026-041",
+      "title": "Machine Learning Approaches in Multidisciplinary Genomic Data Curation",
+      "author": "Dr. Eleanor Vance",
+      "event": "ICMDR 2026",
+      "track": "Bioinformatics & Systems",
+      "date": "2026-01-20",
+      "status": "Accepted for Oral Presentation",
+      "peerReviewScore": "4.9/5"
+    },
+    {
+      "id": "ABS-2026-042",
+      "title": "Decarbonizing Grid Systems Using Predictive Neural Networks",
+      "author": "Dr. Priya Sundaram",
+      "event": "ICRIET 2026",
+      "track": "Renewable Energy & Computing",
+      "date": "2026-02-05",
+      "status": "Under Peer Review",
+      "peerReviewScore": "Pending"
+    },
+    {
+      "id": "ABS-2026-043",
+      "title": "Ethical Frameworks in Automated Clinical Decision Support",
+      "author": "Dr. Amina El-Sayed",
+      "event": "ICASH 2026",
+      "track": "Applied Healthcare Informatics",
+      "date": "2026-02-12",
+      "status": "Accepted with Minor Revisions",
+      "peerReviewScore": "4.7/5"
+    }
+  ],
+  "internshipApplications": [
+    {
+      "id": "APP-INT-001",
+      "applicant": "Sarah Jenkins",
+      "email": "s.jenkins@manchester.ac.uk",
+      "role": "Multidisciplinary Events & Operations Intern",
+      "education": "University of Manchester (MSc)",
+      "appliedDate": "2026-03-01",
+      "status": "Shortlisted for Interview",
+      "cvFile": "Sarah_Jenkins_CV_2026.pdf"
+    },
+    {
+      "id": "APP-INT-002",
+      "applicant": "Liam Crawford",
+      "email": "l.crawford@kcl.ac.uk",
+      "role": "Multidisciplinary Events & Operations Intern",
+      "education": "King's College London (BSc)",
+      "appliedDate": "2026-03-04",
+      "status": "Under Review",
+      "cvFile": "Liam_Crawford_CV.pdf"
+    },
+    {
+      "id": "APP-INT-003",
+      "applicant": "Fatima Al-Mansoor",
+      "email": "fatima.m@ed.ac.uk",
+      "role": "Multidisciplinary Events & Operations Intern",
+      "education": "University of Edinburgh (MA)",
+      "appliedDate": "2026-03-07",
+      "status": "Under Review",
+      "cvFile": "Fatima_AlMansoor_Resume.pdf"
+    }
+  ],
+  "feedbackSummary": [
+    {
+      "ticket": "GRSD-FB-839201",
+      "name": "Dr. Eleanor Vance",
+      "rating": "Very good (5/5)",
+      "taskCompleted": "Yes",
+      "topic": "Registration & Candidate Dashboard",
+      "comment": "Candidate workspace is clean, fast, and simple to navigate. CV upload worked seamlessly.",
+      "date": "2026-03-20"
+    },
+    {
+      "ticket": "GRSD-FB-774192",
+      "name": "Marcus Zhang",
+      "rating": "Very good (5/5)",
+      "taskCompleted": "Yes",
+      "topic": "Conferences & Call for Papers",
+      "comment": "Abstract submission instructions are clear and CPD certificate validation was prompt.",
+      "date": "2026-03-22"
+    },
+    {
+      "ticket": "GRSD-FB-651239",
+      "name": "Prof. Kenji Takahashi",
+      "rating": "Good (4/5)",
+      "taskCompleted": "Yes",
+      "topic": "Awards Nomination",
+      "comment": "Professional presentation, responsive support desk, and clear international criteria.",
+      "date": "2026-03-24"
+    }
+  ]
+}

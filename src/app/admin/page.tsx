@@ -10,8 +10,12 @@ import coursesJson from "@/content/courses.json";
 import awardsJson from "@/content/awards.json";
 import newsJson from "@/content/news.json";
 import pagesJson from "@/content/pages.json";
+import membersJson from "@/content/members.json";
+import reportsJson from "@/content/reports.json";
+import MembersManager from "./MembersManager";
+import ReportsManager from "./ReportsManager";
 
-type TabKey = "site" | "hero" | "events" | "courses" | "awards" | "news" | "pages" | "media";
+type TabKey = "members" | "reports" | "site" | "hero" | "events" | "courses" | "awards" | "news" | "pages" | "media";
 
 type MediaItem = {
   name: string;
@@ -27,9 +31,11 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<TabKey>("site");
+  const [activeTab, setActiveTab] = useState<TabKey>("members");
 
   // State data for all collections
+  const [membersData, setMembersData] = useState<any[]>(membersJson);
+  const [reportsData, setReportsData] = useState<any>(reportsJson);
   const [siteData, setSiteData] = useState<any>(siteJson);
   const [heroData, setHeroData] = useState<any[]>(heroJson);
   const [eventsData, setEventsData] = useState<any[]>(eventsJson);
@@ -149,6 +155,8 @@ export default function AdminPage() {
       await saveCollection("awards", awardsData);
       await saveCollection("news", newsData);
       await saveCollection("pages", pagesData);
+      await saveCollection("members", membersData);
+      await saveCollection("reports", reportsData);
       setStatus({
         kind: "ok",
         msg: "All changes published! Live site redeploy triggered — updates appear within ~1-2 minutes.",
@@ -309,6 +317,8 @@ export default function AdminPage() {
       <nav className="border-b border-white/10 bg-navy-dark/90 px-4">
         <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto py-2 scrollbar-none">
           {[
+            { id: "members", label: "👥 Members & Users" },
+            { id: "reports", label: "📊 Detailed Reports" },
             { id: "site", label: "🏢 Site & Logos" },
             { id: "hero", label: "🎠 Hero Slides" },
             { id: "events", label: "📅 Events & Conferences" },
@@ -340,6 +350,34 @@ export default function AdminPage() {
 
       {/* Main Content Area */}
       <main className="mx-auto max-w-7xl flex-1 w-full px-4 py-8">
+        {/* ========================================================= */}
+        {/* TAB 0A: MEMBERS & CANDIDATE DATABASE */}
+        {/* ========================================================= */}
+        {activeTab === "members" && (
+          <MembersManager
+            members={membersData}
+            onSave={(updated) => {
+              setMembersData(updated);
+              saveCollection("members", updated);
+            }}
+            saving={saving}
+          />
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 0B: INSTITUTIONAL REPORTS */}
+        {/* ========================================================= */}
+        {activeTab === "reports" && (
+          <ReportsManager
+            reports={reportsData}
+            onSave={(updated) => {
+              setReportsData(updated);
+              saveCollection("reports", updated);
+            }}
+            saving={saving}
+          />
+        )}
+
         {/* ========================================================= */}
         {/* TAB 1: SITE SETTINGS & LOGOS */}
         {/* ========================================================= */}

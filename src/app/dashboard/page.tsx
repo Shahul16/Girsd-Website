@@ -12,6 +12,7 @@ import { openings, type JobOpening } from "@/lib/data/careers";
 const WHATSAPP_COMMUNITY_URL = "https://chat.whatsapp.com/Hzz8bB36if83vGNL9PFoRE?mode=gi_t";
 
 type CandidateProfile = {
+  photoUrl?: string | null;
   phone: string;
   location: string;
   title: string;
@@ -29,6 +30,7 @@ type CandidateProfile = {
 };
 
 const DEFAULT_PROFILE: CandidateProfile = {
+  photoUrl: null,
   phone: "+44 7586 261118",
   location: "London, United Kingdom",
   title: "Research Scholar & Candidate",
@@ -98,8 +100,9 @@ export default function DashboardPage() {
   const [selectedJob, setSelectedJob] = useState<JobOpening | null>(null);
   const [showAiResumeModal, setShowAiResumeModal] = useState(false);
 
-  // File Upload Ref
+  // File Upload Refs
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (ready && !user) router.replace("/login?next=/dashboard");
@@ -187,6 +190,44 @@ export default function DashboardPage() {
     };
     saveProfileToStorage(updated);
     showToast("CV removed from profile.");
+  }
+
+  function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Please select an image file (PNG, JPG, JPEG, WEBP).");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Photo must be less than 5 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      const updated: CandidateProfile = {
+        ...profile,
+        photoUrl: base64,
+      };
+      saveProfileToStorage(updated);
+      showToast("Candidate profile photo updated successfully!");
+      if (photoInputRef.current) photoInputRef.current.value = "";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleRemovePhoto() {
+    if (!confirm("Remove your profile photo?")) return;
+    const updated: CandidateProfile = {
+      ...profile,
+      photoUrl: null,
+    };
+    saveProfileToStorage(updated);
+    showToast("Profile photo removed.");
   }
 
   function addSkill() {
@@ -346,9 +387,17 @@ export default function DashboardPage() {
 
             {/* Candidate Identity Pill */}
             <div className="flex items-center gap-2.5 rounded-full border border-slate-200/80 bg-slate-50 py-1 pl-1 pr-3">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy font-display text-xs font-bold text-white shadow-2xs">
-                {user.name.charAt(0).toUpperCase()}
-              </span>
+              {profile.photoUrl ? (
+                <img
+                  src={profile.photoUrl}
+                  alt={user.name}
+                  className="h-7 w-7 rounded-full object-cover border border-slate-200 shadow-2xs"
+                />
+              ) : (
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy font-display text-xs font-bold text-white shadow-2xs">
+                  {user.name.charAt(0).toUpperCase()}
+                </span>
+              )}
               <div className="text-left text-xs leading-none">
                 <p className="font-semibold text-navy">{user.name.split(" ")[0]}</p>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">{candidateId}</p>
@@ -805,10 +854,57 @@ export default function DashboardPage() {
                   <div className="space-y-6">
                     <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs text-center">
                       
-                      {/* Avatar */}
-                      <div className="relative mx-auto h-24 w-24 rounded-full bg-slate-900 flex items-center justify-center font-display text-3xl font-bold text-gold shadow-md">
-                        {user.name.charAt(0).toUpperCase()}
+                      {/* Avatar & Candidate Photo */}
+                      <div className="relative mx-auto h-24 w-24">
+                        {profile.photoUrl ? (
+                          <img
+                            src={profile.photoUrl}
+                            alt={user.name}
+                            className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-slate-100"
+                          />
+                        ) : (
+                          <div className="h-24 w-24 rounded-full bg-slate-900 flex items-center justify-center font-display text-3xl font-bold text-gold shadow-md">
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => photoInputRef.current?.click()}
+                          title="Upload / Change Photo"
+                          aria-label="Upload profile photo"
+                          className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-navy text-white shadow-md hover:bg-gold hover:text-navy transition"
+                        >
+                          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </button>
                       </div>
+
+                      {/* Photo Actions */}
+                      <div className="mt-2.5 flex items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => photoInputRef.current?.click()}
+                          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-navy hover:bg-slate-50 transition shadow-2xs"
+                        >
+                          {profile.photoUrl ? "Change Photo" : "Upload Photo"}
+                        </button>
+                        {profile.photoUrl && (
+                          <button
+                            type="button"
+                            onClick={handleRemovePhoto}
+                            className="rounded-lg border border-rose-200 px-2 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 transition"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+
+                      <input
+                        ref={photoInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg,image/webp"
+                        className="hidden"
+                        onChange={handlePhotoUpload}
+                      />
 
                       <h2 className="mt-4 font-display text-lg font-bold text-navy">{user.name}</h2>
                       <p className="text-xs text-slate-500">{profile.location}</p>
@@ -1495,6 +1591,47 @@ export default function DashboardPage() {
             </div>
 
             <form onSubmit={handleProfileSaveModal} className="mt-4 space-y-4 text-xs">
+              <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-slate-50 p-3">
+                <div className="relative h-14 w-14 shrink-0">
+                  {editFormData.photoUrl ? (
+                    <img
+                      src={editFormData.photoUrl}
+                      alt="Candidate photo"
+                      className="h-14 w-14 rounded-full object-cover border border-slate-200"
+                    />
+                  ) : (
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 font-display text-lg font-bold text-gold">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-navy text-xs">Profile Photo</p>
+                  <p className="text-[10px] text-slate-500">JPG, PNG, or WEBP (Max 5 MB)</p>
+                  <div className="mt-1.5 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => photoInputRef.current?.click()}
+                      className="rounded-md border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-navy hover:bg-slate-50"
+                    >
+                      {editFormData.photoUrl ? "Change Photo" : "Upload Photo"}
+                    </button>
+                    {editFormData.photoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditFormData({ ...editFormData, photoUrl: null });
+                          handleRemovePhoto();
+                        }}
+                        className="rounded-md border border-rose-200 px-2 py-1 text-[10px] font-semibold text-rose-600 hover:bg-rose-50"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block font-semibold text-slate-700">Academic Title / Headline</label>
                 <input

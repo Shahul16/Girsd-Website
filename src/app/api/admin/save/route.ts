@@ -4,7 +4,7 @@ import path from "path";
 
 export const runtime = "nodejs";
 
-const VALID_COLLECTIONS = ["events", "courses", "awards", "news", "site", "hero", "pages"];
+const VALID_COLLECTIONS = ["events", "courses", "awards", "news", "site", "hero", "pages", "members", "reports"];
 
 /**
  * Commits a content collection to local disk and/or GitHub (src/content/<collection>.json).
