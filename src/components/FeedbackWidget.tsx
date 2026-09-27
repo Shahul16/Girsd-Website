@@ -277,7 +277,7 @@ export default function FeedbackWidget() {
               </form>
             )}
 
-            {/* Link to Full IEEE Form */}
+            {/* Link to Full Form */}
             <div className="mt-8 border-t border-slate-100 pt-6">
               <p className="text-xs text-slate-500">Need to submit a formal evaluation or detailed feedback?</p>
               <Link
@@ -285,7 +285,7 @@ export default function FeedbackWidget() {
                 onClick={() => setIsOpen(false)}
                 className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-navy hover:text-gold-dark"
               >
-                <span>Open Full IEEE-Format Website Feedback Form</span>
+                <span>Open Full Website Feedback Form</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>

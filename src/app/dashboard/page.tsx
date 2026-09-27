@@ -536,7 +536,7 @@ export default function DashboardPage() {
                       <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>
                       <span>Website Feedback</span>
                     </div>
-                    <span className="text-[10px] font-bold text-navy bg-navy/5 px-2 py-0.5 rounded-full">IEEE Form</span>
+                    <span className="text-[10px] font-bold text-navy bg-navy/5 px-2 py-0.5 rounded-full">Feedback</span>
                   </Link>
 
                   <button
@@ -774,7 +774,7 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* TAB 2: MY PROFILE (RESEARCH CV) - EXACT IFERP STRUCTURE */}
+            {/* TAB 2: MY PROFILE (RESEARCH CV) - CANDIDATE ACADEMIC STRUCTURE */}
             {activeTab === "profile" && (
               <div className="space-y-6">
                 
@@ -999,7 +999,7 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* TAB 3: CONFERENCES & EVENTS - EXACT IFERP SUB-TAB & CARD STRUCTURE */}
+            {/* TAB 3: CONFERENCES & EVENTS - ACADEMIC SUB-TAB & CARD STRUCTURE */}
             {activeTab === "events" && (
               <div className="space-y-6">
                 
@@ -1412,7 +1412,7 @@ export default function DashboardPage() {
                         <h3 className="text-sm font-bold text-navy">Website Feedback Form</h3>
                       </div>
                       <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-                        Modeled on IEEE academic benchmarks. Share your user experience, rate portal navigation, and recommend improvements directly to our QA team.
+                        Share your candidate experience, rate portal navigation, and recommend improvements directly to our QA team.
                       </p>
                     </div>
                     <Link

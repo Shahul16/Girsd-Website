@@ -114,7 +114,7 @@ export default function FeedbackPage() {
   return (
     <div className="bg-slate-50 min-h-screen py-10 sm:py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb matching IEEE standard */}
+        {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-slate-500 sm:text-sm">
           <Link href="/" className="flex items-center gap-1.5 hover:text-navy transition">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
