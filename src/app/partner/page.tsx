@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
+import PartnersGrid from "@/components/PartnersGrid";
 import { DemoForm, Field } from "@/components/forms";
 
 export const metadata: Metadata = {
@@ -49,6 +50,8 @@ export default function PartnerPage() {
           ))}
         </div>
       </section>
+
+      <PartnersGrid />
 
       <section className="bg-cream py-16" aria-labelledby="agent-form-heading">
         <div className="mx-auto max-w-3xl px-4">

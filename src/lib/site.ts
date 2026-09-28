@@ -17,6 +17,7 @@ export const SITE = {
   tagline: siteJson.tagline || "Advancing Research. Developing Skills.",
   logoHeader: siteJson.logoHeader || "/logo-header.png",
   logoWhite: siteJson.logoWhite || "/logo-white.png",
+  crest: (siteJson as any).crest || "/girsd-crest.png",
   favicon: siteJson.favicon || "/favicon.ico",
   email: (siteJson as any).email || (siteJson as any).emails?.info || "info@globalrsd.co.uk",
   researchEmail: (siteJson as any).researchEmail || (siteJson as any).emails?.research || "research@globalrsd.co.uk",

@@ -46,7 +46,40 @@ export const committees: { name: string; description: string; members: Person[] 
   },
 ];
 
-export const partners = [
-  "CMS College of Engineering",
-  "Vision Pacific Institute",
+export interface PartnerInstitution {
+  name: string;
+  url: string;
+  logo: string;
+  category: string;
+  location: string;
+  description: string;
+}
+
+export const partnerInstitutions: PartnerInstitution[] = [
+  {
+    name: "Paavai Engineering College",
+    url: "https://pec.paavai.edu.in/",
+    logo: "/partners/paavai.png",
+    category: "Academic Partner",
+    location: "Namakkal, Tamil Nadu, India",
+    description: "Autonomous Engineering College (NAAC 'A' Grade & NBA Accredited), affiliated with Anna University.",
+  },
+  {
+    name: "CMS College of Engineering",
+    url: "https://cmscollegeofengg.org/",
+    logo: "/partners/cms.png",
+    category: "Academic Partner",
+    location: "Namakkal, Tamil Nadu, India",
+    description: "Premier Engineering Institution approved by AICTE & affiliated with Anna University.",
+  },
+  {
+    name: "Vision Pacific",
+    url: "https://visionpacific.in/",
+    logo: "/partners/vision-pacific.png",
+    category: "Global Education & Mobility Partner",
+    location: "International Education & Visa Consultancy",
+    description: "Trusted international education, pathway and global student mobility consultancy since 2016.",
+  },
 ];
+
+export const partners: string[] = partnerInstitutions.map((p) => p.name);
