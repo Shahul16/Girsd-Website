@@ -8,7 +8,7 @@
     "endDate": "2026-11-29T17:00:00Z",
     "venue": "CMS College of Engineering",
     "city": "Chennai, India",
-    "summary": "Globalrsd's flagship multidisciplinary conference bringing together researchers, academics and industry professionals across engineering, sciences, management and the humanities to present peer-reviewed work and build cross-disciplinary collaborations.",
+    "summary": "GIRSD's flagship multidisciplinary conference bringing together researchers, academics and industry professionals across engineering, sciences, management and the humanities to present peer-reviewed work and build cross-disciplinary collaborations.",
     "description": "ICMDR 2026 is a one-day international multidisciplinary research conference hosted in partnership with CMS College of Engineering, Chennai. The conference welcomes original research across all disciplines and provides a platform for scholars, doctoral candidates and industry practitioners to present and publish their work. Accepted papers are peer-reviewed, and selected papers are recommended for publication in partner journals. The programme features keynote addresses, parallel technical sessions, a research poster exhibition and structured networking.",
     "themes": [
       "Engineering, technology and applied sciences",
@@ -111,8 +111,8 @@
     "endDate": "2026-10-16T17:00:00Z",
     "venue": "The Bromley Court Hotel",
     "city": "London, United Kingdom",
-    "summary": "Globalrsd's flagship two-day conference bringing together researchers, industry engineers and doctoral candidates to present peer-reviewed work across engineering and emerging technology.",
-    "description": "ICRIET 2026 is the seventh edition of Globalrsd's flagship research conference. Accepted papers undergo double-blind peer review by our international research review committee, and selected papers are recommended for publication in partner journals indexed in Scopus and Web of Science. The programme combines keynote addresses, parallel technical sessions, a doctoral symposium and a poster exhibition, with structured networking sessions on both days.",
+    "summary": "GIRSD's flagship two-day conference bringing together researchers, industry engineers and doctoral candidates to present peer-reviewed work across engineering and emerging technology.",
+    "description": "ICRIET 2026 is the seventh edition of GIRSD's flagship research conference. Accepted papers undergo double-blind peer review by our international research review committee, and selected papers are recommended for publication in partner journals indexed in Scopus and Web of Science. The programme combines keynote addresses, parallel technical sessions, a doctoral symposium and a poster exhibition, with structured networking sessions on both days.",
     "themes": [
       "Artificial intelligence and machine learning applications",
       "Renewable energy systems and sustainable engineering",
@@ -246,8 +246,8 @@
       {
         "name": "Dr Amelia Hartwell",
         "title": "Conference Chair",
-        "affiliation": "Globalrsd Research Review Committee",
-        "bio": "Chartered engineer and research strategist who has chaired Globalrsd's engineering conference series since 2022."
+        "affiliation": "GIRSD Research Review Committee",
+        "bio": "Chartered engineer and research strategist who has chaired GIRSD's engineering conference series since 2022."
       }
     ],
     "image": "/ev-icriet-2026.png"
@@ -366,7 +366,7 @@
     "acronym": "AWPM 2026",
     "date": "2026-09-12T09:30:00Z",
     "endDate": "2026-09-12T16:30:00Z",
-    "venue": "Globalrsd Training Suite, Bromley",
+    "venue": "GIRSD Training Suite, Bromley",
     "city": "London, United Kingdom",
     "summary": "An intensive one-day workshop taking researchers from manuscript structure to journal submission, led by experienced journal editors and peer reviewers.",
     "description": "This hands-on masterclass is limited to 30 participants to guarantee individual feedback. Participants work on their own draft manuscripts through structured exercises covering argument construction, literature positioning, responding to reviewers, and avoiding common desk-rejection triggers. Every attendee leaves with a personalised submission plan and three months of email follow-up support from the facilitation team.",

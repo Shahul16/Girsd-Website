@@ -3,7 +3,7 @@ import LegalPage from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Data Protection",
-  description: "Globalrsd's data protection statement: governance, security measures, data subject requests and breach procedures under UK GDPR.",
+  description: "GIRSD's data protection statement: governance, security measures, data subject requests and breach procedures under UK GDPR.",
   alternates: { canonical: "/legal/data-protection" },
 };
 
@@ -12,7 +12,7 @@ export default function DataProtectionPage() {
     <LegalPage title="Data Protection Statement" updated="1 July 2026">
       <h2>1. Our commitment</h2>
       <p>
-        Q TECH PRIVATE LTD, trading as Globalrsd, is committed to protecting the
+        Q TECH PRIVATE LTD, trading as GIRSD, is committed to protecting the
         personal data of members, delegates, learners, authors, nominees and
         website visitors. This statement describes the governance and security
         arrangements that support our Privacy Policy, in line with the UK GDPR

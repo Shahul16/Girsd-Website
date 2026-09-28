@@ -9,7 +9,7 @@ import { DemoForm, Field } from "@/components/forms";
 export const metadata: Metadata = {
   title: "Membership",
   description:
-    "Join Globalrsd from £49 per year. Choose a Student, Academic or Industry membership with event discounts, professional development and committee opportunities.",
+    "Join GIRSD from £49 per year. Choose a Student, Academic or Industry membership with event discounts, professional development and committee opportunities.",
   alternates: { canonical: "/membership" },
 };
 
@@ -26,7 +26,7 @@ const comparisonRows = [
   ["Eligibility for committee service", false, true, false],
   ["Two workshop delegate passes per year", false, false, true],
   ["Industry panel speaking opportunities", false, false, true],
-  ["Company profile in Globalrsd directory", false, false, true],
+  ["Company profile in GIRSD directory", false, false, true],
 ] as [string, boolean, boolean, boolean][];
 
 const membershipBenefits = [
@@ -40,16 +40,16 @@ export default function MembershipPage() {
   return (
     <>
       <PageHero
-        eyebrow="Globalrsd Membership"
+        eyebrow="GIRSD Membership"
         title="Choose the membership that fits your goals"
-        intro="Join a growing international community of researchers, educators, students and industry professionals. Start with the tier that matches your current role and make more of every Globalrsd opportunity."
+        intro="Join a growing international community of researchers, educators, students and industry professionals. Start with the tier that matches your current role and make more of every GIRSD opportunity."
       />
 
       <section className="mx-auto max-w-7xl px-4 py-16" aria-labelledby="tiers-heading">
         <Reveal className="mx-auto max-w-3xl text-center">
           <h2 id="tiers-heading" className="flourish font-display text-3xl font-bold">Membership options</h2>
           <p className="mt-4 leading-relaxed text-slate-600">
-            Every tier includes a digital membership certificate, member pricing and access to the Globalrsd community. Choose the pathway that best reflects your work today.
+            Every tier includes a digital membership certificate, member pricing and access to the GIRSD community. Choose the pathway that best reflects your work today.
           </p>
         </Reveal>
         <div className="mt-10 grid gap-8 lg:grid-cols-3">
@@ -143,7 +143,7 @@ export default function MembershipPage() {
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 id="committee-heading" className="flourish font-display text-3xl font-bold">Join our committees</h2>
             <p className="mt-4 leading-relaxed text-slate-600">
-              Committee participation is a separate professional pathway for researchers, educators, practitioners and sector leaders who want to contribute their expertise to Globalrsd programmes.
+              Committee participation is a separate professional pathway for researchers, educators, practitioners and sector leaders who want to contribute their expertise to GIRSD programmes.
             </p>
           </Reveal>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
@@ -163,7 +163,7 @@ export default function MembershipPage() {
                 <h3 className="font-display text-xl font-bold">Committee member benefits</h3>
                 <ul className="mt-5 space-y-3 text-sm leading-relaxed text-slate-600">
                   {[
-                    "Recognition across the Globalrsd professional network",
+                    "Recognition across the GIRSD professional network",
                     "A voice in shaping events, programmes and committee priorities",
                     "Official committee membership certificate",
                     "Opportunities for meaningful international collaboration",
@@ -207,7 +207,7 @@ export default function MembershipPage() {
           <Reveal className="grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-widest text-gold">For organisations</p>
-              <h2 id="sponsors-heading" className="mt-3 font-display text-3xl font-bold text-white">Partner with Globalrsd</h2>
+              <h2 id="sponsors-heading" className="mt-3 font-display text-3xl font-bold text-white">Partner with GIRSD</h2>
               <p className="mt-4 max-w-2xl leading-relaxed text-slate-300">
                 Organisations can support the community through conference sponsorship, exhibition, programme collaboration or a tailored year-round partnership.
               </p>

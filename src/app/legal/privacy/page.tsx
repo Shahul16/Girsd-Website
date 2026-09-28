@@ -3,7 +3,7 @@ import LegalPage from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Globalrsd (Q TECH PRIVATE LTD) collects, uses and protects your personal data under UK GDPR.",
+  description: "How GIRSD (Q TECH PRIVATE LTD) collects, uses and protects your personal data under UK GDPR.",
   alternates: { canonical: "/legal/privacy" },
 };
 
@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <LegalPage title="Privacy Policy" updated="1 July 2026">
       <h2>1. Introduction</h2>
       <p>
-        This Privacy Policy explains how Q TECH PRIVATE LTD, trading as Globalrsd
+        This Privacy Policy explains how Q TECH PRIVATE LTD, trading as GIRSD
         (&ldquo;we&rdquo;, &ldquo;us&rdquo;), collects and processes your personal data when you use
         globalrsd.co.uk, attend our events, take our courses, or hold a
         membership. We are the data controller for this processing, registered

@@ -6,12 +6,12 @@ import EventDirectory from "@/components/EventDirectory";
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "Explore Globalrsd conferences, workshops and education events. Present your work, develop practical skills or join as a delegate.",
+    "Explore GIRSD conferences, workshops and education events. Present your work, develop practical skills or join as a delegate.",
   alternates: { canonical: "/events" },
 };
 
 const eventViews = [
-  ["All events", "/events", "Browse the complete Globalrsd programme."],
+  ["All events", "/events", "Browse the complete GIRSD programme."],
   ["Conferences", "/events/conferences", "Peer-reviewed research conferences and international academic programmes."],
   ["Workshops", "/events/workshops", "Practical, tutor-led sessions for focused skills development."],
   ["Courses", "/courses", "Tutor-supported online learning with assessment and certification."],
@@ -21,7 +21,7 @@ export default function EventsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Globalrsd Events"
+        eyebrow="GIRSD Events"
         title="Learn, present and connect"
         intro="Choose the experience that fits your goals: attend a conference, build practical skills in a workshop, or study online through a certified course."
       />

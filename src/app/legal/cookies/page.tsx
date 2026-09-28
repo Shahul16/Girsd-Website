@@ -3,7 +3,7 @@ import LegalPage from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: "How Globalrsd (Q TECH PRIVATE LTD) uses cookies and similar storage technologies on globalrsd.co.uk.",
+  description: "How GIRSD (Q TECH PRIVATE LTD) uses cookies and similar storage technologies on globalrsd.co.uk.",
   alternates: { canonical: "/legal/cookies" },
 };
 

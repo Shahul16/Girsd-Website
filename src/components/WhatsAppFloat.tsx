@@ -16,7 +16,7 @@ export default function WhatsAppFloat() {
               <WhatsAppIcon size={20} />
             </span>
             <div>
-              <p className="text-sm font-bold">Globalrsd Support</p>
+              <p className="text-sm font-bold">GIRSD Support</p>
               <p className="text-xs text-emerald-100">Typically replies within an hour</p>
             </div>
             <button

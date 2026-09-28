@@ -39,7 +39,7 @@ export default function LoadingScreen() {
     >
       <Image
         src="/logo-white.png"
-        alt="Globalrsd"
+        alt="GIRSD"
         width={300}
         height={72}
         priority

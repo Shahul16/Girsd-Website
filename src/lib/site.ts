@@ -11,7 +11,7 @@ export const formatAddress = (addr: any) => {
 
 export const SITE = {
   name: siteJson.name || "Global Institute of Research & Skills Development",
-  shortName: siteJson.shortName || "Globalrsd",
+  shortName: siteJson.shortName || "GIRSD",
   domain: "https://www.globalrsd.co.uk",
   domainDisplay: "www.globalrsd.co.uk",
   tagline: siteJson.tagline || "Advancing Research. Developing Skills.",

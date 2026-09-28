@@ -29,7 +29,7 @@ export default function HeroCard({ slide, upcomingEvent }: HeroCardProps) {
         <div className="flex flex-col items-start gap-4">
           <Image
             src={SITE.logoWhite}
-            alt="Globalrsd heraldic crest"
+            alt="GIRSD heraldic crest"
             width={260}
             height={62}
             priority
@@ -112,7 +112,7 @@ export default function HeroCard({ slide, upcomingEvent }: HeroCardProps) {
           </span>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-gold">Annual Honours</p>
-            <p className="text-sm font-bold text-white">Globalrsd Global Awards 2026</p>
+            <p className="text-sm font-bold text-white">GIRSD Global Awards 2026</p>
           </div>
         </div>
 
@@ -155,7 +155,7 @@ export default function HeroCard({ slide, upcomingEvent }: HeroCardProps) {
           </span>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-gold">Scholar Network</p>
-            <p className="text-sm font-bold text-white">Globalrsd Membership</p>
+            <p className="text-sm font-bold text-white">GIRSD Membership</p>
           </div>
         </div>
 

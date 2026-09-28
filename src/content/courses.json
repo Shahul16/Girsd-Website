@@ -8,7 +8,7 @@
     "price": 450,
     "category": "Skills Development Courses",
     "summary": "A deep dive into the integration of artificial intelligence with core cybersecurity practices — detect, analyse and respond to cyber threats with intelligent systems.",
-    "description": "Globalrsd's AI in Cybersecurity Course offers a deep dive into the integration of artificial intelligence with core cybersecurity practices. This course is structured to deliver a strong foundation in AI technologies while applying them to real-world security challenges. You will gain both theoretical understanding and hands-on expertise in using intelligent systems to detect, analyse and respond to cyber threats, and learn how AI is revolutionising threat detection, incident response and predictive defence. Technologies covered include TensorFlow, Scikit-learn, Keras, Pandas & NumPy, the ELK Stack, Snort with AI integration, Hugging Face Transformers, Jupyter Notebooks and OpenCV.",
+    "description": "GIRSD's AI in Cybersecurity Course offers a deep dive into the integration of artificial intelligence with core cybersecurity practices. This course is structured to deliver a strong foundation in AI technologies while applying them to real-world security challenges. You will gain both theoretical understanding and hands-on expertise in using intelligent systems to detect, analyse and respond to cyber threats, and learn how AI is revolutionising threat detection, incident response and predictive defence. Technologies covered include TensorFlow, Scikit-learn, Keras, Pandas & NumPy, the ELK Stack, Snort with AI integration, Hugging Face Transformers, Jupyter Notebooks and OpenCV.",
     "syllabus": [
       {
         "module": "Unit 1 — Introduction to AI in Cybersecurity",
@@ -65,7 +65,7 @@
       "Capstone project",
       "Presentations"
     ],
-    "certification": "Globalrsd Certificate in AI in Cybersecurity awarded on successful completion of the capstone project and assessments.",
+    "certification": "GIRSD Certificate in AI in Cybersecurity awarded on successful completion of the capstone project and assessments.",
     "image": "/co-ai-in-cybersecurity.png"
   },
   {
@@ -124,7 +124,7 @@
       "Capstone data analysis project",
       "Final presentation"
     ],
-    "certification": "Globalrsd Certificate in Data Science with Python awarded on successful capstone completion.",
+    "certification": "GIRSD Certificate in Data Science with Python awarded on successful capstone completion.",
     "image": "/co-data-science-with-python.png"
   },
   {
@@ -136,7 +136,7 @@
     "price": 395,
     "category": "Skills Development Courses",
     "summary": "Bridge the IT and business sectors: requirements engineering, process modelling and data-driven decision making with the latest analysis tools.",
-    "description": "The Business Analysis course at Globalrsd provides a thorough curriculum aimed at connecting the IT and business sectors by integrating the latest data and analysis techniques. You will learn to elicit and document requirements, model business processes, analyse data to support decisions, and communicate effectively with both technical teams and executive stakeholders. The course follows recognised industry frameworks and closes with an end-to-end case study in which you produce a complete business analysis deliverable pack.",
+    "description": "The Business Analysis course at GIRSD provides a thorough curriculum aimed at connecting the IT and business sectors by integrating the latest data and analysis techniques. You will learn to elicit and document requirements, model business processes, analyse data to support decisions, and communicate effectively with both technical teams and executive stakeholders. The course follows recognised industry frameworks and closes with an end-to-end case study in which you produce a complete business analysis deliverable pack.",
     "syllabus": [
       {
         "module": "Unit 1 — The Business Analyst Role",
@@ -183,7 +183,7 @@
       "End-to-end case study deliverable pack",
       "Presentation"
     ],
-    "certification": "Globalrsd Certificate in Business Analysis awarded on successful completion of the case study and assessments.",
+    "certification": "GIRSD Certificate in Business Analysis awarded on successful completion of the case study and assessments.",
     "image": "/co-business-analysis.jpg"
   },
   {
@@ -195,7 +195,7 @@
     "price": 345,
     "category": "Skills Development Courses",
     "summary": "Become an expert in international trade: documentation, customs, Incoterms, payments and building a compliant import-export operation.",
-    "description": "Want to become an expert in international trade? Take the next step in your professional development with Globalrsd's online Export & Import course. Whether you are starting an import-export business, moving into a trade compliance role, or expanding an existing company internationally, this course covers the complete lifecycle of an international transaction: sourcing and market selection, trade documentation, customs procedures and tariffs, Incoterms 2020, international payments and risk management, and UK-specific requirements post-Brexit.",
+    "description": "Want to become an expert in international trade? Take the next step in your professional development with GIRSD's online Export & Import course. Whether you are starting an import-export business, moving into a trade compliance role, or expanding an existing company internationally, this course covers the complete lifecycle of an international transaction: sourcing and market selection, trade documentation, customs procedures and tariffs, Incoterms 2020, international payments and risk management, and UK-specific requirements post-Brexit.",
     "syllabus": [
       {
         "module": "Unit 1 — International Trade Foundations",
@@ -241,7 +241,7 @@
       "Quizzes",
       "Final trade-plan project"
     ],
-    "certification": "Globalrsd Certificate in Export & Import awarded on successful completion.",
+    "certification": "GIRSD Certificate in Export & Import awarded on successful completion.",
     "image": "/co-export-import.png"
   },
   {
@@ -299,7 +299,7 @@
       "Quizzes",
       "Final digital marketing plan"
     ],
-    "certification": "Globalrsd Certificate in Digital Marketing awarded on successful completion.",
+    "certification": "GIRSD Certificate in Digital Marketing awarded on successful completion.",
     "image": "/co-digital-marketing.jpg"
   },
   {
@@ -357,7 +357,7 @@
       "Reflective practice journal",
       "Final management action plan"
     ],
-    "certification": "Globalrsd Certificate in Effective Managerial Skills awarded on successful completion.",
+    "certification": "GIRSD Certificate in Effective Managerial Skills awarded on successful completion.",
     "image": "/co-effective-managerial-skills.jpg"
   }
 ]

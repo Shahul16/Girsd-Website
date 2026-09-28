@@ -16,7 +16,7 @@ type HomeHeroCarouselProps = {
 };
 
 /**
- * Editorial-grade, high-corporate hero slider for the Globalrsd home page.
+ * Editorial-grade, high-corporate hero slider for the GIRSD home page.
  *
  * Each service takes the stage in an unhurried, continuous, and automatic
  * progression with tailored typography, calls to action, contextual cards,
@@ -32,7 +32,7 @@ export default function HomeHeroCarousel({ slides, upcomingEvent }: HomeHeroCaro
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="Globalrsd services and programmes"
+      aria-label="GIRSD services and programmes"
       className="group relative flex min-h-[600px] flex-col justify-between overflow-hidden bg-navy text-white sm:min-h-[660px] lg:min-h-[700px]"
     >
       {/* Background imagery with crossfade and Ken Burns slow drift */}

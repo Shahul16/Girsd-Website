@@ -6,7 +6,7 @@ import { DemoForm, Field } from "@/components/forms";
 export const metadata: Metadata = {
   title: "Partner With Us",
   description:
-    "Become a Globalrsd partner or authorised agent — promote our conferences, courses and membership in your region with commission and marketing support.",
+    "Become a GIRSD partner or authorised agent — promote our conferences, courses and membership in your region with commission and marketing support.",
   alternates: { canonical: "/partner" },
 };
 
@@ -14,7 +14,7 @@ const models = [
   {
     title: "Authorised Agents",
     description:
-      "Represent Globalrsd in your country or region. Agents promote conferences, courses and membership to their networks and earn commission on every confirmed registration, with marketing materials and a named account manager provided.",
+      "Represent GIRSD in your country or region. Agents promote conferences, courses and membership to their networks and earn commission on every confirmed registration, with marketing materials and a named account manager provided.",
   },
   {
     title: "Academic Partners",
@@ -33,7 +33,7 @@ export default function PartnerPage() {
     <>
       <PageHero
         eyebrow="Partner With Us"
-        title="Grow With Globalrsd"
+        title="Grow With GIRSD"
         intro="From regional agents to institutional partners, we collaborate with organisations that share our commitment to research and skills."
       />
 
@@ -87,7 +87,7 @@ export default function PartnerPage() {
                 ]}
               />
               <Field
-                label="Tell us about your network and how you would promote Globalrsd"
+                label="Tell us about your network and how you would promote GIRSD"
                 id="agent-pitch"
                 as="textarea"
               />

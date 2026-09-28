@@ -4,7 +4,7 @@ import EventDirectory from "@/components/EventDirectory";
 
 export const metadata: Metadata = {
   title: "Conferences",
-  description: "Peer-reviewed Globalrsd research conferences with international speakers, publication pathways and research presentations.",
+  description: "Peer-reviewed GIRSD research conferences with international speakers, publication pathways and research presentations.",
   alternates: { canonical: "/events/conferences" },
 };
 

@@ -8,7 +8,7 @@ import { courseImage } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Courses",
   description:
-    "Certified, tutor-supported online courses from Globalrsd: research methods, data analysis, academic writing, project management, AI skills and leadership.",
+    "Certified, tutor-supported online courses from GIRSD: research methods, data analysis, academic writing, project management, AI skills and leadership.",
   alternates: { canonical: "/courses" },
 };
 
@@ -18,7 +18,7 @@ export default function CoursesPage() {
       <PageHero
         eyebrow="Online Courses"
         title="Certified Courses, Real Tutors"
-        intro="Every Globalrsd course is tutor-supported, assessed, and certified. Enrol online — members save 10% on all course fees."
+        intro="Every GIRSD course is tutor-supported, assessed, and certified. Enrol online — members save 10% on all course fees."
       />
       <section className="mx-auto max-w-7xl px-4 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

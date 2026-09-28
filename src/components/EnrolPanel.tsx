@@ -49,7 +49,7 @@ export default function EnrolPanel({
             Log in to enrol
           </Link>
           <p className="mt-3 text-center text-sm text-slate-500">
-            New to Globalrsd?{" "}
+            New to GIRSD?{" "}
             <Link href="/register" className="font-semibold text-navy underline">
               Create an account
             </Link>

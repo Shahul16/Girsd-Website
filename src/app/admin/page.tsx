@@ -218,8 +218,8 @@ export default function AdminPage() {
       <section className="flex min-h-[85vh] items-center justify-center px-4 py-16 bg-navy text-white">
         <div className="w-full max-w-md">
           <div className="mb-8 flex flex-col items-center text-center">
-            <Image src="/logo-white.png" alt="Globalrsd" width={240} height={70} unoptimized className="h-14 w-auto" />
-            <h1 className="mt-4 font-display text-2xl font-bold text-white">Globalrsd CMS Console</h1>
+            <Image src="/logo-white.png" alt="GIRSD" width={240} height={70} unoptimized className="h-14 w-auto" />
+            <h1 className="mt-4 font-display text-2xl font-bold text-white">GIRSD CMS Console</h1>
             <p className="mt-1.5 text-sm text-slate-300">Staff & Management Sign In</p>
           </div>
           <form onSubmit={signIn} className="rounded-xl border border-white/15 bg-white/5 p-8 shadow-2xl backdrop-blur-md">
@@ -253,7 +253,7 @@ export default function AdminPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2.5">
-              <Image src="/logo-white.png" alt="Globalrsd" width={160} height={42} unoptimized className="h-9 w-auto" />
+              <Image src="/logo-white.png" alt="GIRSD" width={160} height={42} unoptimized className="h-9 w-auto" />
             </Link>
             <span className="hidden sm:inline-block rounded bg-gold/20 px-2 py-0.5 text-xs font-bold text-gold border border-gold/30">
               CMS Admin

@@ -1,20 +1,20 @@
 {
   "about": {
-    "eyebrow": "About Globalrsd",
+    "eyebrow": "About GIRSD",
     "title": "Advancing Research, Developing Skills Worldwide",
-    "intro": "The Global Institute of Research & Skills Development (Globalrsd) is an international institute registered in the United Kingdom, uniting scholars, educators, and industry leaders across 50+ countries.",
+    "intro": "The Global Institute of Research & Skills Development (GIRSD) is an international institute registered in the United Kingdom, uniting scholars, educators, and industry leaders across 50+ countries.",
     "mission": "To advance research excellence and practical professional capability through high-impact international conferences, accredited learning, and global collaboration.",
     "vision": "To be the foremost global platform connecting academic research with practical employability, innovation, and international recognition.",
     "founder": {
       "name": "Dr Chandrakumar",
       "role": "Founder & Executive Director",
-      "affiliation": "Q TECH PRIVATE LTD, trading as Globalrsd",
-      "bio": "Dr Chandrakumar founded Globalrsd with a conviction that rigorous research and practical skills development belong together. With a doctorate in engineering management and fifteen years spanning academia and industry consultancy, he has organised international conferences across three continents.",
+      "affiliation": "Q TECH PRIVATE LTD, trading as GIRSD",
+      "bio": "Dr Chandrakumar founded GIRSD with a conviction that rigorous research and practical skills development belong together. With a doctorate in engineering management and fifteen years spanning academia and industry consultancy, he has organised international conferences across three continents.",
       "image": "/about-feature.jpg"
     }
   },
   "membership": {
-    "eyebrow": "Globalrsd Membership",
+    "eyebrow": "GIRSD Membership",
     "title": "Join a Distinguished Worldwide Academic Community",
     "intro": "Connect with scholars, educators and professionals across 50+ countries. Enjoy 20% savings on every conference ticket and course, post-nominal designations, and exclusive mentorship opportunities.",
     "tiers": [

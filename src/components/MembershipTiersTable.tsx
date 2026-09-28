@@ -29,7 +29,7 @@ const ROWS: [string, boolean, boolean, boolean][] = [
   ["Eligibility for committee service", false, true, false],
   ["Two workshop delegate passes per year", false, false, true],
   ["Industry panel speaking opportunities", false, false, true],
-  ["Company profile in Globalrsd directory", false, false, true],
+  ["Company profile in GIRSD directory", false, false, true],
 ];
 
 /**

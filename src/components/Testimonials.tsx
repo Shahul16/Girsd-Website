@@ -15,7 +15,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "As an international delegate, everything from the visa letter to the venue was handled impeccably. Globalrsd events feel personal in a way large conferences rarely do.",
+      "As an international delegate, everything from the visa letter to the venue was handled impeccably. GIRSD events feel personal in a way large conferences rarely do.",
     name: "Mei-Ling Chen",
     role: "Associate Professor, National Taipei University",
   },

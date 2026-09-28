@@ -7,7 +7,7 @@ import { DemoForm, Field } from "@/components/forms";
 export const metadata: Metadata = {
   title: "Global Awards",
   description:
-    "The Globalrsd Global Awards recognise outstanding individuals and institutions across academia and industry. Nominate online at no cost.",
+    "The GIRSD Global Awards recognise outstanding individuals and institutions across academia and industry. Nominate online at no cost.",
   alternates: { canonical: "/awards" },
 };
 
@@ -17,7 +17,7 @@ export default function AwardsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Globalrsd Global Awards 2026"
+        eyebrow="GIRSD Global Awards 2026"
         title="Recognising Excellence in Research & Skills"
           intro="Celebrating outstanding researchers, educators, institutions and industry leaders from around the world. Nominations are submitted online at no cost."
       />
@@ -40,11 +40,11 @@ export default function AwardsPage() {
           <Reveal>
             <h2 className="flourish font-display text-3xl font-bold">About the Awards</h2>
             <p className="mt-6 leading-relaxed text-muted">
-              The Globalrsd Global Awards honour excellence, innovation and impact across
+              The GIRSD Global Awards honour excellence, innovation and impact across
               the research and skills-development community, recognising people and
               organisations advancing knowledge and building capability worldwide.
               Winners join a distinguished international network and are profiled across
-              Globalrsd channels.
+              GIRSD channels.
             </p>
             <p className="mt-4 leading-relaxed text-muted">
               Anyone may submit a nomination, on their own behalf or for a colleague,
@@ -134,7 +134,7 @@ export default function AwardsPage() {
                 "Industry professionals whose work is informed by research or drives skills development.",
                 "Departments, universities, colleges and organisations worldwide.",
                 "Self-nominations and third-party nominations are equally welcome.",
-                "There is no fee to nominate, and nominees need not be Globalrsd members.",
+                "There is no fee to nominate, and nominees need not be GIRSD members.",
               ].map((t) => (
                 <li key={t} className="flex gap-3">
                   <span aria-hidden="true" className="mt-0.5 font-bold text-gold">✓</span>
@@ -235,7 +235,7 @@ export default function AwardsPage() {
             {[
               ["Is there a fee to nominate?", "No. Nominating is free, whether you nominate yourself or someone else."],
               ["When can I submit a nomination?", "Nominations can be submitted online whenever you are ready with the required information and supporting document."],
-              ["Do nominees have to be Globalrsd members?", "No. Membership is not required to nominate or to receive an award."],
+              ["Do nominees have to be GIRSD members?", "No. Membership is not required to nominate or to receive an award."],
               ["Can I nominate myself?", "Yes. Self-nominations are welcome and assessed on the same basis as third-party nominations."],
               ["What supporting document is required?", "Every nomination must include a CV or another relevant supporting document in PDF or Word format, up to 10 MB."],
               ["Can I include online supporting evidence?", "Yes. You can include publication, profile, portfolio and social media links in the supporting links field."],

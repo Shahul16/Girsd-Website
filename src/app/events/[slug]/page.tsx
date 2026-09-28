@@ -137,7 +137,7 @@ export default async function EventDetailPage({
 
               <h3 className="mt-8 font-display text-lg font-bold">Format &amp; review</h3>
               <p className="mt-3 leading-relaxed">
-                Submit in the standard Globalrsd conference template (request the template
+                Submit in the standard GIRSD conference template (request the template
                 from the address below). Submissions are double-blind peer reviewed;
                 accepted full papers are recommended to our partner journals, subject to the
                 journal's own editorial process. Selected papers are eligible for the Best

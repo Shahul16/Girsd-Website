@@ -81,8 +81,8 @@ export default function Header() {
       {/* Main navigation */}
       <div className="bg-white border-b border-line">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2">
-          <Link href="/" className="flex items-center gap-3" aria-label="Globalrsd home">
-            <Image src={SITE.logoHeader} alt="Globalrsd — Global Institute of Research & Skills Development" width={220} height={80} priority unoptimized className="h-16 w-auto max-w-[220px] object-contain sm:h-20" />
+          <Link href="/" className="flex items-center gap-3" aria-label="GIRSD home">
+            <Image src={SITE.logoHeader} alt="GIRSD — Global Institute of Research & Skills Development" width={220} height={80} priority unoptimized className="h-16 w-auto max-w-[220px] object-contain sm:h-20" />
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">

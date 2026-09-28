@@ -48,7 +48,7 @@ export const membershipTiers: MembershipTier[] = [
       "Two delegate passes to one workshop per year",
       "Cross-sector mentoring scheme (mentor or mentee)",
       "Industry panel speaking opportunities",
-      "Company profile in Globalrsd directory",
+      "Company profile in GIRSD directory",
       "Members-only quarterly briefings",
     ],
   },

@@ -3,7 +3,7 @@ import LegalPage from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Refund & Cancellation Policy",
-  description: "Globalrsd's refund and cancellation terms for event tickets, courses and memberships.",
+  description: "GIRSD's refund and cancellation terms for event tickets, courses and memberships.",
   alternates: { canonical: "/legal/refunds" },
 };
 
@@ -12,7 +12,7 @@ export default function RefundsPage() {
     <LegalPage title="Refund & Cancellation Policy" updated="25 July 2026">
       <h2>1. Overview</h2>
       <p>
-        This policy explains when refunds are available for Globalrsd event
+        This policy explains when refunds are available for GIRSD event
         tickets, online courses and memberships. It sits alongside your
         statutory rights as a UK consumer, which are unaffected. To request a
         refund or cancellation, email finance@globalrsd.co.uk from the address on
@@ -22,7 +22,7 @@ export default function RefundsPage() {
       <h2>2. Event tickets — cancellation by you</h2>
       <ul>
         <li>More than 60 days before the event: full refund, less a £15 administration fee per ticket.</li>
-        <li>30–60 days before the event: 50% refund, or a free transfer of the full amount to a future Globalrsd event within 12 months.</li>
+        <li>30–60 days before the event: 50% refund, or a free transfer of the full amount to a future GIRSD event within 12 months.</li>
         <li>Fewer than 30 days before the event: no refund, but you may substitute a named colleague as the delegate at no charge up to 14 days before the event.</li>
         <li>Visa refusal: delegates who are refused a visa and notify us at least 14 days before the event, with evidence of the refusal, receive a full refund less the administration fee.</li>
       </ul>

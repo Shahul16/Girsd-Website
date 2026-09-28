@@ -17,17 +17,17 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   const about = pagesData?.about || {
-    eyebrow: "About Globalrsd",
+    eyebrow: "About GIRSD",
     title: "Where Scholarship Meets Capability",
-    intro: "Globalrsd is a UK-based institute connecting research excellence with practical skills development for a worldwide community of academics, students and professionals.",
+    intro: "GIRSD is a UK-based institute connecting research excellence with practical skills development for a worldwide community of academics, students and professionals.",
   };
 
   return (
     <>
       <PageHero
-        eyebrow={about.eyebrow || "About Globalrsd"}
+        eyebrow={about.eyebrow || "About GIRSD"}
         title={about.title || "Where Scholarship Meets Capability"}
-        intro={about.intro || "Globalrsd is a UK-based institute connecting research excellence with practical skills development for a worldwide community of academics, students and professionals."}
+        intro={about.intro || "GIRSD is a UK-based institute connecting research excellence with practical skills development for a worldwide community of academics, students and professionals."}
       />
 
       {/* Overview */}
@@ -52,7 +52,7 @@ export default function AboutPage() {
             planned in close partnership with faculty deans, university
             leaders, journal editors and experts from every corner of academia
             — across Management, Economics, Accounting, Social Sciences,
-            Humanities, Engineering and the Technological Sciences. Globalrsd is
+            Humanities, Engineering and the Technological Sciences. GIRSD is
             the trading name of {SITE.company.legalName} (Company No.{" "}
             {SITE.company.number}), registered in England and Wales.
           </p>
@@ -60,7 +60,7 @@ export default function AboutPage() {
 
         <Reveal>
           <h2 className="mt-14 font-display text-2xl font-bold">
-            Why Choose Globalrsd?
+            Why Choose GIRSD?
           </h2>
           <ul className="mt-6 space-y-4">
             {[
@@ -145,7 +145,7 @@ export default function AboutPage() {
           <Reveal className="text-center">
             <h2 className="font-display text-3xl font-bold text-white">Our Committees</h2>
             <p className="mx-auto mt-3 max-w-2xl text-slate-300">
-              Globalrsd's programmes are governed by independent committees of senior
+              GIRSD's programmes are governed by independent committees of senior
               academics and industry leaders.
             </p>
           </Reveal>
@@ -203,7 +203,7 @@ export default function AboutPage() {
           <h2 className="flourish font-display text-3xl font-bold">Corporate Social Responsibility</h2>
           <p className="mt-6 leading-relaxed">
             We believe access to research and skills development should not
-            depend on geography or means. Globalrsd reserves fee-waived conference
+            depend on geography or means. GIRSD reserves fee-waived conference
             places at every event for delegates from lower-income countries,
             offers hardship discounts on all courses, and donates a proportion
             of annual surplus to educational charities working on literacy and

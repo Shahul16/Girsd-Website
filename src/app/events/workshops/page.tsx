@@ -4,7 +4,7 @@ import EventDirectory from "@/components/EventDirectory";
 
 export const metadata: Metadata = {
   title: "Workshops",
-  description: "Practical Globalrsd workshops led by experienced practitioners, with focused learning, certificates and follow-up support.",
+  description: "Practical GIRSD workshops led by experienced practitioners, with focused learning, certificates and follow-up support.",
   alternates: { canonical: "/events/workshops" },
 };
 

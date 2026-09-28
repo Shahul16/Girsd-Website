@@ -3,7 +3,7 @@ import LegalPage from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions",
-  description: "Terms and conditions for the use of globalrsd.co.uk and Globalrsd's events, courses, memberships and awards.",
+  description: "Terms and conditions for the use of globalrsd.co.uk and GIRSD's events, courses, memberships and awards.",
   alternates: { canonical: "/legal/terms" },
 };
 
@@ -15,7 +15,7 @@ export default function TermsPage() {
         This website, globalrsd.co.uk (the &ldquo;Site&rdquo;), is operated by Q TECH
         PRIVATE LTD, a company registered in England and Wales under company
         number 15754767, trading as the Global Institute of Research &amp;
-        Skills Development (&ldquo;Globalrsd&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;). Our registered office is
+        Skills Development (&ldquo;GIRSD&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;). Our registered office is
         23 Kinnaird Avenue, Bromley BR1 4HG, England. You can contact us at
         info@globalrsd.co.uk.
       </p>
@@ -35,7 +35,7 @@ export default function TermsPage() {
         account and keep your credentials confidential. You are responsible
         for all activity under your account. We may suspend or terminate
         accounts that breach these terms, provide false information, or are
-        used in a way that harms Globalrsd, its members or other users.
+        used in a way that harms GIRSD, its members or other users.
       </p>
 
       <h2>4. Events and tickets</h2>
@@ -92,10 +92,10 @@ export default function TermsPage() {
 
       <h2>9. Intellectual property</h2>
       <p>
-        The Site and its content — including the Globalrsd name, crest, course
+        The Site and its content — including the GIRSD name, crest, course
         materials and event proceedings — are protected by intellectual
         property rights owned by or licensed to us. Authors presenting at our
-        events retain copyright in their own work, granting Globalrsd a
+        events retain copyright in their own work, granting GIRSD a
         non-exclusive licence to publish accepted contributions in conference
         proceedings. You may not copy, distribute or commercially exploit Site
         content without our written permission.

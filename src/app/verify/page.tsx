@@ -10,9 +10,9 @@ type Result =
 
 /** Demo verification register. Replace with a database lookup (see README) for production. */
 const DEMO_REGISTER: Record<string, { name: string; award: string; date: string }> = {
-  "Globalrsd-2026-0417": { name: "Aisha Rahman", award: "Certificate in Data Science with Python", date: "12 June 2026" },
-  "Globalrsd-2026-0338": { name: "Thomas Whitfield", award: "Certificate in AI in Cybersecurity", date: "28 May 2026" },
-  "Globalrsd-2025-1204": { name: "Mei-Ling Chen", award: "ICRIET 2025 — Certificate of Presentation", date: "16 October 2025" },
+  "GIRSD-2026-0417": { name: "Aisha Rahman", award: "Certificate in Data Science with Python", date: "12 June 2026" },
+  "GIRSD-2026-0338": { name: "Thomas Whitfield", award: "Certificate in AI in Cybersecurity", date: "28 May 2026" },
+  "GIRSD-2025-1204": { name: "Mei-Ling Chen", award: "ICRIET 2025 — Certificate of Presentation", date: "16 October 2025" },
 };
 
 export default function VerifyPage() {
@@ -38,7 +38,7 @@ export default function VerifyPage() {
       <PageHero
         eyebrow="Trust & Credibility"
         title="Certificate Verification"
-        intro="Every Globalrsd certificate carries a unique verification code. Enter it below to confirm the credential's authenticity instantly."
+        intro="Every GIRSD certificate carries a unique verification code. Enter it below to confirm the credential's authenticity instantly."
       />
       <section className="mx-auto max-w-2xl px-4 py-16">
         <div className="card p-8">
@@ -50,7 +50,7 @@ export default function VerifyPage() {
               <input
                 id="cert-code"
                 className="input font-mono uppercase tracking-widest"
-                placeholder="Globalrsd-2026-0417"
+                placeholder="GIRSD-2026-0417"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 required
@@ -61,7 +61,7 @@ export default function VerifyPage() {
             </div>
             <p className="mt-3 text-xs text-slate-500">
               The code is printed at the foot of your certificate. Demo codes:
-              Globalrsd-2026-0417 · Globalrsd-2026-0338 · Globalrsd-2025-1204
+              GIRSD-2026-0417 · GIRSD-2026-0338 · GIRSD-2025-1204
             </p>
           </form>
 

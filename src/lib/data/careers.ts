@@ -20,10 +20,10 @@ export const openings: JobOpening[] = [
     type: "Internship / Part-time",
     location: "Remote (Worldwide) / Hybrid",
     salary: "Performance-based",
-    package: "Flexible working, free GlobalRSD membership, networking opportunities, referral bonus, selected programme access, and internship certificate",
+    package: "Flexible working, free GIRSD membership, networking opportunities, referral bonus, selected programme access, and internship certificate",
     highlight: "Actively Hiring • Immediate Start",
     summary:
-      "Support GlobalRSD's international events, programmes, marketing, and day-to-day operations while gaining practical multidisciplinary experience and building a global professional network.",
+      "Support GIRSD's international events, programmes, marketing, and day-to-day operations while gaining practical multidisciplinary experience and building a global professional network.",
     responsibilities: [
       "Support events, webinars, workshops, and professional programmes",
       "Assist with marketing, communications, registrations, and coordination",
@@ -136,7 +136,7 @@ export const openings: JobOpening[] = [
     type: "Freelance",
     location: "Remote (Worldwide)",
     salary: "£175 – £300 per delivered session, paid monthly",
-    package: "Flexible scheduling, access to selected Globalrsd programmes and agreed preparation time included in the session fee",
+    package: "Flexible scheduling, access to selected GIRSD programmes and agreed preparation time included in the session fee",
     summary:
       "Deliver live online sessions and assess learner submissions on one of our certified CPD courses — data science, business analysis, cybersecurity, digital marketing or management.",
     responsibilities: [

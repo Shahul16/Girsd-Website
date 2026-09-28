@@ -38,7 +38,7 @@ export default function FeedbackPage() {
       return;
     }
     if (!visitReason.trim()) {
-      setErrorMessage("Please specify why you came to GlobalRSD.co.uk today.");
+      setErrorMessage("Please specify why you came to GIRSD (www.globalrsd.co.uk) today.");
       return;
     }
     if (!taskCompleted) {
@@ -54,7 +54,7 @@ export default function FeedbackPage() {
       return;
     }
     if (!privacyAgreed) {
-      setErrorMessage("You must agree to the GlobalRSD Privacy Policy to submit feedback.");
+      setErrorMessage("You must agree to the GIRSD Privacy Policy to submit feedback.");
       return;
     }
 
@@ -75,7 +75,7 @@ export default function FeedbackPage() {
     formData.append("Task Completed Successfully", taskCompleted);
     formData.append("Experience Rating", experienceRating);
     formData.append("Comments & Suggestions", comments.trim() || "No additional comments provided.");
-    formData.append("Is GlobalRSD Member", isMember);
+    formData.append("Is GIRSD Member", isMember);
     formData.append("Privacy Policy Agreed", "Yes");
     formData.append("Submission Timestamp", new Date().toISOString());
 
@@ -124,7 +124,7 @@ export default function FeedbackPage() {
             Home
           </Link>
           <span className="text-slate-300">/</span>
-          <span className="font-semibold text-navy">GlobalRSD Website Feedback Form</span>
+          <span className="font-semibold text-navy">GIRSD Website Feedback Form</span>
         </nav>
 
         {/* Main Card */}
@@ -140,11 +140,11 @@ export default function FeedbackPage() {
               <span className="text-xs font-bold uppercase tracking-widest text-gold-dark">Quality & Excellence</span>
             </div>
             <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-navy sm:text-4xl">
-              GlobalRSD Website Feedback Form
+              GIRSD Website Feedback Form
             </h1>
             <p className="mt-4 text-base leading-relaxed text-slate-600">
               How was your experience on this website (<strong>www.globalrsd.co.uk</strong>)? Please provide your
-              feedback below to help GlobalRSD create the best experience for all researchers, authors, delegates, and
+              feedback below to help GIRSD create the best experience for all researchers, authors, delegates, and
               students worldwide.
             </p>
             <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/70 p-4 text-xs text-blue-900 sm:text-sm">
@@ -228,7 +228,7 @@ export default function FeedbackPage() {
               {/* Question 1: Account / Membership inquiry */}
               <fieldset className="space-y-3">
                 <legend className="text-sm font-semibold text-navy">
-                  Is your feedback related to an Account, joining GlobalRSD, renewing a membership, login or password issues,
+                  Is your feedback related to an Account, joining GIRSD, renewing a membership, login or password issues,
                   email preferences, subscriptions, conference submissions, or changing your membership status?{" "}
                   <span className="text-red-500">*</span>
                 </legend>
@@ -366,7 +366,7 @@ export default function FeedbackPage() {
               {/* Question 3: Visit reason */}
               <div>
                 <label htmlFor="visitReason" className="block text-sm font-semibold text-navy">
-                  Why did you come to GlobalRSD.co.uk today? <span className="text-red-500">*</span>
+                  Why did you come to GIRSD (www.globalrsd.co.uk) today? <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="visitReason"
@@ -467,7 +467,7 @@ export default function FeedbackPage() {
               {/* Question 7: Member status */}
               <fieldset className="space-y-3">
                 <legend className="text-sm font-semibold text-navy">
-                  Are you a GlobalRSD member? <span className="text-red-500">*</span>
+                  Are you a GIRSD member? <span className="text-red-500">*</span>
                 </legend>
                 <div className="flex flex-wrap gap-6 pt-1">
                   {["Yes", "No", "I don't know"].map((opt) => (
@@ -500,11 +500,11 @@ export default function FeedbackPage() {
                   <span className="text-xs text-slate-600 sm:text-sm">
                     View{" "}
                     <Link href="/legal/privacy" target="_blank" className="font-semibold text-navy underline hover:text-gold-dark">
-                      GlobalRSD Privacy Policy
+                      GIRSD Privacy Policy
                     </Link>
                     . <span className="text-red-500">*</span>
                     <br />
-                    <span className="text-slate-700">I have read and agree to the GlobalRSD Privacy Policy and Data Protection Terms.</span>
+                    <span className="text-slate-700">I have read and agree to the GIRSD Privacy Policy and Data Protection Terms.</span>
                   </span>
                 </label>
               </div>

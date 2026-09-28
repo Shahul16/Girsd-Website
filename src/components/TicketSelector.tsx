@@ -114,7 +114,7 @@ export default function TicketSelector({
             ? `Your ${user!.membership!.tierName} membership discount of 20% will be applied at checkout.`
             : (
               <>
-                Globalrsd members save 20% on every ticket.{" "}
+                GIRSD members save 20% on every ticket.{" "}
                 <Link href="/membership" className="font-semibold underline hover:text-gold-dark">
                   Join from £49/year
                 </Link>

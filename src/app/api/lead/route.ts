@@ -166,7 +166,7 @@ export async function POST(req: NextRequest) {
     to = SITE.email;
   }
 
-  const from = process.env.LEAD_FROM_EMAIL || `Globalrsd <${SITE.leadsEmail}>`;
+  const from = process.env.LEAD_FROM_EMAIL || `GIRSD <${SITE.leadsEmail}>`;
   const contactEmail = to;
   const subject = `[${formName}] ${visitorName || visitorEmail || "New submission"}`;
 

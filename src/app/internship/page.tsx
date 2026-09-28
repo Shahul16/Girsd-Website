@@ -9,7 +9,7 @@ import { IMAGES } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Internships",
   description:
-    "International internships with Globalrsd — real project experience, CPD certification and multi-domain, multi-industry placements for students and recent graduates.",
+    "International internships with GIRSD — real project experience, CPD certification and multi-domain, multi-industry placements for students and recent graduates.",
   alternates: { canonical: "/internship" },
 };
 
@@ -74,7 +74,7 @@ const highlights = [
   },
   {
     title: "CPD-certified on completion",
-    body: `Every completed internship earns a CPD-certified Globalrsd certificate — ${SITE.registrations.cpd.body}.`,
+    body: `Every completed internship earns a CPD-certified GIRSD certificate — ${SITE.registrations.cpd.body}.`,
   },
   {
     title: "Multi-domain, multi-industry",
@@ -171,12 +171,12 @@ export default function InternshipPage() {
             </div>
           </Reveal>
           <Reveal delay={100}>
-            <p className="text-sm font-semibold uppercase tracking-widest text-gold-dark">Why Intern With Globalrsd</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-gold-dark">Why Intern With GIRSD</p>
             <h2 className="mt-2 font-display text-3xl font-bold text-navy">
               Built for real experience, not a certificate mill
             </h2>
             <p className="mt-4 leading-relaxed text-slate-600">
-              Globalrsd interns work alongside the same team that delivers our
+              GIRSD interns work alongside the same team that delivers our
               international conferences, certified courses and global awards —
               not on simulated exercises. You get a named mentor, a real
               project brief, and a CPD-certified certificate that reflects
@@ -265,7 +265,7 @@ export default function InternshipPage() {
               <ul className="space-y-3 text-sm leading-relaxed text-slate-200">
                 <li className="flex gap-2"><span aria-hidden="true" className="text-gold">✓</span> Reference letter on request after completion</li>
                 <li className="flex gap-2"><span aria-hidden="true" className="text-gold">✓</span> Flexible remote, hybrid or on-site placements</li>
-                <li className="flex gap-2"><span aria-hidden="true" className="text-gold">✓</span> 20% membership discount for interns who join Globalrsd</li>
+                <li className="flex gap-2"><span aria-hidden="true" className="text-gold">✓</span> 20% membership discount for interns who join GIRSD</li>
               </ul>
             </Reveal>
           </div>
@@ -285,12 +285,12 @@ export default function InternshipPage() {
           <Reveal>
             <p aria-hidden="true" className="font-display text-5xl leading-none text-gold">&ldquo;</p>
             <p className="mt-2 font-display text-xl font-medium leading-relaxed text-white sm:text-2xl">
-              Interning with Globalrsd put me on real conference and research
+              Interning with GIRSD put me on real conference and research
               projects from week one — the mentorship and the CPD certificate
               opened doors a classroom project never could.
             </p>
             <p className="mt-5 text-sm font-semibold uppercase tracking-widest text-gold-light">
-              Former Globalrsd Intern
+              Former GIRSD Intern
             </p>
           </Reveal>
         </div>
@@ -356,7 +356,7 @@ export default function InternshipPage() {
               </div>
               <Field label="University / current status" id="intern-status" hint="e.g. final-year student, recent graduate" />
               <Field
-                label="Why do you want to intern with Globalrsd?"
+                label="Why do you want to intern with GIRSD?"
                 id="intern-note"
                 as="textarea"
                 rows={5}
@@ -377,7 +377,7 @@ export default function InternshipPage() {
         <Reveal>
           <p className="text-sm text-slate-500">
             Looking for a paid or full-time role instead?{" "}
-            <Link href="/careers" className="font-semibold text-navy underline">View careers at Globalrsd</Link>.
+            <Link href="/careers" className="font-semibold text-navy underline">View careers at GIRSD</Link>.
           </p>
         </Reveal>
       </section>

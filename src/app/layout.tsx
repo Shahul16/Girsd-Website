@@ -14,11 +14,11 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.domain),
   title: {
-    default: "Globalrsd — Global Institute of Research & Skills Development",
-    template: "%s | Globalrsd",
+    default: "GIRSD — Global Institute of Research & Skills Development",
+    template: "%s | GIRSD",
   },
   description:
-    "The Global Institute of Research & Skills Development (Globalrsd) delivers international research conferences, skills workshops, online courses, awards and professional membership. Based in London, serving a growing international community.",
+    "The Global Institute of Research & Skills Development (GIRSD) delivers international research conferences, skills workshops, online courses, awards and professional membership. Based in London, serving a growing international community.",
   keywords: [
     "research conference UK",
     "academic conference London",
@@ -26,20 +26,20 @@ export const metadata: Metadata = {
     "online courses",
     "academic awards",
     "professional membership",
-    "Globalrsd",
+    "GIRSD",
   ],
   openGraph: {
     type: "website",
-    siteName: "Globalrsd",
+    siteName: "GIRSD",
     title: "Global Institute of Research & Skills Development",
     description:
       "International research conferences, skills workshops, online courses, awards and professional membership.",
     url: SITE.domain,
-    images: [{ url: "/og-banner.jpg", width: 1200, height: 630, alt: "Globalrsd research, skills and professional development" }],
+    images: [{ url: "/og-banner.jpg", width: 1200, height: 630, alt: "GIRSD research, skills and professional development" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Globalrsd — Global Institute of Research & Skills Development",
+    title: "GIRSD — Global Institute of Research & Skills Development",
     description: "Research conferences, practical workshops, certified courses, awards and professional membership.",
     images: ["/og-banner.jpg"],
   },

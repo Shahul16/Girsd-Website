@@ -11,7 +11,7 @@ export default function PartnersGrid() {
             Partners &amp; Accreditation
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-slate-600">
-            Globalrsd works with leading universities, journals and industry bodies —
+            GIRSD works with leading universities, journals and industry bodies —
             and is an approved CPD (Continuing Professional Development) provider.
           </p>
         </Reveal>
