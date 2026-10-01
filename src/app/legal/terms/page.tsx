@@ -65,8 +65,8 @@ export default function TermsPage() {
       <h2>6. Membership</h2>
       <p>
         Membership is an annual subscription at the tier prices displayed on
-        the membership page. Benefits, including the 20% conference ticket
-        discount and 10% course discount, apply while the membership remains
+        the membership page. Benefits, including the 10% conference ticket
+        discount and 5% course discount, apply while the membership remains
         active and are not retrospective. Membership renews automatically each
         year unless cancelled before the renewal date; cancellation takes
         effect at the end of the current membership year. Student membership

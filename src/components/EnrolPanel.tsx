@@ -28,7 +28,7 @@ export default function EnrolPanel({
         )}
       </p>
       <p className="mt-1 text-sm text-slate-500">
-        {isMember ? "10% member discount applied" : `Members pay £${memberPrice} (10% off)`}
+        {isMember ? "5% member discount applied" : `Members pay £${memberPrice} (5% off)`}
       </p>
 
       {!ready ? null : enrolled ? (

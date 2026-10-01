@@ -35,12 +35,16 @@ export type Membership = {
   price: number;
   since: string;
   renewsAt: string;
+  status: string;
+  membershipId?: string;
 };
 
 export type User = {
   name: string;
   email: string;
   membership: Membership | null;
+  membershipStatus?: string; // "ACTIVE_MEMBER" | "UNDER_REVIEW" | "VERIFICATION_REQUIRED" | "PAYMENT_COMPLETED"
+  membershipApplicationId?: string;
   tickets: Ticket[];
   enrolments: Enrolment[];
 };
@@ -111,12 +115,14 @@ function deriveFromOrders(rows: OrderRow[]): Pick<User, "membership" | "tickets"
     ) {
       const renews = new Date(r.created_at);
       renews.setFullYear(renews.getFullYear() + 1);
+      // Financial record only — core rule: payment does NOT grant active member benefits
       membership = {
         tierId: r.slug ?? "",
         tierName: r.tier ?? r.title,
         price: Math.round(r.amount / 100),
         since: r.created_at,
         renewsAt: renews.toISOString(),
+        status: "PAYMENT_COMPLETED",
       };
     }
   }
@@ -134,13 +140,76 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sessionData } = await sb.auth.getSession();
     const session = sessionData.session;
     if (!session) return;
-    const { data, error } = await sb
+
+    // 1. Load orders (tickets & courses)
+    const { data: ordersData, error: ordersError } = await sb
       .from("orders")
       .select("id, kind, title, slug, tier, quantity, amount, created_at, cancelled_at")
       .order("created_at", { ascending: false });
-    if (!error && data) {
-      const derived = deriveFromOrders(data as OrderRow[]);
-      setUser((prev) => (prev ? { ...prev, ...derived } : prev));
+
+    // 2. Load membership application verification status
+    let appStatus: string | undefined = undefined;
+    let appId: string | undefined = undefined;
+    let approvedMembership: Membership | null = null;
+
+    try {
+      const { data: appData } = await sb
+        .from("membership_applications")
+        .select("id, status, tier_id, tier_name, annual_fee, membership_id, valid_from, valid_until, created_at")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (appData) {
+        appStatus = appData.status;
+        appId = appData.id;
+        const isApproved =
+          (appData.status === "ACTIVE_MEMBER" || appData.status === "APPROVED" || appData.status === "Active") &&
+          (!appData.valid_until || new Date(appData.valid_until) > new Date());
+
+        if (isApproved) {
+          const renews = appData.valid_until || new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
+          approvedMembership = {
+            tierId: appData.tier_id,
+            tierName: appData.tier_name,
+            price: appData.annual_fee || 49,
+            since: appData.valid_from || appData.created_at,
+            renewsAt: renews,
+            status: "ACTIVE_MEMBER",
+            membershipId: appData.membership_id || appId,
+          };
+        }
+      }
+    } catch {
+      /* Table might not exist yet in local development */
+    }
+
+    if (!ordersError && ordersData) {
+      const derived = deriveFromOrders(ordersData as OrderRow[]);
+      // Active membership is strictly gated: only explicit board approval grants active membership benefits.
+      const finalMembership = approvedMembership !== null ? approvedMembership : null;
+      const hasPaidMembership = Boolean(derived.membership);
+      const effectiveStatus =
+        appStatus ||
+        (approvedMembership
+          ? "ACTIVE_MEMBER"
+          : hasPaidMembership
+          ? "PAYMENT_COMPLETED"
+          : undefined);
+
+      setUser((prev) =>
+        prev
+          ? {
+              ...prev,
+              tickets: derived.tickets,
+              enrolments: derived.enrolments,
+              membership: finalMembership,
+              membershipStatus: effectiveStatus,
+              membershipApplicationId: appId,
+            }
+          : prev
+      );
     }
   }, []);
 

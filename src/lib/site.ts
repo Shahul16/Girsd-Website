@@ -65,8 +65,8 @@ export const SITE = {
     countries: "50+",
     papers: "1,200+",
   },
-  memberDiscount: 0.2,
-  courseMemberDiscount: 0.1,
+  memberDiscount: 0.1,
+  courseMemberDiscount: 0.05,
   registrationPricing: {
     earlyBirdDiscount: 0.15,
     lateFeeSurcharge: 0.15,

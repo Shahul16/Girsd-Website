@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 /**
  * Creates a real Stripe Checkout Session. Prices are computed SERVER-SIDE
  * from the site's data files (never trusted from the client), and the member
- * discount (20% tickets / 10% courses) is verified against the orders table.
+ * discount (10% tickets / 5% courses) is verified against the orders table.
  *
  * Env (Railway → Variables): STRIPE_SECRET_KEY (+ Supabase vars for auth).
  */
@@ -110,6 +110,7 @@ export async function POST(req: NextRequest) {
         tier: tierName,
         quantity: String(qty),
         title,
+        application_id: typeof body.application_id === "string" ? body.application_id : "",
       },
       success_url: `${origin}/checkout/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${returnTo}`,

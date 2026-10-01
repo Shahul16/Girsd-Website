@@ -19,8 +19,8 @@ function Cross() {
 }
 
 const ROWS: [string, boolean, boolean, boolean][] = [
-  ["20% discount on all conference tickets", true, true, true],
-  ["10% discount on online courses", true, true, true],
+  ["10% discount on all conference tickets", true, true, true],
+  ["5% discount on online courses", true, true, true],
   ["Members-only quarterly briefings", true, true, true],
   ["Member community forum", true, true, true],
   ["Digital membership certificate", true, true, true],

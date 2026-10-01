@@ -80,8 +80,19 @@ function ConfirmationInner() {
               <dd>£{order.total}</dd>
             </div>
           </dl>
+          {order.title.toLowerCase().includes("membership") && (
+            <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-50/80 p-4 text-left text-xs leading-relaxed text-amber-950">
+              <p className="font-bold text-navy flex items-center gap-1.5">
+                <span>🛡️</span>
+                <span>Verification Gate Notice:</span>
+              </p>
+              <p className="mt-1 text-slate-700">
+                Payment confirmation received. In accordance with GIRSD Academic Governance regulations, payment does <strong>not</strong> automatically activate membership perks. Your eligibility credentials are under review by the Academic Board (2–3 working days). Member discounts and digital credentials unlock upon administrative approval.
+              </p>
+            </div>
+          )}
           <p className="mt-4 text-xs text-slate-400">
-            Your order will appear on your dashboard within a minute.
+            Your transaction record will appear on your dashboard within a minute.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href="/dashboard" className="btn-gold">Go to my dashboard</Link>

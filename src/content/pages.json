@@ -16,7 +16,7 @@
   "membership": {
     "eyebrow": "GIRSD Membership",
     "title": "Join a Distinguished Worldwide Academic Community",
-    "intro": "Connect with scholars, educators and professionals across 50+ countries. Enjoy 20% savings on every conference ticket and course, post-nominal designations, and exclusive mentorship opportunities.",
+    "intro": "Connect with scholars, educators and professionals across 50+ countries. Enjoy 10% savings on conference tickets and 5% on courses, post-nominal designations, and exclusive mentorship opportunities.",
     "tiers": [
       {
         "id": "fellow",
@@ -26,7 +26,7 @@
         "description": "For senior academics, professors, researchers with 10+ years experience, and institutional leaders.",
         "perks": [
           "Post-nominal letters FGIRSD",
-          "20% discount on all conferences and courses",
+          "10% discount on conferences and 5% on courses",
           "Eligibility to chair conference sessions",
           "Direct research mentorship opportunities",
           "Exclusive quarterly research briefings"
@@ -40,7 +40,7 @@
         "description": "For practicing researchers, lecturers, and industry professionals.",
         "perks": [
           "Post-nominal letters MGIRSD",
-          "20% discount on all events & masterclasses",
+          "10% discount on all events & masterclasses",
           "Free certificate verification",
           "Directory profile listing"
         ]
@@ -52,7 +52,7 @@
         "period": "annual",
         "description": "For doctoral candidates, master's students, and researchers within 3 years of qualification.",
         "perks": [
-          "20% discount on conferences and workshops",
+          "10% discount on conferences and workshops",
           "Career mentorship access",
           "CPD accredited certificate pathways"
         ]

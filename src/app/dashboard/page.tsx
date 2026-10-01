@@ -709,7 +709,7 @@ export default function DashboardPage() {
                       {m ? m.tierName : "Registered Member"}
                     </p>
                     <button onClick={() => setActiveTab("membership")} className="mt-2 text-xs font-semibold text-navy hover:text-gold transition">
-                      {m ? "View Member Pass →" : "Upgrade to 20% Off →"}
+                      {m ? "View Member Pass →" : "Upgrade to 10% Off →"}
                     </button>
                   </div>
                 </div>
@@ -1289,7 +1289,7 @@ export default function DashboardPage() {
                         </dl>
 
                         <div className="rounded-xl bg-gold/10 p-3 text-xs text-navy leading-relaxed">
-                          ✨ <strong>Active Member Perk:</strong> 20% discount on conference passes and 10% on certified CPD courses is automatically deducted at checkout.
+                          ✨ <strong>Active Member Perk:</strong> 10% discount on conference passes and 5% on certified CPD courses is automatically deducted at checkout.
                         </div>
 
                         <div className="flex gap-3 pt-2">
@@ -1304,10 +1304,32 @@ export default function DashboardPage() {
                           </button>
                         </div>
                       </div>
+                    ) : user.membershipStatus && user.membershipStatus !== "ACTIVE_MEMBER" ? (
+                      <div className="mt-4 space-y-4 rounded-xl border border-amber-500/30 bg-amber-50/60 p-5">
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex rounded-full bg-amber-200 px-3 py-1 text-xs font-bold text-amber-900 uppercase tracking-wider">
+                            Status: {user.membershipStatus.replace(/_/g, " ")}
+                          </span>
+                          {user.membershipApplicationId && (
+                            <span className="font-mono text-xs font-semibold text-slate-500">
+                              Ref: {user.membershipApplicationId}
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="font-display text-sm font-bold text-navy">
+                          Membership Verification Under Board Review
+                        </h4>
+                        <p className="text-xs leading-relaxed text-slate-600">
+                          Your membership application and credentials are currently being processed by the GIRSD Academic &amp; Credentials Board. In accordance with institutional governance, member discounts and credentials activate upon board approval.
+                        </p>
+                        <div className="flex items-center gap-2 pt-2 border-t border-amber-200/60 text-xs text-amber-800">
+                          <span className="font-semibold">Review timeline:</span> 2–3 working days from document submission.
+                        </div>
+                      </div>
                     ) : (
                       <div className="mt-4 space-y-4">
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          You do not currently have an active membership. Upgrading unlocks 20% off all international conferences, preferential review, and certified CPD recognition.
+                          You do not currently have an active membership. Upgrading unlocks 10% off all international conferences, preferential review, and certified CPD recognition.
                         </p>
                         <Link href="/membership" className="btn-gold inline-block text-xs py-2 px-4">
                           Explore Membership →
@@ -1318,18 +1340,44 @@ export default function DashboardPage() {
 
                   {/* DIGITAL CREDENTIAL CARD */}
                   <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-xs">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gold">Official Credential</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gold">Official Credential</p>
+                      <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold ${
+                        m ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40" : "bg-slate-800 text-slate-400"
+                      }`}>
+                        {m ? "ACTIVE CREDENTIAL" : "LOCKED · AWAITING APPROVAL"}
+                      </span>
+                    </div>
                     <h3 className="mt-2 font-display text-lg font-bold">Global Institute of Research &amp; Skills Development</h3>
                     <p className="text-xs text-slate-400 mt-0.5">London, United Kingdom · CPD Provider #788000</p>
                     
-                    <div className="mt-6 rounded-xl bg-white/10 p-4 border border-white/10">
-                      <p className="text-[10px] text-slate-400 uppercase tracking-wider">Candidate / Scholar</p>
-                      <p className="font-display text-base font-bold text-white">{user.name}</p>
-                      <div className="mt-3 flex justify-between text-xs text-slate-300 font-mono">
-                        <span>ID: {candidateId}</span>
-                        <span>STATUS: {m ? "ACTIVE" : "VERIFIED"}</span>
+                    <div className="mt-5 rounded-xl bg-white/10 p-4 border border-white/10">
+                      <p className="text-[10px] text-slate-400 uppercase tracking-wider">
+                        {m ? `${m.tierName} Fellow / Member` : "Candidate / Registrant"}
+                      </p>
+                      <p className="font-display text-base font-bold text-white mt-0.5">{user.name}</p>
+                      <div className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-slate-300 font-mono border-t border-white/10 pt-2">
+                        <span>ID: {m?.membershipId || user.membershipApplicationId || candidateId}</span>
+                        <span className={m ? "text-emerald-400 font-bold" : "text-amber-400"}>
+                          STATUS: {m ? "ACTIVE MEMBER" : user.membershipStatus ? user.membershipStatus.replace(/_/g, " ") : "NON-MEMBER"}
+                        </span>
                       </div>
                     </div>
+                    {m ? (
+                      <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
+                        <span className="text-slate-400">Public registry check:</span>
+                        <Link
+                          href={`/verify-membership?id=${m.membershipId || candidateId}`}
+                          className="font-semibold text-gold hover:underline"
+                        >
+                          Verify Credential →
+                        </Link>
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-[11px] text-slate-400 italic">
+                        Digital credentials and member verification are unlocked only upon administrative board approval.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

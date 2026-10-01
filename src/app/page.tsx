@@ -146,8 +146,8 @@ export default function HomePage() {
             Join a Global Community of Researchers & Professionals
           </h2>
           <p className="mt-4 text-lg text-slate-300">
-            Members enjoy a 20% discount on every conference ticket, course
-            discounts, mentoring and more — from just £49 a year.
+            Members enjoy a 10% discount on every conference ticket, 5% on online
+            courses, mentoring and more — from just £49 a year.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link href="/membership" className="btn-gold">Explore Membership</Link>

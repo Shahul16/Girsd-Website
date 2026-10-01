@@ -14,8 +14,8 @@ export const membershipTiers: MembershipTier[] = [
     price: 49,
     audience: "Undergraduate and postgraduate students with valid enrolment",
     benefits: [
-      "20% discount on all conference tickets",
-      "10% discount on online courses",
+      "10% discount on all conference tickets",
+      "5% discount on online courses",
       "Digital membership certificate",
       "Members-only quarterly briefings",
       "Access to member community forum",
@@ -28,8 +28,8 @@ export const membershipTiers: MembershipTier[] = [
     audience: "Lecturers, researchers and academic professionals",
     featured: true,
     benefits: [
-      "20% discount on all conference tickets",
-      "10% discount on online courses",
+      "10% discount on all conference tickets",
+      "5% discount on online courses",
       "Priority paper review scheduling",
       "Cross-sector mentoring scheme",
       "Eligibility for committee service",
@@ -43,8 +43,8 @@ export const membershipTiers: MembershipTier[] = [
     price: 249,
     audience: "Industry professionals, consultants and organisational representatives",
     benefits: [
-      "20% discount on all conference tickets",
-      "10% discount on online courses",
+      "10% discount on all conference tickets",
+      "5% discount on online courses",
       "Two delegate passes to one workshop per year",
       "Cross-sector mentoring scheme (mentor or mentee)",
       "Industry panel speaking opportunities",

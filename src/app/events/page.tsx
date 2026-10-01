@@ -42,7 +42,7 @@ export default function EventsPage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-2 lg:items-center">
           <Reveal>
             <h2 id="event-support-heading" className="font-display text-3xl font-bold text-white">Planning your participation?</h2>
-            <p className="mt-4 max-w-2xl leading-relaxed text-slate-300">Members receive 20% off conference tickets. Presenters can review submission guidance on the relevant conference page, while organisations can explore partnership and exhibition opportunities.</p>
+            <p className="mt-4 max-w-2xl leading-relaxed text-slate-300">Members receive 10% off conference tickets. Presenters can review submission guidance on the relevant conference page, while organisations can explore partnership and exhibition opportunities.</p>
           </Reveal>
           <Reveal delay={120} className="flex flex-wrap gap-3 lg:justify-end">
             <a href="/membership" className="btn-gold">Explore membership</a>

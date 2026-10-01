@@ -5,6 +5,7 @@ import Reveal from "@/components/Reveal";
 import { membershipTiers } from "@/lib/data/memberships";
 import { committees } from "@/lib/data/people";
 import { DemoForm, Field } from "@/components/forms";
+import MembershipTiersSection from "@/components/MembershipTiersSection";
 
 export const metadata: Metadata = {
   title: "Membership",
@@ -16,8 +17,8 @@ export const metadata: Metadata = {
 const committeeOptions = committees.map((committee) => committee.name);
 
 const comparisonRows = [
-  ["20% discount on conference tickets", true, true, true],
-  ["10% discount on online courses", true, true, true],
+  ["10% discount on all conference tickets", true, true, true],
+  ["5% discount on online courses", true, true, true],
   ["Members-only quarterly briefings", true, true, true],
   ["Member community forum", true, true, true],
   ["Digital membership certificate", true, true, true],
@@ -45,37 +46,7 @@ export default function MembershipPage() {
         intro="Join a growing international community of researchers, educators, students and industry professionals. Start with the tier that matches your current role and make more of every GIRSD opportunity."
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-16" aria-labelledby="tiers-heading">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <h2 id="tiers-heading" className="flourish font-display text-3xl font-bold">Membership options</h2>
-          <p className="mt-4 leading-relaxed text-slate-600">
-            Every tier includes a digital membership certificate, member pricing and access to the GIRSD community. Choose the pathway that best reflects your work today.
-          </p>
-        </Reveal>
-        <div className="mt-10 grid gap-8 lg:grid-cols-3">
-          {membershipTiers.map((tier, i) => (
-            <Reveal key={tier.id} delay={i * 100}>
-              <article className={`card relative flex h-full flex-col p-8 ${tier.featured ? "border-2 border-gold shadow-lg" : ""}`}>
-                {tier.featured && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gold px-4 py-1 text-xs font-bold uppercase tracking-wide text-navy">Most popular</span>
-                )}
-                <h3 className="font-display text-2xl font-bold">{tier.name}</h3>
-                <p className="mt-1 text-sm text-slate-500">{tier.audience}</p>
-                <p className="mt-5 font-display text-5xl font-bold text-navy">£{tier.price}<span className="text-base font-normal text-slate-500"> /year</span></p>
-                <ul className="mt-6 flex-1 space-y-2.5 text-sm text-slate-600">
-                  {tier.benefits.map((benefit) => (
-                    <li key={benefit} className="flex gap-2"><span aria-hidden="true" className="mt-0.5 text-gold-dark">✓</span><span>{benefit}</span></li>
-                  ))}
-                </ul>
-                <Link href={`/checkout?type=membership&tier=${tier.id}`} className={`${tier.featured ? "btn-gold" : "btn-navy"} mt-8 w-full`}>Join {tier.name}</Link>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-        <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-slate-500">
-          Membership renews annually as a subscription and can be cancelled at any time from your dashboard. Discounts apply while your membership is active.
-        </p>
-      </section>
+      <MembershipTiersSection />
 
       <section className="bg-cream py-16" aria-labelledby="benefits-heading">
         <div className="mx-auto max-w-7xl px-4">

@@ -33,7 +33,7 @@ The platform is engineered for a small operations team: a single hosted service,
 - **Legal suite** — Terms, Privacy (UK GDPR), Refund & Cancellation, Data Protection
 
 ### Commerce & member services
-- **Stripe Checkout** for tickets, courses and memberships — PCI handled entirely by Stripe; prices computed server-side; automatic member discounts (30% conferences / 15% courses) verified against the database
+- **Stripe Checkout** for tickets, courses and memberships — PCI handled entirely by Stripe; prices computed server-side; automatic member discounts (10% conferences / 5% courses) verified against the database
 - **Order ledger** written by Stripe webhook into PostgreSQL; surfaced live on the member dashboard
 - **Member accounts** — email/password plus Google, Microsoft and Apple single sign-on (Supabase Auth); password reset by secure email link
 - **Member dashboard** — profile, tickets, enrolments, membership status, renewal and cancellation

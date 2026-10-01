@@ -66,6 +66,49 @@ export async function POST(req: NextRequest) {
         // Return 500 so Stripe retries the webhook
         return NextResponse.json({ error: "Could not record order." }, { status: 500 });
       }
+
+      // If this is a membership payment, update the application record to PAYMENT_COMPLETED / UNDER_REVIEW
+      // CRITICAL RULE: Payment does NOT activate membership benefits automatically.
+      if (m.kind === "membership") {
+        try {
+          const appId = m.application_id;
+          let targetQuery = admin.from("membership_applications");
+
+          let appRecord: any = null;
+          if (appId) {
+            const { data } = await admin.from("membership_applications").select("*").eq("id", appId).maybeSingle();
+            appRecord = data;
+          } else if (m.user_id) {
+            const { data } = await admin.from("membership_applications").select("*").eq("user_id", m.user_id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+            appRecord = data;
+          }
+
+          if (appRecord) {
+            const currentAudit = Array.isArray(appRecord.audit_log) ? appRecord.audit_log : [];
+            const newAudit = [
+              ...currentAudit,
+              {
+                timestamp: new Date().toISOString(),
+                actor: "stripe_webhook",
+                action: "PAYMENT_COMPLETED",
+                reason: `Stripe session ${session.id} confirmed (£${((session.amount_total ?? 0) / 100).toFixed(2)})`,
+                fromStatus: appRecord.status,
+                toStatus: "UNDER_REVIEW",
+              },
+            ];
+
+            await admin.from("membership_applications").update({
+              payment_status: "paid",
+              stripe_session_id: session.id,
+              status: "UNDER_REVIEW",
+              audit_log: newAudit,
+              updated_at: new Date().toISOString(),
+            }).eq("id", appRecord.id);
+          }
+        } catch (memErr) {
+          console.error("Error updating membership application status from webhook:", memErr);
+        }
+      }
     }
   }
 

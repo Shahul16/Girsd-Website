@@ -18,7 +18,7 @@ export default function CoursesPage() {
       <PageHero
         eyebrow="Online Courses"
         title="Certified Courses, Real Tutors"
-        intro="Every GIRSD course is tutor-supported, assessed, and certified. Enrol online — members save 10% on all course fees."
+        intro="Every GIRSD course is tutor-supported, assessed, and certified. Enrol online — members save 5% on all course fees."
       />
       <section className="mx-auto max-w-7xl px-4 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

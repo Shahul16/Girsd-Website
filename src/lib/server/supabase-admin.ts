@@ -27,19 +27,30 @@ export async function getUserFromRequest(req: Request): Promise<User | null> {
   return data.user;
 }
 
-/** True when the user holds an active (paid, uncancelled, <1yr old) membership. */
+/**
+ * True ONLY when the user holds an explicitly APPROVED / ACTIVE membership.
+ * Core rule: Merely registering or paying does NOT grant active member benefits.
+ */
 export async function hasActiveMembership(userId: string): Promise<boolean> {
   const admin = getAdminClient();
   if (!admin) return false;
-  const yearAgo = new Date();
-  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
-  const { data, error } = await admin
-    .from("orders")
-    .select("id")
+
+  const nowIso = new Date().toISOString();
+
+  // 1. Check membership_applications for approved / active status
+  const { data: appData, error: appError } = await admin
+    .from("membership_applications")
+    .select("id, status, valid_until")
     .eq("user_id", userId)
-    .eq("kind", "membership")
-    .is("cancelled_at", null)
-    .gte("created_at", yearAgo.toISOString())
+    .in("status", ["APPROVED", "ACTIVE_MEMBER", "Active"])
     .limit(1);
-  return !error && Boolean(data && data.length > 0);
+
+  if (!appError && appData && appData.length > 0) {
+    const app = appData[0];
+    if (!app.valid_until || new Date(app.valid_until) > new Date()) {
+      return true;
+    }
+  }
+
+  return false;
 }

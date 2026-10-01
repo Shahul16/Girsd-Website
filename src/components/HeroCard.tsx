@@ -162,7 +162,7 @@ export default function HeroCard({ slide, upcomingEvent }: HeroCardProps) {
         <div className="mt-5 space-y-2.5">
           <div className="flex items-center justify-between rounded-lg border border-gold/30 bg-gold/10 p-3">
             <span className="text-xs font-bold text-white">Exclusive Member Discount</span>
-            <span className="rounded bg-gold px-2 py-0.5 text-xs font-bold text-navy">20% OFF</span>
+            <span className="rounded bg-gold px-2 py-0.5 text-xs font-bold text-navy">10% OFF</span>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-xs text-slate-300 space-y-1.5">
             <p className="flex items-center gap-2 text-white font-medium">

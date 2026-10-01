@@ -86,26 +86,24 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-5xl gap-8 px-4 md:grid-cols-2">
           <Reveal>
             <div className="card h-full border-t-4 border-t-gold p-8">
-              <h2 className="font-display text-2xl font-bold">Our Goal</h2>
-              <p className="mt-4 leading-relaxed">
-                To inspire and empower scholars from all walks of life to
-                explore meaningful research across a wide range of disciplines.
-                Whether you are deep into your academic journey or just
-                starting out, we support your curiosity, your growth and your
-                impact — and all accepted papers are published through
-                respected academic presses and journals, giving your work the
-                visibility and recognition it deserves.
+              <h2 className="font-display text-2xl font-bold">Our Institutional Purpose</h2>
+              <p className="mt-4 leading-relaxed text-slate-600">
+                To support researchers, educators, and postgraduate scholars across multidisciplinary
+                fields through structured peer-reviewed conferences, accredited continuing professional
+                development, and scholarly proceedings. GIRSD provides an international forum where
+                accepted research papers undergo rigorous editorial review, offering authors formal
+                citation records and academic visibility.
               </p>
             </div>
           </Reveal>
           <Reveal delay={120}>
             <div className="card h-full border-t-4 border-t-navy p-8">
-              <h2 className="font-display text-2xl font-bold">Our Methods &amp; Results</h2>
-              <ul className="mt-4 space-y-3 leading-relaxed">
-                <li>Quality, accessible educational experiences that connect and empower the global academic community.</li>
-                <li>Bridging countries and institutions to create meaningful opportunities for collaboration, learning and growth.</li>
-                <li>International academic events and tours, carefully crafted for quality, satisfaction and efficiency.</li>
-                <li>Investment in relevant institutes and partnerships that support higher education.</li>
+              <h2 className="font-display text-2xl font-bold">Academic Standards &amp; Delivery</h2>
+              <ul className="mt-4 space-y-3 leading-relaxed text-slate-600">
+                <li>Organising multidisciplinary conferences and symposiums benchmarked to UK continuing professional development criteria.</li>
+                <li>Facilitating international research dissemination and peer dialogue across technology, health, and management sciences.</li>
+                <li>Issuing verified, CPD-accredited credentials and certificate records with online authenticity verification.</li>
+                <li>Supporting early-career researchers and international delegates with publication assistance and symposium presentation pathways.</li>
               </ul>
             </div>
           </Reveal>

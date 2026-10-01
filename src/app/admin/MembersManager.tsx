@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import AdminVerificationQueue from "@/components/AdminVerificationQueue";
 
 type Member = {
   id: string;
@@ -11,13 +12,15 @@ type Member = {
   institution?: string;
   title?: string;
   tier: string;
-  status: "Active" | "Pending Verification" | "Expired" | "Suspended";
+  status: "Active" | "Pending Verification" | "Expired" | "Suspended" | "Rejected";
   since: string;
   renewsAt?: string;
   annualFee: number;
   paymentStatus: string;
   cvAttached: boolean;
   cvFileName?: string;
+  proofType?: string;
+  proofFileName?: string;
   profileCompletion?: number;
   disciplines?: string[];
   eventsRegistered?: string[];
@@ -37,6 +40,7 @@ export default function MembersManager({ members, onSave, saving }: MembersManag
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [tierFilter, setTierFilter] = useState<string>("All");
+  const [activeSection, setActiveSection] = useState<"verification" | "roster">("verification");
 
   // Modals
   const [viewMember, setViewMember] = useState<Member | null>(null);
@@ -92,6 +96,27 @@ export default function MembersManager({ members, onSave, saving }: MembersManag
   const fellowsCount = data.filter((m) => m.tier.includes("Fellow")).length;
   const cvCount = data.filter((m) => m.cvAttached).length;
   const totalRevenue = data.reduce((acc, m) => acc + (m.annualFee || 0), 0);
+
+  function handleQuickStatusChange(memberId: string, newStatus: Member["status"], reason?: string) {
+    const updated = data.map((m) => {
+      if (m.id === memberId) {
+        const now = new Date().toISOString().split("T")[0];
+        const renews = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString().split("T")[0];
+        return {
+          ...m,
+          status: newStatus,
+          renewsAt: newStatus === "Active" ? renews : m.renewsAt,
+          notes: reason ? `${m.notes ? m.notes + " | " : ""}[${now}] Decision: ${newStatus} (${reason})` : m.notes,
+        };
+      }
+      return m;
+    });
+    setData(updated);
+    onSave(updated);
+    if (viewMember && viewMember.id === memberId) {
+      setViewMember(updated.find((m) => m.id === memberId) || null);
+    }
+  }
 
   // Handlers
   function handleAddMember(e: React.FormEvent) {
@@ -234,7 +259,37 @@ export default function MembersManager({ members, onSave, saving }: MembersManag
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* Primary Sub-Navigation Switcher */}
+      <div className="flex border-b border-white/10 gap-2">
+        <button
+          type="button"
+          onClick={() => setActiveSection("verification")}
+          className={`flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition ${
+            activeSection === "verification"
+              ? "border-gold text-gold bg-gold/10 rounded-t-lg"
+              : "border-transparent text-slate-400 hover:text-white"
+          }`}
+        >
+          <span>🛡️ Membership Verification Queue</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveSection("roster")}
+          className={`flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition ${
+            activeSection === "roster"
+              ? "border-gold text-gold bg-gold/10 rounded-t-lg"
+              : "border-transparent text-slate-400 hover:text-white"
+          }`}
+        >
+          <span>👥 Members Directory &amp; Roster ({totalCount})</span>
+        </button>
+      </div>
+
+      {activeSection === "verification" ? (
+        <AdminVerificationQueue />
+      ) : (
+        <>
+          {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
           <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Users &amp; Candidates</p>
@@ -557,24 +612,66 @@ export default function MembersManager({ members, onSave, saving }: MembersManag
               )}
             </div>
 
-            <div className="mt-6 flex justify-end gap-3 border-t border-white/10 pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setEditMember(viewMember);
-                  setViewMember(null);
-                }}
-                className="rounded-lg bg-navy px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition"
-              >
-                Edit Member Record
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMember(null)}
-                className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
-              >
-                Close
-              </button>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <div className="flex flex-wrap items-center gap-2">
+                {viewMember.status !== "Active" ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange(viewMember.id, "Active", "Board approved eligibility verification")}
+                      disabled={saving}
+                      className="rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition shadow-xs"
+                    >
+                      ✓ Approve &amp; Activate
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange(viewMember.id, "Pending Verification", "Requested additional institutional evidence")}
+                      disabled={saving}
+                      className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500/20"
+                    >
+                      Request Proof
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange(viewMember.id, "Rejected", "Ineligible credentials or unverifiable institution")}
+                      disabled={saving}
+                      className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/20"
+                    >
+                      ✕ Reject
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleQuickStatusChange(viewMember.id, "Suspended", "Administrative suspension pending review")}
+                    disabled={saving}
+                    className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/20"
+                  >
+                    Suspend Membership
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditMember(viewMember);
+                    setViewMember(null);
+                  }}
+                  className="rounded-lg bg-navy px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition"
+                >
+                  Edit Record
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMember(null)}
+                  className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -857,6 +954,8 @@ export default function MembersManager({ members, onSave, saving }: MembersManag
             </form>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

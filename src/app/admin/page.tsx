@@ -869,7 +869,7 @@ export default function AdminPage() {
                         <option value="conference">Conference (Countdown + Crest)</option>
                         <option value="course">Online Courses (CPD Accredited)</option>
                         <option value="award">Global Awards (Trophy & Honours)</option>
-                        <option value="membership">Membership (20% Discount & Network)</option>
+                        <option value="membership">Membership (10% Discount & Network)</option>
                         <option value="workshop">Workshops (Masterclasses)</option>
                         <option value="partnership">Partnerships & Internships (MOUs)</option>
                       </select>

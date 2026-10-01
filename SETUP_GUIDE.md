@@ -99,7 +99,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 - **Forms** → real: POST `/api/lead` → Resend email with attachments, honeypot anti-spam.
 - **Auth** → real Supabase: email/password + Google/Microsoft/Apple OAuth, sessions persist across devices. `src/lib/auth.tsx` rewritten; localStorage demo removed.
-- **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). Prices recomputed **server-side**; member discounts (20% tickets / 10% courses) verified against the database, not the browser.
+- **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). Prices recomputed **server-side**; member discounts (10% tickets / 5% courses) verified against the database, not the browser.
 - **Orders** → recorded by the Stripe webhook into Supabase; dashboard reads them live. Membership cancel now updates the database.
 - **Certificate verification** → reads the Supabase `certificates` table (add rows in Table Editor); sample data only as fallback.
 - Removed every "demo mode / not transmitted / test mode" notice from the UI.
