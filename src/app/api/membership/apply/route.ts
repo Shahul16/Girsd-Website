@@ -40,9 +40,11 @@ export async function POST(req: NextRequest) {
       department,
       roleTitle,
       tierId,
+      verificationMethod,
       proofType,
       documentFileName,
       documentFileUrl,
+      emailVerified,
     } = body;
 
     // 2. Strict Input Validation & Length Limits
@@ -78,23 +80,30 @@ export async function POST(req: NextRequest) {
     const classification = classifyEmailDomain(cleanEmail);
     const applicationId = generateApplicationId();
 
+    const isDomainVerified = Boolean(emailVerified) || verificationMethod === "domain";
+    const isUniversityProof = verificationMethod === "university" || classification.requiresDocumentProof;
+
     // Determine initial lifecycle state:
-    // If personal email and no document uploaded yet: VERIFICATION_REQUIRED
-    // If personal email and document uploaded: UNDER_REVIEW
-    // If institutional email: UNDER_REVIEW
+    // If university proof selected and no document uploaded yet: VERIFICATION_REQUIRED
+    // If university proof selected and document uploaded: UNDER_REVIEW
+    // If domain verification confirmed: UNDER_REVIEW
     let initialStatus: MembershipStatus = "UNDER_REVIEW";
-    if (classification.requiresDocumentProof && !documentFileUrl) {
+    if (isUniversityProof && !documentFileName && !documentFileUrl) {
       initialStatus = "VERIFICATION_REQUIRED";
     }
+
+    const reasonDesc = verificationMethod === "domain"
+      ? "Applicant completed institutional domain verification via one-time code."
+      : isUniversityProof
+      ? "Applicant applied via University Verification (academic proof document required/submitted)."
+      : "Applicant applied using institutional credentials.";
 
     const initialAudit = [
       {
         timestamp: new Date().toISOString(),
         actor: user ? user.email || user.id : cleanEmail,
         action: "APPLICATION_SUBMITTED",
-        reason: classification.requiresDocumentProof
-          ? "Applicant applied using personal email domain; academic/institutional documentation required."
-          : "Applicant applied using verified institutional/academic domain.",
+        reason: reasonDesc,
         fromStatus: "REGISTERED" as MembershipStatus,
         toStatus: initialStatus,
       },
@@ -107,7 +116,7 @@ export async function POST(req: NextRequest) {
       applicant_name: cleanName,
       email: cleanEmail,
       email_type: classification.type,
-      email_verified: !classification.requiresDocumentProof,
+      email_verified: isDomainVerified || !classification.requiresDocumentProof,
       phone: phone ? String(phone).trim().slice(0, 30) : null,
       institution: cleanInstitution,
       department: department ? String(department).trim().slice(0, 100) : null,
@@ -115,7 +124,7 @@ export async function POST(req: NextRequest) {
       tier_id: tier.id,
       tier_name: tier.name,
       annual_fee: tier.price,
-      proof_type: (proofType as ProofType) || (classification.requiresDocumentProof ? "other" : null),
+      proof_type: (proofType as ProofType) || (verificationMethod === "domain" ? "employment_confirmation" : "student_id"),
       document_filename: documentFileName ? String(documentFileName).slice(0, 200) : null,
       document_file_url: documentFileUrl ? String(documentFileUrl).slice(0, 300) : null,
       payment_status: "unpaid",

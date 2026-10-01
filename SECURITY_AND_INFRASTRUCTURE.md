@@ -73,18 +73,25 @@ Any request attempting to claim member discounts (10% on conference tickets, 5% 
 
 ## 3. Institutional vs. Personal Email Verification
 
-### Corporate / Institutional Fast-Path
-1. Automatic domain heuristics identify legitimate academic and research institutions (`.ac.uk`, `.edu`, `.edu.*`, `.gov`, `.gov.*`).
-2. Domain validation confirms institutional legitimacy.
-3. Verification code/token is dispatched via `/api/membership/verify-email`.
-4. Applicant verifies control of the inbox.
-5. **Key Security Rule**: Email verification proves *domain ownership* only. It does *not* automatically grant membership. Final activation remains subject to Academic Board approval.
+### Corporate / Institutional / University Verification (Domain Verification Code)
+1. **Domain Detection**: Automatic heuristics identify legitimate academic, university, and research institutions (`.ac.uk`, `.edu`, `.edu.*`, `.gov`, `.gov.*`, and corporate domains).
+2. **One-Time Verification Code Dispatch**:
+   - The system dispatches a cryptographically generated 6-digit one-time verification code to the university email address via `/api/membership/verify-email`.
+   - Code expires after 15 minutes and is rate-limited to prevent abuse.
+3. **Domain Ownership Confirmation**:
+   - The applicant enters the 6-digit code in the modal/portal to verify ownership of the university email address before proceeding.
+   - Upon confirmation, `email_verified: true` is recorded in the application record and logged to the audit trail.
+4. **Critical Institutional Rule**:
+   - University email verification confirms *domain ownership and inbox control*.
+   - It does **not** automatically activate membership or grant restricted perks.
+   - Final membership activation remains subject to Academic Board approval.
 
-### Personal Webmail Workflow
+### Personal Webmail Workflow (Document Verification + Email Confirmation)
 1. Detects personal webmail domains (`@gmail.com`, `@yahoo.*`, `@hotmail.com`, `@outlook.com`, `@icloud.com`, etc.).
-2. Explains clearly that official institutional affiliation evidence is required.
-3. Assigns an official reference code: `GIRSD-MEM-YYYY-XXXXXX`.
-4. Directs candidate to secure document upload portal (with fallback to `membership@globalrsd.co.uk`).
+2. Explains clearly that official institutional affiliation evidence (Student ID, faculty badge, appointment letter) is mandatory.
+3. Allows sending an email verification code to confirm ownership of the applicant's contact email ID.
+4. Assigns an official reference code: `GIRSD-MEM-YYYY-XXXXXX`.
+5. Directs candidate to the secure document upload portal (with fallback to `membership@globalrsd.co.uk`).
 
 ---
 
