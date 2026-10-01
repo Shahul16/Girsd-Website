@@ -1,9 +1,19 @@
+/**
+ * Partners & Accreditation section.
+ * Hidden from the live website per client request.
+ * Returns null so nothing is rendered.
+ */
+export default function PartnersGrid() {
+  return null;
+}
+
+/*
+// PREVIOUS IMPLEMENTATION (Preserved for reference or future reactivation):
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import { partnerInstitutions } from "@/lib/data/people";
 
-/** Prominent, static display of academic partners and accreditation — trust section. */
-export default function PartnersGrid() {
+export function PreviousPartnersGrid() {
   return (
     <section className="bg-cream py-20" aria-labelledby="partners-heading">
       <div className="mx-auto max-w-7xl px-4">
@@ -17,13 +27,11 @@ export default function PartnersGrid() {
           </p>
         </Reveal>
 
-        {/* 3 Partner Cards */}
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {partnerInstitutions.map((p, i) => (
             <Reveal key={p.name} delay={i * 90}>
               <div className="card card-lift group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm transition-all duration-300 hover:border-gold hover:shadow-lg">
                 <div>
-                  {/* Logo Display Box */}
                   <div className="flex h-28 w-full items-center justify-center rounded-xl bg-slate-50/80 p-4 transition-colors group-hover:bg-amber-50/30">
                     <Image
                       src={p.logo}
@@ -35,7 +43,6 @@ export default function PartnersGrid() {
                     />
                   </div>
 
-                  {/* Badge & Info */}
                   <div className="mt-5">
                     <span className="inline-block rounded-full bg-gold/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-gold-dark">
                       {p.category}
@@ -52,7 +59,6 @@ export default function PartnersGrid() {
                   </div>
                 </div>
 
-                {/* External Link */}
                 <div className="mt-6 pt-4 border-t border-slate-100">
                   <a
                     href={p.url}
@@ -73,7 +79,6 @@ export default function PartnersGrid() {
           ))}
         </div>
 
-        {/* Accreditation Trust Banner */}
         <Reveal>
           <div className="mx-auto mt-12 flex max-w-2xl flex-col sm:flex-row items-center gap-5 rounded-2xl border-2 border-gold/50 bg-white p-6 shadow-sm">
             <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-navy font-display text-base font-bold text-gold shadow-sm">
@@ -97,4 +102,5 @@ export default function PartnersGrid() {
     </section>
   );
 }
+*/
 

@@ -2,7 +2,6 @@ import Link from "next/link";
 import CountUp from "@/components/CountUp";
 import TrustBadges from "@/components/TrustBadges";
 import EventsCarousel from "@/components/EventsCarousel";
-import PartnersGrid from "@/components/PartnersGrid";
 import Testimonials from "@/components/Testimonials";
 import HomeHeroCarousel from "@/components/HomeHeroCarousel";
 import Reveal from "@/components/Reveal";
@@ -139,9 +138,6 @@ export default function HomePage() {
 
       {/* TESTIMONIALS */}
       <Testimonials />
-
-      {/* PARTNERS & ACCREDITATION */}
-      <PartnersGrid />
 
       {/* PRIMARY CTA */}
       <section className="bg-gradient-to-br from-navy to-navy-light py-20 text-center text-white">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import { founder, committees } from "@/lib/data/people";
+import { committees } from "@/lib/data/people";
 import { posts } from "@/lib/data/news";
 import { SITE } from "@/lib/site";
 import { IMAGES } from "@/lib/images";
@@ -11,7 +11,7 @@ import pagesData from "@/content/pages.json";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about the Global Institute of Research & Skills Development — our vision, mission, founder, committees and commitment to responsible practice.",
+    "Learn about the Global Institute of Research & Skills Development — our vision, mission, and commitment to responsible practice.",
   alternates: { canonical: "/about" },
 };
 
@@ -112,8 +112,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Leadership / Founder Spotlight */}
-      {about.founder && (
+      {/* Leadership / Founder Spotlight — hidden per client request */}
+      {false && about.founder && (
         <section className="mx-auto max-w-5xl px-4 py-16">
           <Reveal>
             <div className="card overflow-hidden md:flex items-center">
