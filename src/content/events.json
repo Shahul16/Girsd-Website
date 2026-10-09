@@ -1,5 +1,53 @@
 [
   {
+    "slug": "giear-2026",
+    "category": "Research Conferences",
+    "title": "GIRSD International Excellence Awards & Research Summit 2026",
+    "acronym": "GIEAR 2026",
+    "date": "0026-02-04T23:42:48.000Z",
+    "endDate": "2027-06-16T17:00:00Z",
+    "venue": "Virtual Event — Online",
+    "city": "London, United Kingdom (virtual; international participation)",
+    "image": "/uploads/girsd-international-excellence-awards-20-1791574134601.png",
+    "summary": "Join the GIRSD International Excellence Awards & Research Summit 2026 (GIEAR 2026), a global virtual gathering celebrating professional excellence, research contributions, innovation and skills development. Connect with researchers, academics, professionals and international participants through research presentations, expert discussions, recognition of achievement and global networking.",
+    "description": "Join the GIRSD International Excellence Awards & Research Summit 2026 (GIEAR 2026), a global virtual gathering celebrating professional excellence, research contributions, innovation and skills development. Connect with researchers, academics, professionals and international participants through research presentations, expert discussions, recognition of achievement and global networking.\n\nFull Description\nThe GIRSD International Excellence Awards & Research Summit 2026 (GIEAR 2026) is a proposed international virtual event organised around research, professional achievement, innovation and skills development.\n\nThe summit aims to bring together researchers, academics, educators, industry professionals and emerging talent to exchange knowledge, share research perspectives and build international connections.\n\nThe proposed programme includes research presentations, expert panel discussions, professional development sessions, international networking and an awards segment recognising eligible contributions and achievements.\n\nEvent Format: Virtual / Online\nDate: Saturday, 5 December 2026\nTime: 10:00 AM–3:30 PM GMT (London time)\n\nFurther information about registration, award categories, research submissions, speakers and participation requirements will be published once confirmed.",
+    "themes": [
+      "Research Excellence and Innovation",
+      "Applied Sciences and Interdisciplinary Research",
+      "Technology, Artificial Intelligence and Digital Transformation",
+      "Education and Skills Development",
+      "Business, Management and Entrepreneurship",
+      "Humanities and Social Sciences",
+      "Sustainability and Global Development",
+      "Leadership and Professional Excellence",
+      "Emerging Researchers and Early-Career Professionals",
+      "International Collaboration and Knowledge Exchange"
+    ],
+    "tickets": [
+      {
+        "id": "standard",
+        "name": "Standard Delegate",
+        "price": 150,
+        "includes": [
+          "Conference access",
+          "Proceedings"
+        ]
+      }
+    ],
+    "agenda": [
+      {
+        "day": "Day 1",
+        "items": [
+          {
+            "time": "09:00",
+            "title": "Registration"
+          }
+        ]
+      }
+    ],
+    "speakers": []
+  },
+  {
     "slug": "icmdr-2026",
     "category": "Research Conferences",
     "title": "International Conference on Multidisciplinary Research",
