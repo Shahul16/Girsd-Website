@@ -14,6 +14,8 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmSent, setConfirmSent] = useState(false);
@@ -23,11 +25,18 @@ export default function RegisterPage() {
     if (name.trim().length < 2) return setError("Please enter your full name.");
     if (!email.includes("@")) return setError("Please enter a valid email address.");
     if (password.length < 6) return setError("Password must be at least 6 characters.");
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !captchaToken) {
+      return setError("Please complete the security verification.");
+    }
     setError("");
     setBusy(true);
-    const res = await register(name.trim(), email, password);
+    const res = await register(name.trim(), email, password, captchaToken);
     setBusy(false);
-    if (res.error) return setError(res.error);
+    if (res.error) {
+      setCaptchaToken("");
+      setCaptchaResetKey((key) => key + 1);
+      return setError(res.error);
+    }
     if (res.needsConfirmation) return setConfirmSent(true);
     router.push("/dashboard");
   }
@@ -73,7 +82,16 @@ export default function RegisterPage() {
             <label htmlFor="password" className="label">Choose a password</label>
             <PasswordInput id="password" autoComplete="new-password" value={password} onChange={setPassword} />
           </div>
-          <Turnstile action="register" />
+          <Turnstile
+            key={captchaResetKey}
+            action="register"
+            onToken={setCaptchaToken}
+            onError={() => setError("Security verification failed. Please try the verification again.")}
+            onExpire={() => {
+              setCaptchaToken("");
+              setError("Security verification expired. Please complete it again.");
+            }}
+          />
           <button type="submit" disabled={busy} className="btn-gold w-full disabled:opacity-60">{busy ? "Creating account…" : "Create account"}</button>
           <p className="text-center text-sm text-slate-500">
             Already registered?{" "}

@@ -39,6 +39,7 @@ interface TurnstileProps {
   onSuccess?: (token: string) => void;
   onError?: (errorCode?: string) => void;
   onExpire?: () => void;
+  onToken?: (token: string) => void;
   className?: string;
 }
 
@@ -48,18 +49,24 @@ interface TurnstileProps {
  * Automatically injects hidden "cf-turnstile-response" input.
  */
 export default function Turnstile({
-  siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAFAAlriI1ioGxDjY",
+  siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "",
   action,
   theme = "auto",
   size = "normal",
   onSuccess,
   onError,
   onExpire,
+  onToken,
   className = "my-3",
 }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  const callbacksRef = useRef({ onSuccess, onError, onExpire, onToken });
   const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    callbacksRef.current = { onSuccess, onError, onExpire, onToken };
+  }, [onSuccess, onError, onExpire, onToken]);
 
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
@@ -80,17 +87,20 @@ export default function Turnstile({
           callback: (resToken: string) => {
             if (!mounted) return;
             setToken(resToken);
-            onSuccess?.(resToken);
+            callbacksRef.current.onSuccess?.(resToken);
+            callbacksRef.current.onToken?.(resToken);
           },
           "error-callback": (err?: string) => {
             if (!mounted) return;
             setToken("");
-            onError?.(err);
+            callbacksRef.current.onError?.(err);
+            callbacksRef.current.onToken?.("");
           },
           "expired-callback": () => {
             if (!mounted) return;
             setToken("");
-            onExpire?.();
+            callbacksRef.current.onExpire?.();
+            callbacksRef.current.onToken?.("");
           },
         });
         widgetIdRef.current = id;
@@ -129,7 +139,7 @@ export default function Turnstile({
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, action, theme, size, onSuccess, onError, onExpire]);
+  }, [siteKey, action, theme, size]);
 
   if (!siteKey) {
     return null;

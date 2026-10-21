@@ -48,7 +48,7 @@ const SAMPLE_APPLICATIONS: ApplicationRecord[] = [
     email_type: "corporate_institutional",
     email_verified: true,
     institution: "University College London",
-    department: "Computer Science & AI",
+    department: "Computer Science & Technology",
     role_title: "Senior Lecturer & Research Fellow",
     tier_id: "fellow",
     tier_name: "Fellow (FGRSD)",

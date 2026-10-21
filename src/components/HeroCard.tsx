@@ -83,10 +83,10 @@ export default function HeroCard({ slide, upcomingEvent }: HeroCardProps) {
 
           <div className="rounded-lg border border-white/10 bg-white/5 p-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-white">AI in Cybersecurity</span>
+              <span className="font-semibold text-white">Cybersecurity</span>
               <span className="rounded bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">6 Weeks</span>
             </div>
-            <p className="mt-1 text-xs text-slate-300">Threat intelligence, neural models & defense systems</p>
+            <p className="mt-1 text-xs text-slate-300">Threat intelligence, advanced detection &amp; defense systems</p>
           </div>
         </div>
 

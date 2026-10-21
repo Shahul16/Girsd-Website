@@ -98,7 +98,6 @@ export default function DashboardPage() {
   const [abstractModalEvent, setAbstractModalEvent] = useState<{ title: string; slug: string } | null>(null);
   const [abstractForm, setAbstractForm] = useState({ title: "", track: "", abstractText: "" });
   const [selectedJob, setSelectedJob] = useState<JobOpening | null>(null);
-  const [showAiResumeModal, setShowAiResumeModal] = useState(false);
 
   // File Upload Refs
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -915,16 +914,6 @@ export default function DashboardPage() {
                         </span>
                       </div>
 
-                      {/* AI Resume Action */}
-                      <div className="mt-5">
-                        <button
-                          onClick={() => setShowAiResumeModal(true)}
-                          className="w-full rounded-xl bg-navy py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition shadow-xs"
-                        >
-                          Generate AI Resume Summary
-                        </button>
-                      </div>
-
                       {/* UPLOAD CV SECTION */}
                       <div className="mt-5 pt-5 border-t border-slate-100 text-left">
                         <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Attached Curriculum Vitae</p>
@@ -1019,7 +1008,7 @@ export default function DashboardPage() {
                       <div className="mt-3 flex max-w-sm gap-2">
                         <input
                           type="text"
-                          placeholder="Add discipline (e.g. AI Ethics, Applied Physics)..."
+                          placeholder="Add discipline (e.g. Data Science, Applied Physics)..."
                           className="input text-xs py-1.5"
                           value={newDisciplineInput}
                           onChange={(e) => setNewDisciplineInput(e.target.value)}
@@ -1727,37 +1716,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* AI RESUME SUMMARY MODAL */}
-      {showAiResumeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-2xs">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-fadeUp">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-display text-base font-bold text-navy">Candidate Academic Summary</h3>
-              <button onClick={() => setShowAiResumeModal(false)} className="text-slate-400 hover:text-navy">✕</button>
-            </div>
-            <div className="mt-4 rounded-xl bg-slate-50 p-4 font-mono text-xs text-slate-700 leading-relaxed border border-slate-200/80">
-              <p className="font-bold text-navy">{user.name}</p>
-              <p className="text-slate-500">{profile.title} | {profile.location}</p>
-              <p className="mt-2"><strong>Disciplines:</strong> {profile.disciplines.join(", ")}</p>
-              <p><strong>Methodologies:</strong> {profile.skills.join(", ")}</p>
-              <p className="mt-2"><strong>CV Status:</strong> {profile.cv ? `Verified (${profile.cv.fileName})` : "Pending upload"}</p>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(`${user.name}\n${profile.title}\nDisciplines: ${profile.disciplines.join(", ")}\nSkills: ${profile.skills.join(", ")}`);
-                  showToast("Summary copied to clipboard!");
-                  setShowAiResumeModal(false);
-                }}
-                className="btn-navy text-xs py-2 px-4"
-              >
-                Copy to Clipboard
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* SUBMIT ABSTRACT MODAL */}
       {abstractModalEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-2xs">
@@ -1787,7 +1745,7 @@ export default function DashboardPage() {
                 <label className="block font-semibold text-slate-700">Conference Track</label>
                 <input
                   type="text"
-                  placeholder="e.g. Artificial Intelligence, Applied Sciences..."
+                  placeholder="e.g. Applied Sciences, Sustainability Studies..."
                   className="input mt-1 w-full text-xs"
                   value={abstractForm.track}
                   onChange={(e) => setAbstractForm({ ...abstractForm, track: e.target.value })}

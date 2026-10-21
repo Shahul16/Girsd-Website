@@ -11,7 +11,7 @@ type Result =
 /** Demo verification register. Replace with a database lookup (see README) for production. */
 const DEMO_REGISTER: Record<string, { name: string; award: string; date: string }> = {
   "GIRSD-2026-0417": { name: "Aisha Rahman", award: "Certificate in Data Science with Python", date: "12 June 2026" },
-  "GIRSD-2026-0338": { name: "Thomas Whitfield", award: "Certificate in AI in Cybersecurity", date: "28 May 2026" },
+  "GIRSD-2026-0338": { name: "Thomas Whitfield", award: "Certificate in Cybersecurity", date: "28 May 2026" },
   "GIRSD-2025-1204": { name: "Mei-Ling Chen", award: "ICRIET 2025 — Certificate of Presentation", date: "16 October 2025" },
 };
 

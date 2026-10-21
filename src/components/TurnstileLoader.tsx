@@ -14,7 +14,7 @@ declare global {
  * preventing 'Remove async/defer' browser console exceptions.
  */
 export default function TurnstileLoader() {
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAFAAlriI1ioGxDjY";
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
   if (!siteKey) return null;
 
   return (

@@ -8,7 +8,7 @@ import { courseImage } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Courses",
   description:
-    "Certified, tutor-supported online courses from GIRSD: research methods, data analysis, academic writing, project management, AI skills and leadership.",
+    "Certified, tutor-supported online courses from GIRSD: research methods, data analysis, academic writing, project management, cybersecurity and leadership.",
   alternates: { canonical: "/courses" },
 };
 
@@ -62,6 +62,24 @@ export default function CoursesPage() {
               </Link>
             </Reveal>
           ))}
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-4 pb-20">
+        <div className="rounded-2xl bg-gradient-to-br from-navy to-navy-light p-8 text-white text-center">
+          <span className="inline-block rounded-full bg-gold/20 border border-gold/40 px-4 py-1 text-xs font-bold uppercase tracking-widest text-gold mb-4">Complete course pathway</span>
+          <h3 className="font-display text-2xl font-bold">Complete 4-Course Bundle</h3>
+          <div className="mt-4 flex items-center justify-center gap-6 flex-wrap">
+            <div className="text-center">
+              <p className="text-sm text-slate-400">Individual total</p>
+              <p className="font-mono text-2xl font-bold text-slate-300">£1,585</p>
+            </div>
+            <div className="text-gold text-3xl font-bold">→</div>
+            <div className="text-center">
+              <p className="text-sm text-gold">Combined Bundle Rate</p>
+              <p className="font-display text-4xl font-bold text-gold">£1,595</p>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-slate-300 max-w-xl mx-auto">Choose any course above to view its current premium international fee. The complete pathway brings all four core tracks together.</p>
         </div>
       </section>
     </>

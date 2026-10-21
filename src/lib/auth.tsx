@@ -55,8 +55,8 @@ type AuthContextValue = {
   user: User | null;
   ready: boolean;
   configured: boolean;
-  login: (email: string, password: string) => Promise<AuthResult>;
-  register: (name: string, email: string, password: string) => Promise<AuthResult>;
+  login: (email: string, password: string, captchaToken?: string) => Promise<AuthResult>;
+  register: (name: string, email: string, password: string, captchaToken?: string) => Promise<AuthResult>;
   signInWithProvider: (provider: "google" | "azure" | "apple", next?: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
   cancelMembership: () => Promise<AuthResult>;
@@ -67,6 +67,8 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 const NOT_CONFIGURED =
   "Sign-in is not available yet — the site owner has not connected the authentication service (Supabase).";
+const SESSION_STARTED_AT_KEY = "girsd_session_started_at";
+const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 type OrderRow = {
   id: string;
@@ -226,6 +228,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       if (!sessionUser?.email) {
         emailRef.current = null;
+        window.localStorage.removeItem(SESSION_STARTED_AT_KEY);
+        setUser(null);
+        return;
+      }
+      const startedAt = Number(window.localStorage.getItem(SESSION_STARTED_AT_KEY));
+      if (!startedAt) {
+        window.localStorage.setItem(SESSION_STARTED_AT_KEY, String(Date.now()));
+      } else if (Date.now() - startedAt >= SESSION_MAX_AGE_MS) {
+        void sb.auth.signOut();
+        window.localStorage.removeItem(SESSION_STARTED_AT_KEY);
+        emailRef.current = null;
         setUser(null);
         return;
       }
@@ -254,29 +267,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
       applySession(session?.user ?? null);
     });
+    const expiryTimer = window.setInterval(() => {
+      const startedAt = Number(window.localStorage.getItem(SESSION_STARTED_AT_KEY));
+      if (startedAt && Date.now() - startedAt >= SESSION_MAX_AGE_MS) {
+        void sb.auth.signOut();
+      }
+    }, 60_000);
 
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
+      window.clearInterval(expiryTimer);
     };
   }, [loadOrders]);
 
-  const login = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+  const login = useCallback(async (email: string, password: string, captchaToken?: string): Promise<AuthResult> => {
     const sb = getSupabase();
     if (!sb) return { error: NOT_CONFIGURED };
-    const { error } = await sb.auth.signInWithPassword({ email, password });
+    const { error } = await sb.auth.signInWithPassword({
+      email,
+      password,
+      options: captchaToken ? { captchaToken } : undefined,
+    });
     if (error) return { error: friendly(error.message) };
     return {};
   }, []);
 
   const register = useCallback(
-    async (name: string, email: string, password: string): Promise<AuthResult> => {
+    async (name: string, email: string, password: string, captchaToken?: string): Promise<AuthResult> => {
       const sb = getSupabase();
       if (!sb) return { error: NOT_CONFIGURED };
       const { data, error } = await sb.auth.signUp({
         email,
         password,
-        options: { data: { full_name: name } },
+        options: { data: { full_name: name }, ...(captchaToken ? { captchaToken } : {}) },
       });
       if (error) return { error: friendly(error.message) };
       if (!data.session) return { needsConfirmation: true };
@@ -306,6 +330,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     const sb = getSupabase();
     if (sb) await sb.auth.signOut();
+    window.localStorage.removeItem(SESSION_STARTED_AT_KEY);
     emailRef.current = null;
     setUser(null);
   }, []);

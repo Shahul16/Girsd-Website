@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import { membershipTiers } from "@/lib/data/memberships";
 import { committees } from "@/lib/data/people";
 import { DemoForm, Field } from "@/components/forms";
 import MembershipTiersSection from "@/components/MembershipTiersSection";
@@ -15,20 +14,6 @@ export const metadata: Metadata = {
 };
 
 const committeeOptions = committees.map((committee) => committee.name);
-
-const comparisonRows = [
-  ["10% discount on all conference tickets", true, true, true],
-  ["5% discount on online courses", true, true, true],
-  ["Members-only quarterly briefings", true, true, true],
-  ["Member community forum", true, true, true],
-  ["Digital membership certificate", true, true, true],
-  ["Priority paper review scheduling", false, true, false],
-  ["Cross-sector mentoring scheme", false, true, true],
-  ["Eligibility for committee service", false, true, false],
-  ["Two workshop delegate passes per year", false, false, true],
-  ["Industry panel speaking opportunities", false, false, true],
-  ["Company profile in GIRSD directory", false, false, true],
-] as [string, boolean, boolean, boolean][];
 
 const membershipBenefits = [
   ["Professional development", "Access courses, workshops, conferences and briefings designed for research and skills development."],
@@ -65,48 +50,6 @@ export default function MembershipPage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-16" aria-labelledby="compare-heading">
-        <Reveal>
-          <h2 id="compare-heading" className="flourish text-center font-display text-3xl font-bold">Compare membership tiers</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-slate-600">Use the comparison below to choose the level of access and participation that suits your goals.</p>
-        </Reveal>
-        <Reveal delay={120}>
-          <div className="mt-10 overflow-x-auto rounded-md border border-line">
-            <table className="w-full min-w-[700px] border-collapse text-sm">
-              <caption className="sr-only">Comparison of membership tier benefits</caption>
-              <thead>
-                <tr className="bg-navy text-white">
-                  <th scope="col" className="p-4 text-left font-display">Benefit</th>
-                  <th scope="col" className="p-4 text-center font-display">Student<br /><span className="text-gold">£49/year</span></th>
-                  <th scope="col" className="border-x-2 border-gold bg-navy-light p-4 text-center font-display">Academic<br /><span className="text-gold">£99/year</span></th>
-                  <th scope="col" className="p-4 text-center font-display">Industry<br /><span className="text-gold">£249/year</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonRows.map(([label, student, academic, industry], i) => (
-                  <tr key={label} className={i % 2 ? "bg-cream" : "bg-white"}>
-                    <th scope="row" className="p-4 text-left font-medium text-slate-700">{label}</th>
-                    {[student, academic, industry].map((included, column) => (
-                      <td key={column} className={`p-4 text-center ${column === 1 ? "border-x-2 border-gold/60" : ""}`}>
-                        {included ? <span aria-label="Included" className="font-bold text-emerald-600">✓</span> : <span aria-label="Not included" className="text-slate-300">Not included</span>}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                <tr className="bg-white">
-                  <td className="p-4" />
-                  {membershipTiers.map((tier) => (
-                    <td key={tier.id} className={`p-4 text-center ${tier.featured ? "border-x-2 border-gold/60" : ""}`}>
-                      <Link href={`/checkout?type=membership&tier=${tier.id}`} className={`${tier.featured ? "btn-gold" : "btn-navy"} text-sm`}>Choose {tier.name}</Link>
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </Reveal>
       </section>
 
       <section className="bg-cream py-16" aria-labelledby="committee-heading">

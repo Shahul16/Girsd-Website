@@ -9,7 +9,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "The AI in Cybersecurity course paid for itself within a month — I applied the anomaly-detection lab directly to our SOC workflows. Tutors replied to every question within a day.",
+      "The Cybersecurity course paid for itself within a month — I applied the threat-detection techniques directly to our SOC workflows. Tutors replied to every question within a day.",
     name: "Thomas Whitfield",
     role: "Security Operations Lead, fintech sector",
   },

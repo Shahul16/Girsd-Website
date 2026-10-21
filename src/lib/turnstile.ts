@@ -12,9 +12,12 @@ export async function verifyTurnstile(
   // Support both standard Cloudflare env variable names
   const secret = process.env.TURNSTILE_SECRET || process.env.TURNSTILE_SECRET_KEY;
 
-  // If secret key is not configured in environment variables, skip validation (fail open in development)
+  // CAPTCHA is optional until configured, but once a public key is enabled,
+  // missing server credentials must fail closed.
   if (!secret) {
-    return { ok: true };
+    return process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+      ? { ok: false, reason: "Turnstile server verification is not configured" }
+      : { ok: true };
   }
 
   if (typeof token !== "string" || token.length === 0 || token.length > 2048) {
@@ -68,10 +71,8 @@ export async function verifyTurnstile(
     }
 
     return { ok: true };
-  } catch (err: any) {
+  } catch (err) {
     console.error("Turnstile verification network error:", err);
-    // Fail open on network errors
-    return { ok: true };
+    return { ok: false, reason: "Turnstile verification unavailable" };
   }
 }
-

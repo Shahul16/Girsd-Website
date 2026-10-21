@@ -16,6 +16,8 @@ function LoginForm() {
   const next = params.get("next") || "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -31,10 +33,17 @@ function LoginForm() {
     }
     setError("");
     setBusy(true);
-    const res = await login(email, password);
+    const captchaRequired = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+    if (captchaRequired && !captchaToken) {
+      setError("Please complete the security verification.");
+      return;
+    }
+    const res = await login(email, password, captchaToken);
     setBusy(false);
     if (res.error) {
       setError(res.error);
+      setCaptchaToken("");
+      setCaptchaResetKey((key) => key + 1);
       return;
     }
     router.push(next);
@@ -78,7 +87,16 @@ function LoginForm() {
             onChange={setPassword}
           />
         </div>
-        <Turnstile action="login" />
+        <Turnstile
+          key={captchaResetKey}
+          action="login"
+          onToken={setCaptchaToken}
+          onError={() => setError("Security verification failed. Please try the verification again.")}
+          onExpire={() => {
+            setCaptchaToken("");
+            setError("Security verification expired. Please complete it again.");
+          }}
+        />
         <button type="submit" disabled={busy} className="btn-gold w-full disabled:opacity-60">{busy ? "Signing in…" : "Log in"}</button>
         <p className="text-center text-sm text-slate-500">
           No account yet?{" "}

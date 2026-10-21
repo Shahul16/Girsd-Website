@@ -5,7 +5,7 @@
     "level": "Intermediate",
     "duration": "4 weeks (8 hours)",
     "effort": "2 hours per week + self-paced labs",
-    "price": 450,
+    "price": 550,
     "category": "Skills Development Courses",
     "summary": "A deep dive into the integration of artificial intelligence with core cybersecurity practices — detect, analyse and respond to cyber threats with intelligent systems.",
     "description": "GIRSD's AI in Cybersecurity Course offers a deep dive into the integration of artificial intelligence with core cybersecurity practices. This course is structured to deliver a strong foundation in AI technologies while applying them to real-world security challenges. You will gain both theoretical understanding and hands-on expertise in using intelligent systems to detect, analyse and respond to cyber threats, and learn how AI is revolutionising threat detection, incident response and predictive defence. Technologies covered include TensorFlow, Scikit-learn, Keras, Pandas & NumPy, the ELK Stack, Snort with AI integration, Hugging Face Transformers, Jupyter Notebooks and OpenCV.",
@@ -65,7 +65,7 @@
       "Capstone project",
       "Presentations"
     ],
-    "certification": "GIRSD Certificate in AI in Cybersecurity awarded on successful completion of the capstone project and assessments.",
+    "certification": "GIRSD Certificate in Cybersecurity awarded on successful completion of the capstone project and assessments.",
     "image": "/co-ai-in-cybersecurity.png"
   },
   {
@@ -74,7 +74,7 @@
     "level": "Foundation",
     "duration": "6 weeks",
     "effort": "3–4 hours per week",
-    "price": 395,
+    "price": 495,
     "category": "Skills Development Courses",
     "summary": "Launch a data science career: Python programming, data analysis, visualisation and an introduction to machine learning with real datasets.",
     "description": "Data scientist is one of the most rewarding career paths available today, offering strong salaries, high job satisfaction and outstanding growth opportunities. This course takes you from Python fundamentals through the complete data science workflow: acquiring and cleaning data with Pandas and NumPy, exploring and visualising it with Matplotlib and Seaborn, and building your first predictive models with Scikit-learn. Every unit is anchored in project-based learning using real datasets, and the course concludes with a capstone analysis you can present to employers.",
@@ -133,7 +133,7 @@
     "level": "Intermediate",
     "duration": "6 weeks",
     "effort": "3–4 hours per week",
-    "price": 395,
+    "price": 495,
     "category": "Skills Development Courses",
     "summary": "Bridge the IT and business sectors: requirements engineering, process modelling and data-driven decision making with the latest analysis tools.",
     "description": "The Business Analysis course at GIRSD provides a thorough curriculum aimed at connecting the IT and business sectors by integrating the latest data and analysis techniques. You will learn to elicit and document requirements, model business processes, analyse data to support decisions, and communicate effectively with both technical teams and executive stakeholders. The course follows recognised industry frameworks and closes with an end-to-end case study in which you produce a complete business analysis deliverable pack.",
@@ -184,7 +184,7 @@
       "Presentation"
     ],
     "certification": "GIRSD Certificate in Business Analysis awarded on successful completion of the case study and assessments.",
-    "image": "/co-business-analysis.jpg"
+    "image": "/co-generic.png"
   },
   {
     "slug": "export-import",
@@ -192,7 +192,7 @@
     "level": "Foundation",
     "duration": "4 weeks",
     "effort": "2–3 hours per week",
-    "price": 345,
+    "price": 450,
     "category": "Skills Development Courses",
     "summary": "Become an expert in international trade: documentation, customs, Incoterms, payments and building a compliant import-export operation.",
     "description": "Want to become an expert in international trade? Take the next step in your professional development with GIRSD's online Export & Import course. Whether you are starting an import-export business, moving into a trade compliance role, or expanding an existing company internationally, this course covers the complete lifecycle of an international transaction: sourcing and market selection, trade documentation, customs procedures and tariffs, Incoterms 2020, international payments and risk management, and UK-specific requirements post-Brexit.",
@@ -242,7 +242,7 @@
       "Final trade-plan project"
     ],
     "certification": "GIRSD Certificate in Export & Import awarded on successful completion.",
-    "image": "/co-export-import.png"
+    "image": "/co-export-import.jpg"
   },
   {
     "slug": "digital-marketing",
@@ -250,7 +250,7 @@
     "level": "Foundation",
     "duration": "4 weeks",
     "effort": "2–3 hours per week",
-    "price": 295,
+    "price": 395,
     "category": "Skills Development Workshops",
     "summary": "Master the components of marketing that use the internet and digital technologies — SEO, social media, content, email and paid campaigns.",
     "description": "Organised by the Global Institute of Research & Skills Development, this programme covers the component of marketing that uses the internet and online-based digital technologies to promote products and services. You will build practical skills across the full digital mix: search engine optimisation, social media marketing, content strategy, email campaigns and paid advertising — culminating in a complete digital marketing plan for a real or simulated business, with analytics to measure what works.",
@@ -308,7 +308,7 @@
     "level": "Intermediate",
     "duration": "4 weeks",
     "effort": "2–3 hours per week",
-    "price": 295,
+    "price": 450,
     "category": "Skills Development Workshops",
     "summary": "Essential leadership skills for managers — communication, delegation, motivation and performance management, taught through live online workshops.",
     "description": "An effective managerial skills programme that teaches managers essential leadership capabilities: clear communication, confident delegation, team motivation, conflict resolution and performance management. Delivered as a series of interactive online workshops, the course blends evidence-based frameworks with role-play scenarios and candid case discussions, so you leave with techniques you can apply with your team the following morning. Suitable for new managers and experienced leaders looking to refresh their practice.",
