@@ -1,9 +1,37 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, useCallback, type FormEvent } from "react";
 import Link from "next/link";
 
 const GRANT_CODE = "PAAVAI90";
+
+// Campaign: launches 29 Oct 2026, expires 14 days later at midnight UTC
+const CAMPAIGN_START = new Date("2026-10-29T00:00:00Z");
+const DEADLINE = new Date("2026-11-12T23:59:59Z");
+const TOTAL_SECONDS = Math.floor((DEADLINE.getTime() - CAMPAIGN_START.getTime()) / 1000);
+
+function useCountdown(target: Date) {
+  const calc = useCallback(() => {
+    const diff = Math.max(0, Math.floor((target.getTime() - Date.now()) / 1000));
+    return {
+      days:    Math.floor(diff / 86400),
+      hours:   Math.floor((diff % 86400) / 3600),
+      minutes: Math.floor((diff % 3600) / 60),
+      seconds: diff % 60,
+      total:   diff,
+    };
+  }, [target]);
+
+  const [time, setTime] = useState(calc);
+
+  useEffect(() => {
+    setTime(calc()); // hydrate immediately
+    const id = setInterval(() => setTime(calc()), 1000);
+    return () => clearInterval(id);
+  }, [calc]);
+
+  return time;
+}
 
 const SOCIAL_LINKS = [
   {
@@ -48,6 +76,7 @@ const SOCIAL_LINKS = [
 export default function DiscountForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState("");
+  const countdown = useCountdown(DEADLINE);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -128,6 +157,9 @@ export default function DiscountForm() {
             ))}
           </div>
         </div>
+
+        {/* ── Countdown Banner ── */}
+        <CountdownBanner countdown={countdown} />
 
         {/* Form card */}
         <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-2xl">
@@ -400,7 +432,128 @@ function FormFieldWithHint({
   );
 }
 
+// ─────────────────────────────────────────────
+//  Countdown Banner Component
+// ─────────────────────────────────────────────
+type CountdownTime = { days: number; hours: number; minutes: number; seconds: number; total: number };
+
+function CountdownBanner({ countdown }: { countdown: CountdownTime }) {
+  const { days, hours, minutes, seconds, total } = countdown;
+
+  // Progress 0→1 as time elapses (based on full campaign window)
+  const elapsed = Math.max(0, TOTAL_SECONDS - total);
+  const progress = Math.min(1, elapsed / TOTAL_SECONDS);
+  const pct = Math.round(progress * 100);
+
+  // Urgency colour: gold (>5d) → amber (2–5d) → red (<2d)
+  const urgency =
+    days >= 5 ? "gold" :
+    days >= 2 ? "amber" :
+    "red";
+
+  const barColor =
+    urgency === "gold"  ? "bg-gradient-to-r from-gold to-yellow-400" :
+    urgency === "amber" ? "bg-gradient-to-r from-amber-400 to-orange-400" :
+                          "bg-gradient-to-r from-red-500 to-rose-400";
+
+  const ringColor =
+    urgency === "gold"  ? "ring-gold/30 bg-gold/10" :
+    urgency === "amber" ? "ring-amber-400/30 bg-amber-400/10" :
+                          "ring-red-500/30 bg-red-500/10";
+
+  const textColor =
+    urgency === "gold"  ? "text-gold" :
+    urgency === "amber" ? "text-amber-400" :
+                          "text-red-400";
+
+  if (total === 0) {
+    return (
+      <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-center">
+        <p className="text-sm font-bold text-red-400 uppercase tracking-widest">⏰ Campaign Offer Expired</p>
+        <p className="mt-1 text-xs text-slate-400">The PAAVAI90 grant period has ended. Contact us for current offers.</p>
+      </div>
+    );
+  }
+
+  const units = [
+    { label: "Days",    value: days },
+    { label: "Hours",   value: hours },
+    { label: "Minutes", value: minutes },
+    { label: "Seconds", value: seconds },
+  ];
+
+  return (
+    <div className={`mb-6 rounded-2xl border ring-1 ${ringColor} border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden`}>
+      {/* Top label strip */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${urgency === "gold" ? "bg-gold" : urgency === "amber" ? "bg-amber-400" : "bg-red-400"} animate-pulse`} />
+          <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
+            Offer Closes In
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <span className="hidden sm:inline rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5">
+            🗓 29–30 Oct Launch
+          </span>
+          <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5">
+            Expires 12 Nov
+          </span>
+        </div>
+      </div>
+
+      {/* Digit flip cards */}
+      <div className="flex items-center justify-center gap-3 px-5 pb-4 sm:gap-5">
+        {units.map(({ label, value }, i) => (
+          <div key={label} className="flex items-start gap-3 sm:gap-5">
+            <div className="flex flex-col items-center gap-1.5">
+              {/* Digit block */}
+              <div className={`relative flex h-16 w-14 items-center justify-center rounded-xl border border-white/10 bg-slate-900/80 shadow-inner sm:h-20 sm:w-18`}>
+                {/* Fold line */}
+                <div className="absolute inset-x-0 top-1/2 h-px bg-black/40" />
+                <span
+                  key={`${label}-${value}`}
+                  className={`font-display text-3xl font-black tabular-nums sm:text-4xl ${textColor}`}
+                  style={{ lineHeight: 1 }}
+                >
+                  {String(value).padStart(2, "0")}
+                </span>
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                {label}
+              </span>
+            </div>
+            {/* Separator colon (not after last) */}
+            {i < units.length - 1 && (
+              <span className={`mt-3 text-2xl font-black sm:text-3xl ${textColor} opacity-60 select-none`}>:</span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Progress bar */}
+      <div className="relative h-1.5 bg-white/5">
+        <div
+          className={`h-full transition-all duration-1000 ease-linear ${barColor}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      {/* Footer: urgency label + % consumed */}
+      <div className="flex items-center justify-between px-5 py-2.5 text-xs text-slate-500">
+        <span>
+          {urgency === "gold"  && "🟢 Campaign active — secure your spot early"}
+          {urgency === "amber" && "🟡 Closing soon — don't miss out!"}
+          {urgency === "red"   && "🔴 Final hours — offer ends very soon!"}
+        </span>
+        <span className={`font-semibold ${textColor}`}>{pct}% elapsed</span>
+      </div>
+    </div>
+  );
+}
+
 function ThankYouScreen() {
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-navy to-slate-900 flex items-center justify-center px-4">
       {/* decorative orbs */}
