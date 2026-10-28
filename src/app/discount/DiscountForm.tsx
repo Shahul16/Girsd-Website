@@ -5,9 +5,9 @@ import Link from "next/link";
 
 const GRANT_CODE = "PAAVAI90";
 
-// Campaign: launches 29 Oct 2026, expires 14 days later at midnight UTC
+// Campaign: launches 29 Oct 2026, expires 10 days later at midnight UTC
 const CAMPAIGN_START = new Date("2026-10-29T00:00:00Z");
-const DEADLINE = new Date("2026-11-12T23:59:59Z");
+const DEADLINE = new Date("2026-11-08T23:59:59Z");
 const TOTAL_SECONDS = Math.floor((DEADLINE.getTime() - CAMPAIGN_START.getTime()) / 1000);
 
 function useCountdown(target: Date) {
@@ -125,14 +125,14 @@ export default function DiscountForm() {
             className="inline-block mb-6 transition-opacity hover:opacity-80">
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5">
               <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-widest text-gold">PAAVAI90 Campaign — 14 Days Only</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-gold">PAAVAI90 Campaign — 10 Days Only</span>
             </div>
           </a>
 
           <h1 className="font-display text-3xl font-bold text-white sm:text-4xl lg:text-5xl leading-tight">
             Claim Your{" "}
             <span className="relative">
-              <span className="text-gold">90% Off</span>
+              <span className="text-gold">100% Off</span>
               <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gold/40 rounded-full" />
             </span>{" "}
             Academic Research Grant
@@ -141,7 +141,7 @@ export default function DiscountForm() {
           <p className="mt-4 mx-auto max-w-xl text-base text-slate-300 leading-relaxed">
             Complete this form to receive your exclusive{" "}
             <span className="font-bold text-gold bg-gold/10 px-1.5 py-0.5 rounded">{GRANT_CODE}</span>{" "}
-            grant code — valid for 14 days across GIRSD Memberships, CPD Courses, and Masterclasses.
+            grant code — valid for 10 days across GIRSD Memberships, CPD Courses, and Masterclasses.
           </p>
 
           {/* Trust badges */}
@@ -227,10 +227,10 @@ export default function DiscountForm() {
                     className="input mt-1 bg-white/10 border-white/20 text-white placeholder-slate-400 focus:border-gold focus:ring-gold/25 [&>option]:bg-navy [&>option]:text-white"
                   >
                     <option value="" disabled>Select your current role</option>
-                    <option value="Student">Undergraduate / Postgraduate Student (£4.90 / yr)</option>
-                    <option value="Academic">Faculty / Assistant Professor / PhD Scholar (£9.90 / yr)</option>
+                    <option value="Student">Undergraduate / Postgraduate Student (FREE)</option>
+                    <option value="Academic">Faculty / Assistant Professor / PhD Scholar (FREE)</option>
                     <option value="Leadership">Head of Department / Dean / Principal</option>
-                    <option value="Industry">Industry Professional / Consultant (£24.90 / yr)</option>
+                    <option value="Industry">Industry Professional / Consultant (FREE)</option>
                   </select>
                 </div>
                 <div>
@@ -322,7 +322,7 @@ export default function DiscountForm() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Claim 90% Grant &amp; Generate Voucher
+                      Claim 100% Grant &amp; Generate Voucher
                     </>
                   )}
                 </span>
@@ -340,9 +340,9 @@ export default function DiscountForm() {
         {/* Pricing tier reminder */}
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {[
-            { tier: "Student", price: "£4.90", original: "£49", label: "Undergraduate / PG" },
-            { tier: "Academic", price: "£9.90", original: "£99", label: "Faculty / PhD Scholar" },
-            { tier: "Industry", price: "£24.90", original: "£249", label: "Professional / Consultant" },
+            { tier: "Student", price: "FREE", original: "£49", label: "Undergraduate / PG" },
+            { tier: "Academic", price: "FREE", original: "£99", label: "Faculty / PhD Scholar" },
+            { tier: "Industry", price: "FREE", original: "£249", label: "Professional / Consultant" },
           ].map((t) => (
             <div key={t.tier} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center">
               <p className="text-xs font-semibold uppercase tracking-wide text-gold">{t.tier}</p>
@@ -497,7 +497,7 @@ function CountdownBanner({ countdown }: { countdown: CountdownTime }) {
             🗓 29–30 Oct Launch
           </span>
           <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5">
-            Expires 12 Nov
+            Expires 8 Nov
           </span>
         </div>
       </div>
@@ -593,7 +593,7 @@ function ThankYouScreen() {
                 { step: "1", text: "You will receive a confirmation email from info@globalrsd.co.uk shortly." },
                 { step: "2", text: "Our team will verify your details within 7 working days." },
                 { step: "3", text: "Your PAAVAI90 voucher code will be delivered via email and WhatsApp." },
-                { step: "4", text: "Apply the code at checkout for 90% off memberships, courses & masterclasses." },
+                { step: "4", text: "Apply the code at checkout for 100% off memberships, courses & masterclasses." },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-3">
                   <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gold/20 text-xs font-bold text-gold">

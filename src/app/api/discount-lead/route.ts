@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
       Dear <strong>${escapeHtml(fullName)}</strong>,
     </p>
     <p style="font-size:15px;line-height:1.7;margin:0 0 16px">
-      Thank you for applying for the <strong style="color:#b88a2e">PAAVAI90 — 90% Keynote Academic Research Grant</strong>.
+      Thank you for applying for the <strong style="color:#b88a2e">PAAVAI90 — 100% Keynote Academic Research Grant</strong>.
       We have successfully received your application and our team is reviewing your details.
     </p>
 
@@ -127,14 +127,14 @@ export async function POST(req: NextRequest) {
       <ul style="margin:10px 0 0;padding-left:20px;font-size:14px;color:#166534;line-height:1.8">
         <li>We will contact you within <strong>7 working days</strong> with your exclusive grant voucher.</li>
         <li>Your voucher will be delivered via email and WhatsApp to <strong>${escapeHtml(phone)}</strong>.</li>
-        <li>Apply the code <strong style="letter-spacing:2px">${escapeHtml(grantCode)}</strong> at checkout for 90% off.</li>
+        <li>Apply the code <strong style="letter-spacing:2px">${escapeHtml(grantCode)}</strong> at checkout for 100% off.</li>
       </ul>
     </div>
 
     <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 20px;margin:20px 0;text-align:center">
       <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#92400e">Your Grant Code</p>
       <p style="margin:0;font-size:28px;font-weight:900;letter-spacing:4px;color:#b88a2e">${escapeHtml(grantCode)}</p>
-      <p style="margin:6px 0 0;font-size:11px;color:#b45309">Valid for 14 days — Memberships, CPD Courses &amp; Masterclasses</p>
+      <p style="margin:6px 0 0;font-size:11px;color:#b45309">Valid for 10 days — Memberships, CPD Courses &amp; Masterclasses</p>
     </div>
 
     <p style="font-size:14px;line-height:1.7;margin:20px 0 8px"><strong>Explore &amp; Connect with GIRSD:</strong></p>
