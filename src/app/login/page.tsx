@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, type FormEvent } from "react";
 import { useAuth } from "@/lib/auth";
-import SocialAuth from "@/components/SocialAuth";
+
 import PasswordInput from "@/components/PasswordInput";
 
 import Turnstile from "@/components/Turnstile";
@@ -103,7 +103,7 @@ function LoginForm() {
           <Link href="/register" className="font-semibold text-navy underline">Register free</Link>
         </p>
       </form>
-      <SocialAuth next={next} />
+
     </div>
   );
 }

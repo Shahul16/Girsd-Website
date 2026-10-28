@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@/lib/auth";
-import SocialAuth from "@/components/SocialAuth";
+
 import PasswordInput from "@/components/PasswordInput";
 import Turnstile from "@/components/Turnstile";
 
@@ -103,7 +103,7 @@ export default function RegisterPage() {
             <Link href="/legal/privacy" className="underline">Privacy Policy</Link>.
           </p>
         </form>
-        <SocialAuth />
+
       </div>
     </section>
   );
