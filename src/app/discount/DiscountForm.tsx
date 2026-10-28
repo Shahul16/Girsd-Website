@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, type FormEvent } from "react";
 import Link from "next/link";
 
-const GRANT_CODE = "PAAVAI90";
+const GRANT_CODE = "PAAVAI100";
 
 // Campaign: launches 29 Oct 2026, expires 10 days later at midnight UTC
 const CAMPAIGN_START = new Date("2026-10-29T00:00:00Z");
@@ -85,7 +85,7 @@ export default function DiscountForm() {
 
     const formEl = e.currentTarget;
     const data = new FormData(formEl);
-    data.set("_form", "PAAVAI90 Grant Claim");
+    data.set("_form", "PAAVAI100 Grant Claim");
 
     try {
       const res = await fetch("/api/discount-lead", {
@@ -125,7 +125,7 @@ export default function DiscountForm() {
             className="inline-block mb-6 transition-opacity hover:opacity-80">
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5">
               <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-widest text-gold">PAAVAI90 Campaign — 10 Days Only</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-gold">PAAVAI100 Campaign — 10 Days Only</span>
             </div>
           </a>
 
@@ -173,7 +173,7 @@ export default function DiscountForm() {
               </div>
             )}
 
-            <form onSubmit={onSubmit} aria-label="PAAVAI90 Grant Claim Form" className="space-y-5">
+            <form onSubmit={onSubmit} aria-label="PAAVAI100 Grant Claim Form" className="space-y-5">
               {/* Row 1: Name + Email */}
               <div className="grid gap-5 sm:grid-cols-2">
                 <FormField
@@ -470,7 +470,7 @@ function CountdownBanner({ countdown }: { countdown: CountdownTime }) {
     return (
       <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-center">
         <p className="text-sm font-bold text-red-400 uppercase tracking-widest">⏰ Campaign Offer Expired</p>
-        <p className="mt-1 text-xs text-slate-400">The PAAVAI90 grant period has ended. Contact us for current offers.</p>
+        <p className="mt-1 text-xs text-slate-400">The PAAVAI100 grant period has ended. Contact us for current offers.</p>
       </div>
     );
   }
@@ -575,7 +575,7 @@ function ThankYouScreen() {
             </div>
 
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 mb-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-gold">Grant Code: PAAVAI90</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-gold">Grant Code: PAAVAI100</span>
             </div>
 
             <h1 className="font-display text-3xl font-bold text-white sm:text-4xl">
@@ -592,7 +592,7 @@ function ThankYouScreen() {
               {[
                 { step: "1", text: "You will receive a confirmation email from info@globalrsd.co.uk shortly." },
                 { step: "2", text: "Our team will verify your details within 7 working days." },
-                { step: "3", text: "Your PAAVAI90 voucher code will be delivered via email and WhatsApp." },
+                { step: "3", text: "Your PAAVAI100 voucher code will be delivered via email and WhatsApp." },
                 { step: "4", text: "Apply the code at checkout for 100% off memberships, courses & masterclasses." },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-3">

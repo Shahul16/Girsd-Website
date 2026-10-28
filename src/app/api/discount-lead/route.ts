@@ -5,7 +5,7 @@ import { SITE } from "@/lib/site";
 export const runtime = "nodejs";
 
 const ADMIN_EMAIL = "info@globalrsd.co.uk";
-const GRANT_CODE = "PAAVAI90";
+const GRANT_CODE = "PAAVAI100";
 
 function escapeHtml(s: string): string {
   return s
@@ -18,7 +18,7 @@ function escapeHtml(s: string): string {
 /**
  * POST /api/discount-lead
  *
- * Receives the PAAVAI90 grant claim form, sends:
+ * Receives the PAAVAI100 grant claim form, sends:
  *  1. A lead notification to info@globalrsd.co.uk
  *  2. A confirmation / thank-you email to the applicant
  */
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
   const adminHtml = `
 <div style="font-family:Arial,sans-serif;color:#0b1f3a;max-width:600px">
   <div style="background:linear-gradient(135deg,#0b1f3a,#1a3a5c);border-radius:12px 12px 0 0;padding:24px 28px">
-    <h2 style="margin:0;color:#b88a2e;font-size:22px">🎓 New PAAVAI90 Grant Claim</h2>
+    <h2 style="margin:0;color:#b88a2e;font-size:22px">🎓 New PAAVAI100 Grant Claim</h2>
     <p style="margin:6px 0 0;color:#94a3b8;font-size:13px">Submitted via ${escapeHtml(SITE.domainDisplay)} on ${submittedAt}</p>
   </div>
 
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       <p style="margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#92400e">📧 Applicant Email</p>
       <p style="margin:0;font-size:18px;font-weight:700;color:#0b1f3a">${escapeHtml(email)}</p>
     </div>
-    <a href="mailto:${escapeHtml(email)}?subject=Re: Your PAAVAI90 Grant Application — GIRSD"
+    <a href="mailto:${escapeHtml(email)}?subject=Re: Your PAAVAI100 Grant Application — GIRSD"
        style="display:inline-block;background:#b88a2e;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;white-space:nowrap">
       ✉️ Reply to Applicant
     </a>
@@ -111,14 +111,14 @@ export async function POST(req: NextRequest) {
   <div style="background:linear-gradient(135deg,#0b1f3a,#1a3a5c);border-radius:12px 12px 0 0;padding:32px 28px;text-align:center">
     <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#b88a2e">Global Institute of Research &amp; Skills Development</p>
     <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:700">Thank You, ${escapeHtml(fullName.split(" ")[0])}! 🎉</h1>
-    <p style="margin:10px 0 0;color:#94a3b8;font-size:14px">Your PAAVAI90 Grant Application Has Been Received</p>
+    <p style="margin:10px 0 0;color:#94a3b8;font-size:14px">Your PAAVAI100 Grant Application Has Been Received</p>
   </div>
   <div style="border:1px solid #e2e8f0;border-top:0;border-radius:0 0 12px 12px;padding:28px">
     <p style="font-size:15px;line-height:1.7;margin:0 0 16px">
       Dear <strong>${escapeHtml(fullName)}</strong>,
     </p>
     <p style="font-size:15px;line-height:1.7;margin:0 0 16px">
-      Thank you for applying for the <strong style="color:#b88a2e">PAAVAI90 — 100% Keynote Academic Research Grant</strong>.
+      Thank you for applying for the <strong style="color:#b88a2e">PAAVAI100 — 100% Keynote Academic Research Grant</strong>.
       We have successfully received your application and our team is reviewing your details.
     </p>
 
@@ -169,9 +169,9 @@ export async function POST(req: NextRequest) {
     const { error: adminErr } = await resend.emails.send({
       from,
       to: [ADMIN_EMAIL],
-      subject: `[PAAVAI90 Grant Claim] ${fullName} — ${institution}`,
+      subject: `[PAAVAI100 Grant Claim] ${fullName} — ${institution}`,
       html: adminHtml,
-      text: `New PAAVAI90 grant claim\n\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nRole: ${role}\nInterest: ${interest}\nGrant Code: ${grantCode}\nGDPR: ${gdpr ? "Yes" : "No"}\nSubmitted: ${submittedAt}`,
+      text: `New PAAVAI100 grant claim\n\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nRole: ${role}\nInterest: ${interest}\nGrant Code: ${grantCode}\nGDPR: ${gdpr ? "Yes" : "No"}\nSubmitted: ${submittedAt}`,
       replyTo: email || undefined,
     });
 
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
         to: [email],
         subject: `✅ Your GIRSD Grant Application Is Received — ${grantCode}`,
         html: applicantHtml,
-        text: `Dear ${fullName},\n\nThank you for applying for the PAAVAI90 grant. We will contact you within 7 working days.\n\nGrant Code: ${grantCode}\n\nExplore GIRSD: https://www.globalrsd.co.uk/\nLinkedIn: https://www.linkedin.com/company/girsd\nWhatsApp Community: https://chat.whatsapp.com/Hzz8bB36if83vGNL9PFoRE\n\nBest regards,\nGIRSD Team\ninfo@globalrsd.co.uk`,
+        text: `Dear ${fullName},\n\nThank you for applying for the PAAVAI100 grant. We will contact you within 7 working days.\n\nGrant Code: ${grantCode}\n\nExplore GIRSD: https://www.globalrsd.co.uk/\nLinkedIn: https://www.linkedin.com/company/girsd\nWhatsApp Community: https://chat.whatsapp.com/Hzz8bB36if83vGNL9PFoRE\n\nBest regards,\nGIRSD Team\ninfo@globalrsd.co.uk`,
       }).catch((err) => console.error("Applicant confirmation email failed (non-fatal):", err));
     }
   } catch (err) {
