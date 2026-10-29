@@ -25,12 +25,36 @@
     ],
     "tickets": [
       {
-        "id": "standard",
-        "name": "Standard Delegate",
-        "price": 150,
+        "id": "giear-observer",
+        "name": "Global Observer / Listener",
+        "price": 95,
         "includes": [
-          "Conference access",
-          "Proceedings"
+          "Live virtual access to all sessions",
+          "Digital proceedings",
+          "e-Certificate of attendance"
+        ]
+      },
+      {
+        "id": "giear-student",
+        "name": "Student Author",
+        "price": 160,
+        "includes": [
+          "Virtual paper presentation slot",
+          "Proceedings publication",
+          "e-Certificate of presentation",
+          "Best Paper Award eligibility"
+        ]
+      },
+      {
+        "id": "giear-standard",
+        "name": "Standard Author",
+        "price": 245,
+        "includes": [
+          "Virtual paper presentation slot",
+          "Proceedings publication (indexed)",
+          "e-Certificate of presentation",
+          "Best Paper Award eligibility",
+          "Recording of session"
         ]
       }
     ],
@@ -67,35 +91,42 @@
     ],
     "tickets": [
       {
-        "id": "icmdr-virtual",
-        "name": "Virtual Delegate",
-        "price": 49,
-        "includes": [
-          "Live-stream access to all sessions",
-          "Digital proceedings",
-          "e-Certificate of participation"
-        ]
-      },
-      {
-        "id": "icmdr-delegate",
-        "name": "Delegate (In-person)",
-        "price": 99,
+        "id": "icmdr-local-scholar",
+        "name": "Local Indian Scholar (Student)",
+        "price": 78,
+        "displayPrice": "₹8,500 (~£78)",
         "includes": [
           "Full-day access",
           "Lunch and refreshments",
           "Conference kit",
-          "Certificate of participation"
+          "e-Certificate of participation"
         ]
       },
       {
-        "id": "icmdr-presenter",
-        "name": "Author / Presenter",
-        "price": 149,
+        "id": "icmdr-local-faculty",
+        "name": "Local Indian Faculty",
+        "price": 115,
+        "displayPrice": "₹12,500 (~£115)",
         "includes": [
-          "Paper presentation slot",
-          "Publication recommendation",
-          "Full delegate benefits",
+          "Full-day access",
+          "Lunch and refreshments",
+          "Conference kit",
+          "Certificate of participation",
           "Best Paper Award eligibility"
+        ]
+      },
+      {
+        "id": "icmdr-international",
+        "name": "International Delegate",
+        "price": 140,
+        "displayPrice": "$180 (~£140)",
+        "includes": [
+          "Full-day access",
+          "Lunch and refreshments",
+          "Conference kit",
+          "Certificate of participation",
+          "Best Paper Award eligibility",
+          "Publication recommendation"
         ]
       }
     ],
@@ -172,7 +203,7 @@
       {
         "id": "icriet-virtual",
         "name": "Virtual Delegate",
-        "price": 99,
+        "price": 275,
         "includes": [
           "Live-stream access to all sessions",
           "Digital proceedings",
@@ -180,25 +211,40 @@
         ]
       },
       {
-        "id": "icriet-delegate",
-        "name": "Delegate (In-person)",
-        "price": 249,
+        "id": "icriet-student",
+        "name": "Student Author (In-person)",
+        "price": 350,
         "includes": [
           "Full two-day access",
           "Lunch and refreshments",
           "Printed proceedings",
-          "Certificate of participation"
+          "Certificate of participation",
+          "Best Paper Award eligibility"
+        ]
+      },
+      {
+        "id": "icriet-industry",
+        "name": "Industry / Non-Presenter Delegate",
+        "price": 395,
+        "includes": [
+          "Full two-day access",
+          "Lunch and refreshments",
+          "Printed proceedings",
+          "Conference networking dinner",
+          "Certificate of attendance"
         ]
       },
       {
         "id": "icriet-presenter",
-        "name": "Author / Presenter",
-        "price": 349,
+        "name": "Regular Author / Presenter",
+        "price": 495,
         "includes": [
-          "Paper presentation slot",
-          "Publication recommendation",
-          "Full delegate benefits",
-          "Best Paper Award eligibility"
+          "Paper presentation slot (oral or poster)",
+          "Publication recommendation (Scopus / WoS partner journals)",
+          "Full two-day delegate access",
+          "Printed proceedings",
+          "Best Paper Award eligibility",
+          "Keynote dinner invitation"
         ]
       }
     ],
@@ -322,31 +368,36 @@
       {
         "id": "icash-virtual",
         "name": "Virtual Delegate",
-        "price": 99,
+        "price": 225,
         "includes": [
-          "Live-stream access",
+          "Live-stream access to all sessions",
           "Digital abstract book",
-          "e-Certificate"
+          "e-Certificate of participation"
         ]
       },
       {
-        "id": "icash-delegate",
-        "name": "Delegate (In-person)",
-        "price": 199,
+        "id": "icash-student",
+        "name": "Student Author (In-person)",
+        "price": 275,
         "includes": [
           "Full-day access",
           "Lunch and refreshments",
+          "Oral or poster presentation slot",
+          "Proceedings publication (ISBN)",
           "Certificate of participation"
         ]
       },
       {
         "id": "icash-presenter",
-        "name": "Author / Presenter",
-        "price": 299,
+        "name": "Regular Author / Presenter",
+        "price": 395,
         "includes": [
-          "Oral or poster presentation",
-          "Proceedings publication",
-          "Full delegate benefits"
+          "Full-day access",
+          "Lunch and refreshments",
+          "Oral or poster presentation slot",
+          "Proceedings publication (ISBN)",
+          "Best Paper Award eligibility",
+          "Early-career mentoring clinic access"
         ]
       }
     ],
@@ -426,24 +477,27 @@
     ],
     "tickets": [
       {
-        "id": "awpm-standard",
-        "name": "Workshop Place",
-        "price": 149,
+        "id": "awpm-livestream",
+        "name": "Live Stream (Virtual)",
+        "price": 165,
         "includes": [
-          "Full-day facilitated workshop",
-          "Workbook and templates",
+          "Full-day live stream access",
+          "Digital workbook and templates",
           "3 months email support",
-          "Certificate of completion"
+          "e-Certificate of completion"
         ]
       },
       {
-        "id": "awpm-premium",
-        "name": "Workshop + 1:1 Review",
-        "price": 249,
+        "id": "awpm-inperson",
+        "name": "In-Person Masterclass",
+        "price": 275,
         "includes": [
-          "All workshop benefits",
-          "60-minute one-to-one manuscript review",
-          "Priority booking for future workshops"
+          "Full-day facilitated in-person workshop",
+          "Printed workbook and templates",
+          "Lunch and refreshments",
+          "3 months email support",
+          "Certificate of completion",
+          "60-minute one-to-one manuscript review session"
         ]
       }
     ],
@@ -516,25 +570,40 @@
     ],
     "tickets": [
       {
-        "id": "geims-delegate",
-        "name": "Delegate",
-        "price": 299,
+        "id": "geims-academic",
+        "name": "Academic Delegate",
+        "price": 450,
         "includes": [
           "Two-day summit access",
           "Partnership exchange meetings",
-          "Lunches and evening reception",
+          "Lunches and evening networking reception",
           "Certificate of attendance"
         ]
       },
       {
-        "id": "geims-exhibitor",
-        "name": "Exhibitor Package",
-        "price": 399,
+        "id": "geims-corporate",
+        "name": "Corporate / Agency Pass",
+        "price": 695,
         "includes": [
-          "Exhibition stand (2 days)",
-          "Two delegate passes",
-          "Logo in summit programme",
-          "Delegate list (opt-in contacts)"
+          "Two-day summit access",
+          "Priority partnership exchange meetings",
+          "Lunches and gala evening reception",
+          "Delegate list (opt-in contacts)",
+          "Certificate of attendance",
+          "Brand logo in summit programme"
+        ]
+      },
+      {
+        "id": "geims-exhibitor",
+        "name": "Exhibition Booth + 2 Passes",
+        "price": 1450,
+        "includes": [
+          "Premium exhibition stand (2 days)",
+          "Two corporate delegate passes",
+          "Priority placement in exhibition hall",
+          "Logo in summit programme and website",
+          "Delegate list (opt-in contacts)",
+          "Two partnership exchange meeting slots"
         ]
       }
     ],
@@ -634,17 +703,46 @@
     "category": "Research Conferences",
     "tickets": [
       {
-        "id": "general",
-        "name": "General Registration",
-        "price": 0,
-        "currency": "USD",
-        "available": true,
-        "description": "Conference registration",
+        "id": "icaiet-student",
+        "name": "Student Author",
+        "price": 355,
+        "displayPrice": "$450 (AED 1,650 / ~£355)",
         "includes": [
-          "Full conference access (all sessions & tracks)",
+          "Full two-day conference access",
           "Conference kit & delegate badge",
-          "Certificate of participation",
-          "Refreshments & networking lunch"
+          "Paper presentation slot",
+          "Proceedings publication",
+          "Certificate of presentation",
+          "Refreshments & networking lunch (both days)"
+        ]
+      },
+      {
+        "id": "icaiet-author",
+        "name": "Regular Author / Presenter",
+        "price": 515,
+        "displayPrice": "$650 (AED 2,390 / ~£515)",
+        "includes": [
+          "Full two-day conference access",
+          "Conference kit & delegate badge",
+          "Paper presentation slot (oral or poster)",
+          "Proceedings publication (indexed)",
+          "Certificate of presentation",
+          "Refreshments, networking lunch & gala dinner",
+          "Best Paper Award eligibility"
+        ]
+      },
+      {
+        "id": "icaiet-industry",
+        "name": "Industry Delegate",
+        "price": 672,
+        "displayPrice": "$850 (AED 3,120 / ~£672)",
+        "includes": [
+          "Full two-day conference access",
+          "Conference kit & delegate badge",
+          "Priority networking sessions",
+          "Gala dinner invitation",
+          "Certificate of attendance",
+          "Delegate networking list (opt-in)"
         ]
       }
     ],
