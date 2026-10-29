@@ -12,7 +12,7 @@ export default function DataProtectionPage() {
     <LegalPage title="Data Protection Statement" updated="1 July 2026">
       <h2>1. Our commitment</h2>
       <p>
-        Q TECH PRIVATE LTD, trading as GIRSD, is committed to protecting the
+        Q Tech Private Ltd, trading as GIRSD, is committed to protecting the
         personal data of members, delegates, learners, authors, nominees and
         website visitors. This statement describes the governance and security
         arrangements that support our Privacy Policy, in line with the UK GDPR
@@ -79,7 +79,7 @@ export default function DataProtectionPage() {
 
       <h2>8. Contact</h2>
       <p>
-        Data protection queries: privacy@globalrsd.co.uk, or Q TECH PRIVATE LTD,
+        Data protection queries: privacy@globalrsd.co.uk, or Q Tech Private Ltd,
         23 Kinnaird Avenue, Bromley BR1 4HG, England. You may also contact the
         Information Commissioner&apos;s Office at ico.org.uk or 0303 123 1113.
       </p>

@@ -8,7 +8,7 @@ export type Person = {
 export const founder: Person = {
   name: "Dr Chandrakumar",
   role: "Founder & Executive Director",
-  affiliation: "Q TECH PRIVATE LTD, trading as GIRSD",
+  affiliation: "Q Tech Private Ltd, trading as GIRSD",
   bio: "Dr Chandrakumar founded GIRSD with a conviction that rigorous research and practical skills development belong together. With a doctorate in engineering management and fifteen years spanning academia and industry consultancy, he has organised international conferences across three continents and advised universities on research commercialisation. Under his direction, GIRSD has grown into a community of over 4,800 members in 47 countries, delivering conferences, workshops and accredited online courses that bridge the gap between scholarship and employability.",
 };
 

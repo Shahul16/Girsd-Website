@@ -12,8 +12,7 @@ export default function TermsPage() {
     <LegalPage title="Terms & Conditions" updated="1 July 2026">
       <h2>1. Who we are</h2>
       <p>
-        This website, globalrsd.co.uk (the &ldquo;Site&rdquo;), is operated by Q TECH
-        PRIVATE LTD, a company registered in England and Wales under company
+        This website, globalrsd.co.uk (the &ldquo;Site&rdquo;), is operated by Q Tech Private Ltd, a company registered in England and Wales under company
         number 15754767, trading as the Global Institute of Research &amp;
         Skills Development (&ldquo;GIRSD&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;). Our registered office is
         23 Kinnaird Avenue, Bromley BR1 4HG, England. You can contact us at

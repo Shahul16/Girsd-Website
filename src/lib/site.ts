@@ -47,9 +47,9 @@ export const SITE = {
   credit: { name: "Shahul Hameed", url: "https://www.linkedin.com/in/shahul-hameed16/" },
   companyLine:
     (siteJson as any).companyLine ||
-    "Global Institute of Research & Skills Development (GIRSD) is a trading name of Q TECH PRIVATE LTD, registered in England & Wales (Company No. 15754767).",
+    "Global Institute of Research & Skills Development (GIRSD) is a trading name of Q Tech Private Ltd, registered in England & Wales (Company No. 15754767).",
   company: {
-    legalName: "Q TECH PRIVATE LTD",
+    legalName: "Q Tech Private Ltd",
     number: "15754767",
     tradingAs: "Global Institute of Research & Skills Development (GIRSD)",
     address: formatAddress(siteJson.address),
