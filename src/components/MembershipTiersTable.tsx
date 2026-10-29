@@ -19,17 +19,20 @@ function Cross() {
 }
 
 const ROWS: [string, boolean, boolean, boolean][] = [
-  ["10% discount on all conference tickets", true, true, true],
-  ["5% discount on online courses", true, true, true],
+  ["25% discount on all conference registrations", true, false, false],
+  ["1 free virtual conference paper presentation ticket", false, true, false],
+  ["20% discount on certified CPD courses", false, true, true],
   ["Members-only quarterly briefings", true, true, true],
   ["Member community forum", true, true, true],
-  ["Digital membership certificate", true, true, true],
-  ["Priority paper review scheduling", false, true, false],
+  ["Digital membership certificate & member badge", true, true, true],
+  ["Formal post-nominal designation (MGIRSD / FGIRSD)", false, true, true],
+  ["Priority double-blind peer-review queue", false, true, false],
   ["Cross-sector mentoring scheme", false, true, true],
-  ["Eligibility for committee service", false, true, false],
-  ["Two workshop delegate passes per year", false, false, true],
+  ["Eligibility for committee / editorial board service", false, true, true],
+  ["2 delegate passes to any in-person UK or Dubai event", false, false, true],
+  ["Corporate profile in GIRSD Global Scholar Directory", false, false, true],
+  ["Auto-eligibility: Scientific Advisory Board", false, false, true],
   ["Industry panel speaking opportunities", false, false, true],
-  ["Company profile in GIRSD directory", false, false, true],
 ];
 
 /**
@@ -49,9 +52,9 @@ export default function MembershipTiersTable() {
           <thead>
             <tr className="bg-navy text-white">
               <th scope="col" className="rounded-tl-lg p-4 text-left font-display">Benefit</th>
-              <th scope="col" className="p-4 text-center font-display">Student<br /><span className="text-gold">£49/yr</span></th>
-              <th scope="col" className="border-x-2 border-gold bg-navy-light p-4 text-center font-display">Academic<br /><span className="text-gold">£99/yr</span></th>
-              <th scope="col" className="rounded-tr-lg p-4 text-center font-display">Industry<br /><span className="text-gold">£249/yr</span></th>
+              <th scope="col" className="p-4 text-center font-display">Student<br /><span className="text-gold">£55/yr</span></th>
+              <th scope="col" className="border-x-2 border-gold bg-navy-light p-4 text-center font-display">Academic (MGIRSD)<br /><span className="text-gold">£185/yr</span></th>
+              <th scope="col" className="rounded-tr-lg p-4 text-center font-display">Industry (FGIRSD)<br /><span className="text-gold">£395/yr</span></th>
             </tr>
           </thead>
           <tbody>

@@ -65,8 +65,8 @@ export const SITE = {
     countries: "50+",
     papers: "1,200+",
   },
-  memberDiscount: 0.1,
-  courseMemberDiscount: 0.05,
+  memberDiscount: 0.25,       // Student: 25% off conference registrations
+  courseMemberDiscount: 0.20, // Academic & Industry: 20% off certified CPD courses
   registrationPricing: {
     earlyBirdDiscount: 0.15,
     lateFeeSurcharge: 0.15,

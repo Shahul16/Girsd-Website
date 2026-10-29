@@ -225,6 +225,90 @@ export default function AwardsPage() {
         </div>
       </section>
 
+      {/* Prestige packages & institutional partnerships */}
+      <section className="bg-navy py-16 text-white" aria-labelledby="packages-heading">
+        <div className="mx-auto max-w-7xl px-4">
+          <Reveal className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-gold">Prestige &amp; Partnerships</p>
+            <h2 id="packages-heading" className="mt-3 font-display text-3xl font-bold text-white">
+              Recognition Packages &amp; Institutional Partnerships
+            </h2>
+            <p className="mt-4 mx-auto max-w-2xl text-slate-300 leading-relaxed">
+              Nomination is always free. Winners and institutions can opt into formal recognition packages and strategic partnership agreements.
+            </p>
+          </Reveal>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                tag: "For Award Winners",
+                title: "Winner Prestige & Trophy Package",
+                price: "£295",
+                note: "(AED 1,400 / $385)",
+                perks: [
+                  "Heavyweight laser-engraved crystal / brass plaque",
+                  "Embossed gold-foil parchment certificate",
+                  "Worldwide courier delivery",
+                  "Official press kit for institutional PR use",
+                ],
+                cta: "Order Trophy Package",
+                href: "/contact",
+              },
+              {
+                tag: "For Universities & Colleges",
+                title: "University Department Affiliation (MOU)",
+                price: "£2,850",
+                note: "/year",
+                perks: [
+                  "10 conference paper submissions included",
+                  "3 faculty memberships (MGIRSD)",
+                  "Co-branded conference proceedings",
+                  "Student mobility advisory sessions",
+                  "Institutional listing in GIRSD Global Directory",
+                ],
+                cta: "Enquire About MOU",
+                href: "/contact",
+              },
+              {
+                tag: "For Corporate Sponsors",
+                title: "Corporate Event Sponsor — Gold Tier",
+                price: "£3,500",
+                note: "",
+                perks: [
+                  "Keynote speaking address at London or Dubai event",
+                  "Exhibition space at chosen conference",
+                  "Primary branding on all conference marketing",
+                  "Logo on proceedings, website &amp; email campaigns",
+                  "4 complimentary delegate passes",
+                ],
+                cta: "Become a Sponsor",
+                href: "/contact",
+              },
+            ].map((pkg, i) => (
+              <Reveal key={pkg.title} delay={i * 90}>
+                <div className="flex h-full flex-col rounded-xl border border-gold/30 bg-white/5 p-7">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gold">{pkg.tag}</p>
+                  <h3 className="mt-2 font-display text-xl font-bold text-white">{pkg.title}</h3>
+                  <p className="mt-3 font-display text-4xl font-black text-gold">
+                    {pkg.price}
+                    {pkg.note &amp;&amp; <span className="text-base font-normal text-slate-400 ml-1">{pkg.note}</span>}
+                  </p>
+                  <ul className="mt-5 flex-1 space-y-2 text-sm text-slate-300">
+                    {pkg.perks.map((perk) => (
+                      <li key={perk} className="flex gap-2">
+                        <span aria-hidden="true" className="mt-0.5 text-gold">◆</span>
+                        <span dangerouslySetInnerHTML={{ __html: perk }} />
+                      </li>
+                    ))}
+                  </ul>
+                  <a href={pkg.href} className="btn-gold mt-7 w-full text-center">{pkg.cta}</a>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="bg-cream py-16">
         <div className="mx-auto max-w-3xl px-4">

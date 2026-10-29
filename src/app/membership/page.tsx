@@ -9,7 +9,7 @@ import MembershipTiersSection from "@/components/MembershipTiersSection";
 export const metadata: Metadata = {
   title: "Membership",
   description:
-    "Join GIRSD from £49 per year. Choose a Student, Academic or Industry membership with event discounts, professional development and committee opportunities.",
+    "Join GIRSD from £55 per year. Choose a Student, Academic (MGIRSD) or Industry Fellow (FGIRSD) membership with chartered-body benchmark benefits, event discounts and committee opportunities.",
   alternates: { canonical: "/membership" },
 };
 
