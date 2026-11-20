@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/events/conferences",
     "/events/workshops",
     "/courses",
+    "/refer-a-colleague",
     "/internship",
     "/awards",
     "/membership",

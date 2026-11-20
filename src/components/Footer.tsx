@@ -5,6 +5,7 @@ import TrustBadges from "@/components/TrustBadges";
 
 const institute = [
   { href: "/about", label: "About Us" },
+  { href: "/refer-a-colleague", label: "Refer a Colleague" },
   { href: "/news", label: "News" },
   { href: "/careers", label: "Careers" },
   { href: "/partner", label: "Partner With Us" },

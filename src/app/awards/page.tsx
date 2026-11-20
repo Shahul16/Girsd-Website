@@ -291,7 +291,7 @@ export default function AwardsPage() {
                   <h3 className="mt-2 font-display text-xl font-bold text-white">{pkg.title}</h3>
                   <p className="mt-3 font-display text-4xl font-black text-gold">
                     {pkg.price}
-                    {pkg.note &amp;&amp; <span className="text-base font-normal text-slate-400 ml-1">{pkg.note}</span>}
+                    {pkg.note && <span className="text-base font-normal text-slate-400 ml-1">{pkg.note}</span>}
                   </p>
                   <ul className="mt-5 flex-1 space-y-2 text-sm text-slate-300">
                     {pkg.perks.map((perk) => (

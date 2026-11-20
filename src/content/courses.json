@@ -2,19 +2,19 @@
   {
     "slug": "ciba-certificate-in-business-analysis",
     "code": "CIBA",
-    "title": "CIBA — Certificate in Business Analysis",
+    "title": "CIBA \u2014 Certificate in Business Analysis",
     "subtitle": "Strategic Business Analysis: Requirements Elicitation and Solution Design",
     "level": "Executive",
     "duration": "20 Hours (20 CPD Credits)",
-    "effort": "4–6 weeks self-paced (3–5 hours / week)",
-    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
-    "price": 895,
+    "effort": "4\u20136 weeks self-paced (3\u20135 hours / week)",
+    "format": "100% Online \u00b7 Self-Paced Modules \u00b7 Executive Masterclasses \u00b7 1-on-1 Senior Tutor Review",
+    "price": 350,
     "category": "Executive Certificates",
     "cpdCredits": 20,
     "cpdProviderNumber": "788000",
     "image": "/co-ciba.png",
-    "summary": "Master the executive art of bridging corporate strategy and technology execution. Deliver robust requirements elicitation, BPMN 2.0 process modelling, agile solution design, and defensible financial business cases.",
-    "description": "The Executive Certificate in Business Analysis (CIBA) is designed for senior professionals, functional leads, and management consultants who operate at the critical intersection of enterprise strategy and technological execution. Across 20 CPD-accredited hours, this programme delivers a comprehensive mastery of strategic requirements engineering, stakeholder political mapping, enterprise BPMN 2.0 workflow modelling, agile user story decomposition, and financial return modelling (NPV, ROI, and risk appraisal). Rooted in the Harvard Case-Method and hands-on digital architecture sandboxes, CIBA equips practitioners to eliminate project failure risks, align competing executive agendas, and design high-impact solutions that deliver measurable shareholder value.",
+    "summary": "Master executive business analysis aligned with the IIBA BABOK\u00ae Guide v3.0 and BCS standards. Deliver strategic elicitation, Porter\u2019s Value Chain analysis, RACI governance, BPMN 2.0 process modelling, agile user stories with Gherkin syntax, and defensible financial business cases.",
+    "description": "The Executive Certificate in Business Analysis (CIBA) strictly aligns with the approved CIBA Participant Workbook, drawing directly upon the IIBA BABOK\u00ae Guide v3.0 and BCS (The Chartered Institute for IT) professional frameworks. Structured for senior analysts, strategy leads, and enterprise consultants, CIBA delivers comprehensive mastery across the business analysis lifecycle: strategic alignment using Porter\u2019s Value Chain and Five Forces, stakeholder governance with RACI matrices, advanced cognitive-bias-aware elicitation, BPMN 2.0 enterprise process modelling, agile requirements engineering using Gherkin Given-When-Then syntax, and rigorous financial justification (ROI, NPV, and benefits realisation). Across 20 CPD-accredited hours, learners complete 4 core modules and a practical capstone assessment evaluated by seasoned practitioners.",
     "businessCaseIntro": "In 2026, enterprise technology modernisation and digital transformation initiatives are under unprecedented financial and regulatory scrutiny. Organisations cannot afford ambiguous requirements, scope creep, or misaligned technological investments.",
     "businessCase": [
       {
@@ -28,7 +28,7 @@
         "detail": "Of Chief Information Officers and enterprise leaders rank strategic business analysis as a top-3 competitive competency in high-stakes technology modernisation."
       },
       {
-        "stat": "£68,500+",
+        "stat": "\u00a368,500+",
         "label": "Market Benchmark",
         "detail": "Median benchmark salary in the UK for senior business analysts and strategy consultants holding accredited CPD executive credentials."
       }
@@ -49,56 +49,57 @@
     ],
     "syllabus": [
       {
-        "module": "Module 1 — Strategic Context & Advanced Requirements Elicitation",
-        "subtitle": "Aligning Enterprise Strategy with Stakeholder Realities",
+        "module": "Module 1 \u2014 Strategic Context, Business Architecture & Requirements Elicitation",
+        "subtitle": "BABOK\u00ae v3.0 Knowledge Areas, Porter's Value Chain & Stakeholder RACI",
         "topics": [
-          "Organisational strategic alignment: PESTLE, Porter's Five Forces, and VRIO analysis",
-          "Stakeholder political mapping, RACI matrices, and executive influence strategies",
-          "Advanced elicitation techniques: cognitive bias mitigation, structured executive interviews, and collaborative workshops",
-          "Harvard Case Analysis: Core Banking Modernisation at Global Tier-1 Bank (navigating regulatory and technical debt)"
+          "BABOK\u00ae Guide v3.0 foundational knowledge areas and BCS business analysis standards",
+          "Strategic alignment: Porter's Value Chain, Porter's Five Forces, and PESTLE analysis",
+          "Stakeholder political mapping, RACI matrix formulation, and executive influence",
+          "Advanced elicitation workshops, cognitive bias mitigation, and consensus building",
+          "Harvard Case Analysis: Tier-1 Bank Core Banking Transformation & Strategic Debt"
         ],
         "caseStudy": "Harvard Business Case: Tier-1 Bank Core Banking Platform Transformation"
       },
       {
-        "module": "Module 2 — Enterprise Process Architecture & BPMN 2.0 Modelling",
-        "subtitle": "Mapping Complex Operational Workflows with Mathematical Precision",
+        "module": "Module 2 \u2014 Enterprise Process Architecture & BPMN 2.0 Modelling",
+        "subtitle": "Mapping As-Is vs. To-Be Operating Models with Precision",
         "topics": [
           "BPMN 2.0 notation standards: events, gateways, pools, lanes, and message flows",
-          "As-is operational baseline mapping vs. to-be future state target operating models",
-          "Root-cause analysis, value stream mapping, and cycle-time bottleneck identification",
-          "Hands-on Lab: Enterprise Order-to-Cash Workflow Optimisation in BPMN 2.0"
+          "As-is baseline operational mapping vs. to-be future state target operating model",
+          "Value stream mapping, cycle-time bottleneck identification, and root-cause analysis",
+          "Hands-on Lab: Enterprise Order-to-Cash Workflow Re-engineering in BPMN 2.0"
         ],
         "caseStudy": "Hands-on Lab: Multinational Logistics Order-to-Cash Workflow Re-engineering"
       },
       {
-        "module": "Module 3 — Agile Solution Architecture & Traceability",
-        "subtitle": "Deconstructing Complex Vision into Executable Technical Epics",
+        "module": "Module 3 \u2014 Agile Requirements Engineering, User Stories & Solution Architecture",
+        "subtitle": "BCS Requirements Standards, Gherkin Syntax & Traceability",
         "topics": [
-          "Writing rigorous epics, user stories, and Gherkin-syntax acceptance criteria (Given-When-Then)",
-          "Non-Functional Requirements (NFRs): latency, scalability, security, and statutory compliance",
-          "Requirements Traceability Matrix (RTM): bi-directional tracking from strategic objective to test script",
-          "Harvard Case Analysis: HealthTech Cloud SaaS Architecture Overhaul under strict data sovereignty rules"
+          "Deconstructing epics into agile user stories with Gherkin syntax (Given-When-Then)",
+          "Non-Functional Requirements (NFRs) engineering: latency, resilience, and statutory compliance",
+          "Requirements Traceability Matrix (RTM): bi-directional tracking from strategic goals to test cases",
+          "Harvard Case Analysis: HealthTech Cloud SaaS Architecture & Data Sovereignty"
         ],
         "caseStudy": "Harvard Business Case: HealthTech Cloud Migration & Regulatory Compliance Architecture"
       },
       {
-        "module": "Module 4 — Financial Business Cases, Vendor Selection & Governance",
-        "subtitle": "Financial Modelling, Procurement Due Diligence and Value Realisation",
+        "module": "Module 4 \u2014 Financial Business Cases, Vendor Selection & Benefit Governance",
+        "subtitle": "Financial Modelling, Procurement RFP Scoring & Benefits Realisation",
         "topics": [
-          "Quantitative financial business cases: CapEx vs. OpEx, Net Present Value (NPV), ROI, and payback periods",
-          "RFP formulation, weighted scoring models, and commercial vendor appraisal",
-          "Change control boards (CCB), scope governance, and benefit realisation monitoring",
-          "Executive Boardroom Presentation: Pitching high-value business cases to executive steering committees"
+          "Quantitative financial business cases: CapEx vs. OpEx, Net Present Value (NPV), and ROI",
+          "RFP development, weighted scoring models, and commercial vendor procurement appraisal",
+          "Change Control Boards (CCB), scope governance, and benefits realisation management (BRM)",
+          "Executive Boardroom Simulation: Defending an Enterprise Modernisation Business Case"
         ],
         "caseStudy": "Executive Simulation: Multi-Vendor ERP Replacement Procurement Defense"
       },
       {
-        "module": "Module 5 — Executive Practical Capstone Project",
-        "subtitle": "End-to-End Enterprise Business Analysis Deliverable Pack",
+        "module": "Module 5 \u2014 Practical Capstone Assessment",
+        "subtitle": "Comprehensive Strategic Business Analysis Deliverable Pack & Blueprint",
         "topics": [
-          "Synthesis of a complete, boardroom-ready Business Analysis Dossier for an enterprise transformation project",
-          "Execution of executive summary, stakeholder map, BPMN 2.0 models, RTM, and financial justification",
-          "Rigorous independent evaluation by senior faculty and enterprise practitioners",
+          "Formulation of an authentic, boardroom-ready Business Analysis Deliverable Pack",
+          "Integration of Porter's Value Chain, RACI matrix, BPMN 2.0 models, Gherkin user stories, and financial ROI",
+          "Independent evaluation by senior BCS and IIBA practitioner faculty (70% pass requirement)",
           "Formal assessment weighting: 70% of total programme grade (70% pass standard)"
         ],
         "caseStudy": "Comprehensive Enterprise Capstone Deliverable Pack"
@@ -111,8 +112,8 @@
     },
     "assessmentBreakdown": {
       "passRequirement": "70% overall pass mark required for UK CPD certification",
-      "theoryMcq": "30% Theory MCQ Examination — timed online examination evaluating core frameworks, BPMN syntax, and elicitation methodology",
-      "practicalCapstone": "70% Practical Capstone Project — submission of a boardroom-ready Business Analysis Deliverable Pack and Financial Justification",
+      "theoryMcq": "30% Theory MCQ Examination \u2014 timed online examination evaluating core frameworks, BPMN syntax, and elicitation methodology",
+      "practicalCapstone": "70% Practical Capstone Project \u2014 submission of a boardroom-ready Business Analysis Deliverable Pack and Financial Justification",
       "description": "To maintain uncompromising academic and professional standards, candidates must achieve a combined score of at least 70% across both the theoretical examination and the practical capstone dossier."
     },
     "support": [
@@ -155,13 +156,13 @@
   {
     "slug": "caig-certificate-in-ai-governance",
     "code": "CAIG",
-    "title": "CAIG — Certificate in AI Governance",
+    "title": "CAIG \u2014 Certificate in AI Governance",
     "subtitle": "AI Governance: Risk Management and Responsible Practice",
     "level": "Executive",
     "duration": "20 Hours (20 CPD Credits)",
-    "effort": "4–6 weeks self-paced (3–5 hours / week)",
-    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
-    "price": 895,
+    "effort": "4\u20136 weeks self-paced (3\u20135 hours / week)",
+    "format": "100% Online \u00b7 Self-Paced Modules \u00b7 Executive Masterclasses \u00b7 1-on-1 Senior Tutor Review",
+    "price": 495,
     "category": "Executive Certificates",
     "cpdCredits": 20,
     "cpdProviderNumber": "788000",
@@ -202,18 +203,18 @@
     ],
     "syllabus": [
       {
-        "module": "Module 1 — The Global AI Regulatory Landscape & Statutory Mandates",
+        "module": "Module 1 \u2014 The Global AI Regulatory Landscape & Statutory Mandates",
         "subtitle": "Navigating the EU AI Act, UK Regulatory Stance, and Global Treaties",
         "topics": [
           "EU AI Act enforcement: prohibited practices, high-risk systems, and transparency obligations",
           "UK pro-innovation regulatory framework, US Executive Orders, and ISO/IEC 42001 certification",
-          "Liability frameworks: corporate director responsibilities, statutory fines (up to €35m or 7% of turnover)",
+          "Liability frameworks: corporate director responsibilities, statutory fines (up to \u20ac35m or 7% of turnover)",
           "Harvard Case Analysis: Global Financial Insurer Fined for Unaudited Machine Learning Underwriting"
         ],
         "caseStudy": "Harvard Business Case: Algorithmic Discrimination Sanctions in Consumer Credit"
       },
       {
-        "module": "Module 2 — AI Risk Identification & NIST AI RMF Operationalisation",
+        "module": "Module 2 \u2014 AI Risk Identification & NIST AI RMF Operationalisation",
         "subtitle": "Taxonomy of Modern AI Vulnerabilities and Systemic Threats",
         "topics": [
           "NIST AI Risk Management Framework 1.0: Map, Measure, Manage, and Govern functions",
@@ -224,7 +225,7 @@
         "caseStudy": "Hands-on Lab: Constructing a Comprehensive Enterprise AI Risk Register"
       },
       {
-        "module": "Module 3 — Algorithmic Bias, Explainability & Privacy Governance",
+        "module": "Module 3 \u2014 Algorithmic Bias, Explainability & Privacy Governance",
         "subtitle": "Auditing Datasets, Model Transparency, and IP Integrity",
         "topics": [
           "Auditing training datasets for historical bias, demographic skew, and unrepresentative sampling",
@@ -235,7 +236,7 @@
         "caseStudy": "Harvard Business Case: Deep Learning Diagnostic Tool Bias Rectification"
       },
       {
-        "module": "Module 4 — Enterprise AI Governance Operating Models & Board Reporting",
+        "module": "Module 4 \u2014 Enterprise AI Governance Operating Models & Board Reporting",
         "subtitle": "Architecting Responsible AI Committees, Metrics, and Third-Party Oversight",
         "topics": [
           "Structuring the AI Ethics Committee: multidisciplinary charters, escalation protocols, and veto power",
@@ -246,7 +247,7 @@
         "caseStudy": "Executive Simulation: Emergency Board Committee on GenAI Intellectual Property Exposure"
       },
       {
-        "module": "Module 5 — Executive Practical Capstone Project",
+        "module": "Module 5 \u2014 Executive Practical Capstone Project",
         "subtitle": "Comprehensive Enterprise AI Governance Charter & Audit Dossier",
         "topics": [
           "Production of an exhaustive Enterprise AI Governance Charter for a high-risk AI deployment",
@@ -264,8 +265,8 @@
     },
     "assessmentBreakdown": {
       "passRequirement": "70% overall pass mark required for UK CPD certification",
-      "theoryMcq": "30% Theory MCQ Examination — testing global regulatory statutes, risk tiering, ISO/IEC 42001, and algorithmic bias metrics",
-      "practicalCapstone": "70% Practical Capstone Project — delivery of a comprehensive Enterprise AI Governance Charter, Risk Assessment, and Audit Plan",
+      "theoryMcq": "30% Theory MCQ Examination \u2014 testing global regulatory statutes, risk tiering, ISO/IEC 42001, and algorithmic bias metrics",
+      "practicalCapstone": "70% Practical Capstone Project \u2014 delivery of a comprehensive Enterprise AI Governance Charter, Risk Assessment, and Audit Plan",
       "description": "Graduation requires demonstrating both conceptual mastery via the 30% examination and executive operational competence through the 70% Capstone submission."
     },
     "support": [
@@ -308,13 +309,13 @@
   {
     "slug": "ccrm-certificate-in-cybersecurity-risk-management",
     "code": "CCRM",
-    "title": "CCRM — Certificate in Cybersecurity Risk Management",
+    "title": "CCRM \u2014 Certificate in Cybersecurity Risk Management",
     "subtitle": "Cybersecurity Risk Management: Assessment and Incident Response",
     "level": "Executive",
     "duration": "20 Hours (20 CPD Credits)",
-    "effort": "4–6 weeks self-paced (3–5 hours / week)",
-    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
-    "price": 895,
+    "effort": "4\u20136 weeks self-paced (3\u20135 hours / week)",
+    "format": "100% Online \u00b7 Self-Paced Modules \u00b7 Executive Masterclasses \u00b7 1-on-1 Senior Tutor Review",
+    "price": 465,
     "category": "Executive Certificates",
     "cpdCredits": 20,
     "cpdProviderNumber": "788000",
@@ -326,7 +327,7 @@
       {
         "stat": "$10.5T",
         "label": "Global Cybercrime Cost",
-        "detail": "Projected annual global cost of cybercrime damages in 2026, with the average enterprise breach recovery costing £3.2 million (Cybersecurity Ventures)."
+        "detail": "Projected annual global cost of cybercrime damages in 2026, with the average enterprise breach recovery costing \u00a33.2 million (Cybersecurity Ventures)."
       },
       {
         "stat": "68%",
@@ -355,7 +356,7 @@
     ],
     "syllabus": [
       {
-        "module": "Module 1 — The Modern Threat Landscape & Regulatory Accountability",
+        "module": "Module 1 \u2014 The Modern Threat Landscape & Regulatory Accountability",
         "subtitle": "Nation-State Actors, Ransomware Syndicates, and Legal Mandates",
         "topics": [
           "The modern cyber threat landscape: ransomware-as-a-service, supply-chain attacks, and insider threats",
@@ -366,7 +367,7 @@
         "caseStudy": "Harvard Business Case: Critical Infrastructure Ransomware Crisis and Executive Strategy"
       },
       {
-        "module": "Module 2 — Quantitative Cyber Risk Assessment & Threat Modelling",
+        "module": "Module 2 \u2014 Quantitative Cyber Risk Assessment & Threat Modelling",
         "subtitle": "Moving from Heatmaps to Probabilistic Financial Loss Models",
         "topics": [
           "Deficiencies of qualitative heatmaps and introduction to Factor Analysis of Information Risk (FAIR)",
@@ -377,7 +378,7 @@
         "caseStudy": "Hands-on Lab: Quantifying Annualised Loss Expectancy (ALE) for an Enterprise Asset"
       },
       {
-        "module": "Module 3 — Third-Party Vendor & Supply-Chain Risk Governance",
+        "module": "Module 3 \u2014 Third-Party Vendor & Supply-Chain Risk Governance",
         "subtitle": "Auditing Ecosystem Risk and Contractual Hardening",
         "topics": [
           "Evaluating third-party risk: SOC 2 Type II reports, ISO 27001 annexes, and questionnaire fatigue",
@@ -388,7 +389,7 @@
         "caseStudy": "Harvard Business Case: Tier-1 Supplier Compromise and Collateral Damage Control"
       },
       {
-        "module": "Module 4 — Incident Response Orchestration & Crisis Management",
+        "module": "Module 4 \u2014 Incident Response Orchestration & Crisis Management",
         "subtitle": "Leading Executive War-Rooms and Regulatory Communications",
         "topics": [
           "Computer Security Incident Response Teams (CSIRT): roles, escalations, and chain of custody",
@@ -399,7 +400,7 @@
         "caseStudy": "Executive Simulation: 72-Hour Live Tabletop Breach Notification Exercise"
       },
       {
-        "module": "Module 5 — Executive Practical Capstone Project",
+        "module": "Module 5 \u2014 Executive Practical Capstone Project",
         "subtitle": "Enterprise Cyber Risk Assessment & Executive Incident Playbook",
         "topics": [
           "Development of an end-to-end Enterprise Cyber Risk Assessment and financial loss quantification report",
@@ -417,8 +418,8 @@
     },
     "assessmentBreakdown": {
       "passRequirement": "70% overall pass mark required for UK CPD certification",
-      "theoryMcq": "30% Theory MCQ Examination — covering NIST CSF 2.0, FAIR mathematics, ISO 27001, and regulatory reporting mandates",
-      "practicalCapstone": "70% Practical Capstone Project — submission of a quantified Enterprise Cyber Risk Assessment and Incident Response Playbook",
+      "theoryMcq": "30% Theory MCQ Examination \u2014 covering NIST CSF 2.0, FAIR mathematics, ISO 27001, and regulatory reporting mandates",
+      "practicalCapstone": "70% Practical Capstone Project \u2014 submission of a quantified Enterprise Cyber Risk Assessment and Incident Response Playbook",
       "description": "Candidates must achieve a 70% overall benchmark to demonstrate both theoretical governance competence and executive crisis execution capability."
     },
     "support": [
@@ -461,13 +462,13 @@
   {
     "slug": "csl-certificate-in-strategic-leadership",
     "code": "CSL",
-    "title": "CSL — Certificate in Strategic Leadership",
+    "title": "CSL \u2014 Certificate in Strategic Leadership",
     "subtitle": "Strategic Leadership: Driving Organisational Change and Performance",
     "level": "Executive",
     "duration": "20 Hours (20 CPD Credits)",
-    "effort": "4–6 weeks self-paced (3–5 hours / week)",
-    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
-    "price": 895,
+    "effort": "4\u20136 weeks self-paced (3\u20135 hours / week)",
+    "format": "100% Online \u00b7 Self-Paced Modules \u00b7 Executive Masterclasses \u00b7 1-on-1 Senior Tutor Review",
+    "price": 545,
     "category": "Executive Certificates",
     "cpdCredits": 20,
     "cpdProviderNumber": "788000",
@@ -501,14 +502,14 @@
     ],
     "keyTakeaways": [
       "Synthesise complex market signals into high-clarity competitive strategies using dynamic scenario planning",
-      "Apply Kotter’s 8-Step Model and ADKAR methodologies to dismantle organizational resistance to change",
+      "Apply Kotter\u2019s 8-Step Model and ADKAR methodologies to dismantle organizational resistance to change",
       "Architect high-trust psychological safety and radical accountability within executive leadership teams",
       "Master high-stakes stakeholder influence, executive boardroom presence, and corporate storytelling",
       "Establish Balanced Scorecard and OKR cascades that connect overarching corporate vision to frontline execution"
     ],
     "syllabus": [
       {
-        "module": "Module 1 — Strategic Thinking & Competitive Positioning",
+        "module": "Module 1 \u2014 Strategic Thinking & Competitive Positioning",
         "subtitle": "Formulating Strategy Under Extreme Market Volatility",
         "topics": [
           "Strategic foresight: scenario planning, war-gaming, and weak signal detection in market trends",
@@ -519,29 +520,29 @@
         "caseStudy": "Harvard Business Case: Industrial Conglomerate Strategic Transformation Pivot"
       },
       {
-        "module": "Module 2 — The Psychology of Organisational Change",
+        "module": "Module 2 \u2014 The Psychology of Organisational Change",
         "subtitle": "Overcoming Cultural Inertia and Sustaining Momentum",
         "topics": [
           "Diagnosing systemic resistance: cognitive biases, status-quo bias, and loss aversion",
-          "Change architecture: integrating Kotter’s 8-Step Model with Prosci ADKAR frameworks",
+          "Change architecture: integrating Kotter\u2019s 8-Step Model with Prosci ADKAR frameworks",
           "Combatting change fatigue and designing quick-win milestones for sustained organizational energy",
           "Harvard Case Analysis: Failed Megamerger Integration and Cultural Clashes"
         ],
         "caseStudy": "Harvard Business Case: Post-Merger Cultural Integration Breakdown"
       },
       {
-        "module": "Module 3 — Executive Presence, Influence & Psychological Safety",
+        "module": "Module 3 \u2014 Executive Presence, Influence & Psychological Safety",
         "subtitle": "Leading Cross-Functional Matrix Teams Without Positional Coercion",
         "topics": [
           "Leading across matrix organisations: informal networks, coalition building, and stakeholder currency",
-          "Amy Edmondson’s psychological safety framework: cultivating speaking-up cultures in high-risk environments",
+          "Amy Edmondson\u2019s psychological safety framework: cultivating speaking-up cultures in high-risk environments",
           "Boardroom rhetoric: translating data into compelling narrative arcs for board and investor meetings",
           "Hands-on Lab: Executive Influence Simulation and Stakeholder Negotiation"
         ],
         "caseStudy": "Hands-on Lab: Resolving Executive Boardroom Impasse During Restructuring"
       },
       {
-        "module": "Module 4 — Strategy Execution Governance & Performance Cascades",
+        "module": "Module 4 \u2014 Strategy Execution Governance & Performance Cascades",
         "subtitle": "Bridging the Chasm Between Strategic Intent and Daily Operations",
         "topics": [
           "The Balanced Scorecard (BSC): financial, customer, internal process, and learning perspectives",
@@ -552,7 +553,7 @@
         "caseStudy": "Executive Simulation: Strategic Portfolio Allocation and Board Defense"
       },
       {
-        "module": "Module 5 — Executive Practical Capstone Project",
+        "module": "Module 5 \u2014 Executive Practical Capstone Project",
         "subtitle": "Strategic Transformation Roadmap & Executive Boardroom Dossier",
         "topics": [
           "Development of a comprehensive Strategic Transformation Roadmap for an enterprise organisation",
@@ -570,8 +571,8 @@
     },
     "assessmentBreakdown": {
       "passRequirement": "70% overall pass mark required for UK CPD certification",
-      "theoryMcq": "30% Theory MCQ Examination — evaluating strategic models, change frameworks, performance governance, and organizational psychology",
-      "practicalCapstone": "70% Practical Capstone Project — submission of an end-to-end Strategic Transformation Roadmap and Board Pitch Deck",
+      "theoryMcq": "30% Theory MCQ Examination \u2014 evaluating strategic models, change frameworks, performance governance, and organizational psychology",
+      "practicalCapstone": "70% Practical Capstone Project \u2014 submission of an end-to-end Strategic Transformation Roadmap and Board Pitch Deck",
       "description": "Graduation requires achieving at least 70% overall across theoretical examination and your strategic transformation capstone deliverable."
     },
     "support": [
@@ -614,13 +615,13 @@
   {
     "slug": "cesg-certificate-in-esg-and-corporate-sustainability",
     "code": "CESG",
-    "title": "CESG — Certificate in Environmental, Social, and Governance",
+    "title": "CESG \u2014 Certificate in Environmental, Social, and Governance",
     "subtitle": "ESG and Corporate Sustainability: Strategy, Risk, and Reporting",
     "level": "Executive",
     "duration": "20 Hours (20 CPD Credits)",
-    "effort": "4–6 weeks self-paced (3–5 hours / week)",
-    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
-    "price": 895,
+    "effort": "4\u20136 weeks self-paced (3\u20135 hours / week)",
+    "format": "100% Online \u00b7 Self-Paced Modules \u00b7 Executive Masterclasses \u00b7 1-on-1 Senior Tutor Review",
+    "price": 395,
     "category": "Executive Certificates",
     "cpdCredits": 20,
     "cpdProviderNumber": "788000",
@@ -661,7 +662,7 @@
     ],
     "syllabus": [
       {
-        "module": "Module 1 — The New ESG Imperative & Global Regulatory Architecture",
+        "module": "Module 1 \u2014 The New ESG Imperative & Global Regulatory Architecture",
         "subtitle": "Navigating CSRD, ESRS, ISSB, and SEC Mandates",
         "topics": [
           "The evolution of ESG: from voluntary CSR to mandatory statutory disclosure",
@@ -672,7 +673,7 @@
         "caseStudy": "Harvard Business Case: CSRD Compliance Crisis in a Global Consumer Goods Conglomerate"
       },
       {
-        "module": "Module 2 — Double Materiality & Stakeholder Due Diligence",
+        "module": "Module 2 \u2014 Double Materiality & Stakeholder Due Diligence",
         "subtitle": "Scoring Financial Materiality and Impact Materiality",
         "topics": [
           "Double materiality conceptual framework: financial materiality (outside-in) vs. impact materiality (inside-out)",
@@ -683,18 +684,18 @@
         "caseStudy": "Hands-on Lab: Conducting a Double Materiality Assessment for an Industrial Enterprise"
       },
       {
-        "module": "Module 3 — Carbon Accounting, Scope 1–3 & Decarbonisation Pathways",
+        "module": "Module 3 \u2014 Carbon Accounting, Scope 1\u20133 & Decarbonisation Pathways",
         "subtitle": "Calculating GHG Inventories and Net-Zero Trajectories",
         "topics": [
           "GHG Protocol Corporate Accounting and Reporting Standard: direct Scope 1 and indirect Scope 2 accounting",
           "Scope 3 value chain emissions: evaluating upstream procurement, freight, and downstream product lifecycles",
-          "Science Based Targets initiative (SBTi) criteria: setting 1.5°C aligned short-term and long-term net-zero goals",
+          "Science Based Targets initiative (SBTi) criteria: setting 1.5\u00b0C aligned short-term and long-term net-zero goals",
           "Harvard Case Analysis: Energy Transition Decarbonisation and Green Capital Capex Allocation"
         ],
         "caseStudy": "Harvard Business Case: Decarbonising Upstream Supply Chains in Heavy Industry"
       },
       {
-        "module": "Module 4 — Sustainable Finance, Social Capital & Board Governance",
+        "module": "Module 4 \u2014 Sustainable Finance, Social Capital & Board Governance",
         "subtitle": "Green Bonds, DEI, Executive Remuneration, and Greenwashing Defense",
         "topics": [
           "Sustainable finance instruments: Green Bonds, Sustainability-Linked Loans (SLLs), and EU Green Taxonomy",
@@ -705,7 +706,7 @@
         "caseStudy": "Executive Simulation: Audit Defense Against Regulatory Greenwashing Allegations"
       },
       {
-        "module": "Module 5 — Executive Practical Capstone Project",
+        "module": "Module 5 \u2014 Executive Practical Capstone Project",
         "subtitle": "Corporate ESG Strategy & Double Materiality Disclosure Pack",
         "topics": [
           "Delivery of a complete, auditable Corporate ESG Strategy and Double Materiality Report for an enterprise",
@@ -718,13 +719,13 @@
     ],
     "learningExperience": {
       "harvardCaseMethod": "Examination of real-world corporate sustainability transformations, activist shareholder campaigns, and greenwashing regulatory actions.",
-      "handsOnLabs": "Practical spreadsheets and interactive toolkits for Scope 1–3 GHG emissions accounting and double materiality matrix scoring.",
+      "handsOnLabs": "Practical spreadsheets and interactive toolkits for Scope 1\u20133 GHG emissions accounting and double materiality matrix scoring.",
       "tutorSupport": "Direct personal reviews from certified sustainability auditors, environmental economists, and corporate governance specialists."
     },
     "assessmentBreakdown": {
       "passRequirement": "70% overall pass mark required for UK CPD certification",
-      "theoryMcq": "30% Theory MCQ Examination — testing international standards (CSRD, ISSB, GHG Protocol), materiality methodology, and regulatory mandates",
-      "practicalCapstone": "70% Practical Capstone Project — submission of an end-to-end Corporate ESG Strategy, Materiality Matrix, and Net-Zero Roadmap",
+      "theoryMcq": "30% Theory MCQ Examination \u2014 testing international standards (CSRD, ISSB, GHG Protocol), materiality methodology, and regulatory mandates",
+      "practicalCapstone": "70% Practical Capstone Project \u2014 submission of an end-to-end Corporate ESG Strategy, Materiality Matrix, and Net-Zero Roadmap",
       "description": "Candidates must achieve at least 70% across the theoretical exam and capstone dossier to receive the accredited executive certificate."
     },
     "support": [
