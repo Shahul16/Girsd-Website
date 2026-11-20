@@ -44,6 +44,40 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    return [
+      {
+        source: "/courses/ai-in-cybersecurity",
+        destination: "/courses",
+        permanent: true,
+      },
+      {
+        source: "/courses/data-science-with-python",
+        destination: "/courses",
+        permanent: true,
+      },
+      {
+        source: "/courses/business-analysis",
+        destination: "/courses",
+        permanent: true,
+      },
+      {
+        source: "/courses/export-import",
+        destination: "/courses",
+        permanent: true,
+      },
+      {
+        source: "/courses/digital-marketing",
+        destination: "/courses",
+        permanent: true,
+      },
+      {
+        source: "/courses/effective-managerial-skills",
+        destination: "/courses",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

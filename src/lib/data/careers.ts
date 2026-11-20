@@ -138,7 +138,7 @@ export const openings: JobOpening[] = [
     salary: "£175 – £300 per delivered session, paid monthly",
     package: "Flexible scheduling, access to selected GIRSD programmes and agreed preparation time included in the session fee",
     summary:
-      "Deliver live online sessions and assess learner submissions on one of our certified CPD courses — data science, business analysis, cybersecurity, digital marketing or management.",
+      "Deliver live online sessions and assess learner submissions on one of our certified CPD executive programmes — business analysis, AI governance, cybersecurity risk management, strategic leadership, or ESG and corporate sustainability.",
     responsibilities: [
       "Deliver scheduled live sessions and Q&A clinics",
       "Mark assessments and provide constructive learner feedback",

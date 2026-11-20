@@ -67,33 +67,33 @@ export default function HeroCard({ slide, upcomingEvent }: HeroCardProps) {
             </svg>
           </span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-gold">UK CPD Standards Office</p>
-            <p className="text-sm font-bold text-white">Accredited Professional Learning</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-gold">CPD Accredited | Provider #788000</p>
+            <p className="text-sm font-bold text-white">Executive Certificates</p>
           </div>
         </div>
 
         <div className="mt-5 space-y-2.5">
           <div className="rounded-lg border border-white/10 bg-white/5 p-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-white">Data Science with Python</span>
-              <span className="rounded bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">8 Weeks</span>
+              <span className="font-semibold text-white">AI Governance (CAIG)</span>
+              <span className="rounded bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">20 Credits</span>
             </div>
-            <p className="mt-1 text-xs text-slate-300">Tutor-supported hands-on data analytics & modelling</p>
+            <p className="mt-1 text-xs text-slate-300">Responsible AI, EU AI Act compliance &amp; risk governance</p>
           </div>
 
           <div className="rounded-lg border border-white/10 bg-white/5 p-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-white">Cybersecurity</span>
-              <span className="rounded bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">6 Weeks</span>
+              <span className="font-semibold text-white">Cybersecurity Risk (CCRM)</span>
+              <span className="rounded bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">20 Credits</span>
             </div>
-            <p className="mt-1 text-xs text-slate-300">Threat intelligence, advanced detection &amp; defense systems</p>
+            <p className="mt-1 text-xs text-slate-300">Quantitative risk assessment &amp; executive incident response</p>
           </div>
         </div>
 
         <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3 text-xs text-slate-300">
-          <span className="text-gold-light">✓ Verifiable Certificate</span>
+          <span className="text-gold-light">✓ Verifiable Digital Certificate</span>
           <Link href="/courses" className="font-semibold text-white hover:text-gold hover:underline">
-            All 6 courses →
+            All 5 Executive Certificates →
           </Link>
         </div>
       </div>

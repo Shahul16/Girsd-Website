@@ -5,8 +5,10 @@ export const runtime = 'nodejs';
 
 // Fallback sample data, used only until Supabase is configured.
 const sampleCertificates = [
-  { id: 'GIRSD-2026-001', name: 'John Doe', course: 'Advanced Research Methods', date: '2026-05-15' },
-  { id: 'GIRSD-2026-002', name: 'Jane Smith', course: 'Data Science with Python', date: '2026-06-20' },
+  { id: 'GIRSD-2026-CIBA', name: 'David Sterling', course: 'Executive Certificate in Business Analysis (CIBA)', date: '2026-10-14' },
+  { id: 'GIRSD-2026-CAIG', name: 'Dr Elena Rostova', course: 'Executive Certificate in AI Governance (CAIG)', date: '2026-09-18' },
+  { id: 'GIRSD-2026-CCRM', name: 'Marcus Vance', course: 'Executive Certificate in Cybersecurity Risk Management (CCRM)', date: '2026-08-22' },
+  { id: 'GIRSD-2026-001', name: 'John Doe', course: 'Certificate in Strategic Leadership', date: '2026-05-15' },
 ];
 
 /**

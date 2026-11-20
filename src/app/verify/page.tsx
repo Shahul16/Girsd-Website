@@ -10,8 +10,13 @@ type Result =
 
 /** Demo verification register. Replace with a database lookup (see README) for production. */
 const DEMO_REGISTER: Record<string, { name: string; award: string; date: string }> = {
-  "GIRSD-2026-0417": { name: "Aisha Rahman", award: "Certificate in Data Science with Python", date: "12 June 2026" },
-  "GIRSD-2026-0338": { name: "Thomas Whitfield", award: "Certificate in Cybersecurity", date: "28 May 2026" },
+  "GIRSD-2026-CIBA": { name: "David Sterling", award: "Executive Certificate in Business Analysis (CIBA) — CPD Provider #788000", date: "14 October 2026" },
+  "GIRSD-2026-CAIG": { name: "Dr Elena Rostova", award: "Executive Certificate in AI Governance (CAIG) — CPD Provider #788000", date: "18 September 2026" },
+  "GIRSD-2026-CCRM": { name: "Marcus Vance", award: "Executive Certificate in Cybersecurity Risk Management (CCRM) — CPD Provider #788000", date: "22 August 2026" },
+  "GIRSD-2026-CSL": { name: "Sarah Jenkins", award: "Executive Certificate in Strategic Leadership (CSL) — CPD Provider #788000", date: "10 July 2026" },
+  "GIRSD-2026-CESG": { name: "Claire Beauchamp", award: "Executive Certificate in ESG & Corporate Sustainability (CESG) — CPD Provider #788000", date: "05 June 2026" },
+  "GIRSD-2026-0417": { name: "Aisha Rahman", award: "Certificate in Strategic Business Analysis", date: "12 June 2026" },
+  "GIRSD-2026-0338": { name: "Thomas Whitfield", award: "Certificate in Cybersecurity Risk Management", date: "28 May 2026" },
   "GIRSD-2025-1204": { name: "Mei-Ling Chen", award: "ICRIET 2025 — Certificate of Presentation", date: "16 October 2025" },
 };
 

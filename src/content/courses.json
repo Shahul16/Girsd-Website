@@ -1,363 +1,767 @@
 [
   {
-    "slug": "ai-in-cybersecurity",
-    "title": "AI in Cybersecurity",
-    "level": "Intermediate",
-    "duration": "4 weeks (8 hours)",
-    "effort": "2 hours per week + self-paced labs",
-    "price": 550,
-    "category": "Skills Development Courses",
-    "summary": "A deep dive into the integration of artificial intelligence with core cybersecurity practices — detect, analyse and respond to cyber threats with intelligent systems.",
-    "description": "GIRSD's AI in Cybersecurity Course offers a deep dive into the integration of artificial intelligence with core cybersecurity practices. This course is structured to deliver a strong foundation in AI technologies while applying them to real-world security challenges. You will gain both theoretical understanding and hands-on expertise in using intelligent systems to detect, analyse and respond to cyber threats, and learn how AI is revolutionising threat detection, incident response and predictive defence. Technologies covered include TensorFlow, Scikit-learn, Keras, Pandas & NumPy, the ELK Stack, Snort with AI integration, Hugging Face Transformers, Jupyter Notebooks and OpenCV.",
-    "syllabus": [
+    "slug": "ciba-certificate-in-business-analysis",
+    "code": "CIBA",
+    "title": "CIBA — Certificate in Business Analysis",
+    "subtitle": "Strategic Business Analysis: Requirements Elicitation and Solution Design",
+    "level": "Executive",
+    "duration": "20 Hours (20 CPD Credits)",
+    "effort": "4–6 weeks self-paced (3–5 hours / week)",
+    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
+    "price": 895,
+    "category": "Executive Certificates",
+    "cpdCredits": 20,
+    "cpdProviderNumber": "788000",
+    "image": "/co-ciba.png",
+    "summary": "Master the executive art of bridging corporate strategy and technology execution. Deliver robust requirements elicitation, BPMN 2.0 process modelling, agile solution design, and defensible financial business cases.",
+    "description": "The Executive Certificate in Business Analysis (CIBA) is designed for senior professionals, functional leads, and management consultants who operate at the critical intersection of enterprise strategy and technological execution. Across 20 CPD-accredited hours, this programme delivers a comprehensive mastery of strategic requirements engineering, stakeholder political mapping, enterprise BPMN 2.0 workflow modelling, agile user story decomposition, and financial return modelling (NPV, ROI, and risk appraisal). Rooted in the Harvard Case-Method and hands-on digital architecture sandboxes, CIBA equips practitioners to eliminate project failure risks, align competing executive agendas, and design high-impact solutions that deliver measurable shareholder value.",
+    "businessCaseIntro": "In 2026, enterprise technology modernisation and digital transformation initiatives are under unprecedented financial and regulatory scrutiny. Organisations cannot afford ambiguous requirements, scope creep, or misaligned technological investments.",
+    "businessCase": [
       {
-        "module": "Unit 1 — Introduction to AI in Cybersecurity",
-        "topics": [
-          "Overview of AI and machine learning in cybersecurity",
-          "Key concepts and terminology",
-          "Evolution of cyber threats and AI defence strategies"
-        ]
+        "stat": "73%",
+        "label": "Transformation Failure Rate",
+        "detail": "Of digital transformation initiatives stall or underperform due to poor requirements elicitation and communication silos between business and IT (McKinsey Enterprise Benchmark)."
       },
       {
-        "module": "Unit 2 — Machine Learning Fundamentals for Cybersecurity",
-        "topics": [
-          "Basics of machine learning algorithms",
-          "Data preprocessing and feature engineering",
-          "Supervised vs unsupervised learning in security contexts"
-        ]
+        "stat": "84%",
+        "label": "Executive Priority",
+        "detail": "Of Chief Information Officers and enterprise leaders rank strategic business analysis as a top-3 competitive competency in high-stakes technology modernisation."
       },
       {
-        "module": "Unit 3 — Threat Detection using AI",
-        "topics": [
-          "Anomaly detection techniques",
-          "Behavioural analysis with machine learning",
-          "AI-driven intrusion detection systems (IDS)"
-        ]
-      },
-      {
-        "module": "Unit 4 — NLP for Cybersecurity",
-        "topics": [
-          "NLP for threat intelligence and phishing detection",
-          "Fine-tuning transformer models (BERT, GPT)",
-          "Analysing security logs and alerts with NLP"
-        ]
-      },
-      {
-        "module": "Unit 5 — Tools and Technologies",
-        "topics": [
-          "Hands-on with TensorFlow, Scikit-learn and the ELK Stack",
-          "Integrating AI models with security infrastructure",
-          "Ethical considerations and AI governance in cybersecurity"
-        ]
+        "stat": "£68,500+",
+        "label": "Market Benchmark",
+        "detail": "Median benchmark salary in the UK for senior business analysts and strategy consultants holding accredited CPD executive credentials."
       }
     ],
+    "whoIsThisFor": [
+      "Senior & Lead Business Analysts seeking formal executive-level UK CPD accreditation",
+      "Strategy & Management Consultants designing enterprise transformation blueprints",
+      "Product Managers, Product Owners & Agile Delivery Leads scaling digital platforms",
+      "Enterprise & Solutions Architects aligning technical architectures with business models",
+      "Operations Directors & Programme Managers steering multi-million-pound capital initiatives"
+    ],
+    "keyTakeaways": [
+      "Formulate defensible, boardroom-ready business cases with quantitative ROI, NPV, and risk appraisal models",
+      "Facilitate high-impact executive elicitation workshops that resolve conflicting stakeholder agendas",
+      "Architect and optimise end-to-end enterprise workflows using formal BPMN 2.0 standards and gap analysis",
+      "Engineer comprehensive Requirements Traceability Matrices (RTM) and Agile epics with rigorous acceptance criteria",
+      "Lead solution validation reviews and post-implementation benefit realisation governance frameworks"
+    ],
+    "syllabus": [
+      {
+        "module": "Module 1 — Strategic Context & Advanced Requirements Elicitation",
+        "subtitle": "Aligning Enterprise Strategy with Stakeholder Realities",
+        "topics": [
+          "Organisational strategic alignment: PESTLE, Porter's Five Forces, and VRIO analysis",
+          "Stakeholder political mapping, RACI matrices, and executive influence strategies",
+          "Advanced elicitation techniques: cognitive bias mitigation, structured executive interviews, and collaborative workshops",
+          "Harvard Case Analysis: Core Banking Modernisation at Global Tier-1 Bank (navigating regulatory and technical debt)"
+        ],
+        "caseStudy": "Harvard Business Case: Tier-1 Bank Core Banking Platform Transformation"
+      },
+      {
+        "module": "Module 2 — Enterprise Process Architecture & BPMN 2.0 Modelling",
+        "subtitle": "Mapping Complex Operational Workflows with Mathematical Precision",
+        "topics": [
+          "BPMN 2.0 notation standards: events, gateways, pools, lanes, and message flows",
+          "As-is operational baseline mapping vs. to-be future state target operating models",
+          "Root-cause analysis, value stream mapping, and cycle-time bottleneck identification",
+          "Hands-on Lab: Enterprise Order-to-Cash Workflow Optimisation in BPMN 2.0"
+        ],
+        "caseStudy": "Hands-on Lab: Multinational Logistics Order-to-Cash Workflow Re-engineering"
+      },
+      {
+        "module": "Module 3 — Agile Solution Architecture & Traceability",
+        "subtitle": "Deconstructing Complex Vision into Executable Technical Epics",
+        "topics": [
+          "Writing rigorous epics, user stories, and Gherkin-syntax acceptance criteria (Given-When-Then)",
+          "Non-Functional Requirements (NFRs): latency, scalability, security, and statutory compliance",
+          "Requirements Traceability Matrix (RTM): bi-directional tracking from strategic objective to test script",
+          "Harvard Case Analysis: HealthTech Cloud SaaS Architecture Overhaul under strict data sovereignty rules"
+        ],
+        "caseStudy": "Harvard Business Case: HealthTech Cloud Migration & Regulatory Compliance Architecture"
+      },
+      {
+        "module": "Module 4 — Financial Business Cases, Vendor Selection & Governance",
+        "subtitle": "Financial Modelling, Procurement Due Diligence and Value Realisation",
+        "topics": [
+          "Quantitative financial business cases: CapEx vs. OpEx, Net Present Value (NPV), ROI, and payback periods",
+          "RFP formulation, weighted scoring models, and commercial vendor appraisal",
+          "Change control boards (CCB), scope governance, and benefit realisation monitoring",
+          "Executive Boardroom Presentation: Pitching high-value business cases to executive steering committees"
+        ],
+        "caseStudy": "Executive Simulation: Multi-Vendor ERP Replacement Procurement Defense"
+      },
+      {
+        "module": "Module 5 — Executive Practical Capstone Project",
+        "subtitle": "End-to-End Enterprise Business Analysis Deliverable Pack",
+        "topics": [
+          "Synthesis of a complete, boardroom-ready Business Analysis Dossier for an enterprise transformation project",
+          "Execution of executive summary, stakeholder map, BPMN 2.0 models, RTM, and financial justification",
+          "Rigorous independent evaluation by senior faculty and enterprise practitioners",
+          "Formal assessment weighting: 70% of total programme grade (70% pass standard)"
+        ],
+        "caseStudy": "Comprehensive Enterprise Capstone Deliverable Pack"
+      }
+    ],
+    "learningExperience": {
+      "harvardCaseMethod": "Immersion into real-world corporate dilemmas, unpacking actual board-level transformations, crisis turnarounds, and enterprise technology implementations.",
+      "handsOnLabs": "Interactive digital sandboxes for BPMN 2.0 process modelling, Jira/Confluence workflow alignment, and quantitative financial ROI modelling.",
+      "tutorSupport": "Direct 1-on-1 feedback and assessment mentorship from doctoral faculty and seasoned enterprise consulting directors."
+    },
+    "assessmentBreakdown": {
+      "passRequirement": "70% overall pass mark required for UK CPD certification",
+      "theoryMcq": "30% Theory MCQ Examination — timed online examination evaluating core frameworks, BPMN syntax, and elicitation methodology",
+      "practicalCapstone": "70% Practical Capstone Project — submission of a boardroom-ready Business Analysis Deliverable Pack and Financial Justification",
+      "description": "To maintain uncompromising academic and professional standards, candidates must achieve a combined score of at least 70% across both the theoretical examination and the practical capstone dossier."
+    },
     "support": [
-      "Online sessions & self-paced study",
-      "Project-based learning",
-      "Real-world development experience",
-      "Interactive teaching methodologies",
-      "No prior programming knowledge required — bring your own laptop"
+      "1-on-1 personalized tutor assessment and detailed feedback",
+      "Live interactive executive masterclasses and cohort Q&A sessions",
+      "Complete Executive Business Analysis Toolkit (BPMN templates, financial ROI models, RTM sheets)",
+      "Lifetime access to digital programme materials and case study repositories",
+      "Dedicated Programme Advisor guidance throughout your learning journey"
     ],
     "assessment": [
-      "18 coding exercises",
-      "5 assignments",
-      "5 quizzes",
-      "Capstone project",
-      "Presentations"
+      "Continuous formative module check-ins and knowledge verification",
+      "Timed online theoretical MCQ examination (30% weighting)",
+      "Executive Practical Capstone Deliverable Pack (70% weighting)",
+      "Strict 70% overall benchmark for certification"
     ],
-    "certification": "GIRSD Certificate in Cybersecurity awarded on successful completion of the capstone project and assessments.",
-    "image": "/co-ai-in-cybersecurity.png"
+    "certification": "Executive Certificate in Business Analysis (CIBA) accredited by The CPD Group (Provider No. 788000), carrying 20 CPD Hours / 20 CPD Credits. Includes verifiable digital credential and physical embossed parchment upon request.",
+    "faqs": [
+      {
+        "question": "What are the prerequisites for the CIBA programme?",
+        "answer": "This executive certificate is designed for working professionals. We recommend a minimum of 2 years of professional, analytical, or project experience. No prior coding or computer science degree is required; the focus is on strategic requirements engineering, business modelling, and solution governance."
+      },
+      {
+        "question": "What is the expected time commitment?",
+        "answer": "The programme comprises 20 hours of structured learning (20 CPD credits). Most executive participants complete the programme over 4 to 6 weeks, dedicating approximately 3 to 5 hours per week to self-paced modules, case analyses, and capstone preparation."
+      },
+      {
+        "question": "Can our organisation enrol a team or corporate cohort?",
+        "answer": "Yes. GlobalRSD provides corporate cohort packages for corporate teams of three or more, including tailored enterprise case studies, consolidated invoicing, and private progress reporting for Learning & Development (L&D) directors. Speak to a Programme Advisor to configure your cohort."
+      },
+      {
+        "question": "How and when is the digital CPD certificate delivered?",
+        "answer": "Upon successfully attaining the required 70% pass standard across your MCQ exam and Capstone project, your verifiable digital certificate is generated within 48 hours. The credential features a unique cryptographic verification ID registered on the national CPD Register and verifiable via globalrsd.co.uk/verify, alongside an embeddable digital badge for LinkedIn."
+      },
+      {
+        "question": "How are assessments graded?",
+        "answer": "Your theoretical knowledge is assessed via a 30% online MCQ examination, while your practical applied skills are evaluated through a 70% Capstone deliverable pack reviewed personally by our senior academic and practitioner faculty."
+      }
+    ]
   },
   {
-    "slug": "data-science-with-python",
-    "title": "Data Science with Python",
-    "level": "Foundation",
-    "duration": "6 weeks",
-    "effort": "3–4 hours per week",
-    "price": 495,
-    "category": "Skills Development Courses",
-    "summary": "Launch a data science career: Python programming, data analysis, visualisation and an introduction to machine learning with real datasets.",
-    "description": "Data scientist is one of the most rewarding career paths available today, offering strong salaries, high job satisfaction and outstanding growth opportunities. This course takes you from Python fundamentals through the complete data science workflow: acquiring and cleaning data with Pandas and NumPy, exploring and visualising it with Matplotlib and Seaborn, and building your first predictive models with Scikit-learn. Every unit is anchored in project-based learning using real datasets, and the course concludes with a capstone analysis you can present to employers.",
-    "syllabus": [
+    "slug": "caig-certificate-in-ai-governance",
+    "code": "CAIG",
+    "title": "CAIG — Certificate in AI Governance",
+    "subtitle": "AI Governance: Risk Management and Responsible Practice",
+    "level": "Executive",
+    "duration": "20 Hours (20 CPD Credits)",
+    "effort": "4–6 weeks self-paced (3–5 hours / week)",
+    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
+    "price": 895,
+    "category": "Executive Certificates",
+    "cpdCredits": 20,
+    "cpdProviderNumber": "788000",
+    "image": "/co-caig.png",
+    "summary": "Master the legal, operational, and ethical governance of artificial intelligence. Implement the EU AI Act, NIST AI RMF, and ISO/IEC 42001 while driving responsible, high-velocity enterprise innovation.",
+    "description": "The Executive Certificate in AI Governance (CAIG) provides corporate leaders, compliance officers, and technology executives with the authoritative framework needed to govern artificial intelligence across modern enterprises. As binding regulatory enforcement under the EU AI Act and UK AI Safety Framework takes hold in 2026, organisations face unprecedented operational, ethical, and legal liability. This 20-CPD-credit executive programme covers algorithmic risk classification, data provenance and copyright in foundation models, bias auditing, shadow AI prevention, and board-level risk reporting. Learn to safeguard your organisation against catastrophic liabilities while unlocking safe, scalable AI-driven productivity.",
+    "businessCaseIntro": "In 2026, AI is no longer an unregulated experimental playground. Uncontrolled artificial intelligence deployments expose corporations to multi-million-euro regulatory penalties, intellectual property loss, and catastrophic reputational damage.",
+    "businessCase": [
       {
-        "module": "Unit 1 — Python Foundations",
-        "topics": [
-          "Python syntax, data types and control flow",
-          "Working in Jupyter Notebooks",
-          "Functions and libraries"
-        ]
+        "stat": "82%",
+        "label": "Regulatory Scrutiny",
+        "detail": "Of enterprise AI deployments are subject to mandatory regulatory oversight under the EU AI Act, UK AI Framework, and global cross-border privacy mandates."
       },
       {
-        "module": "Unit 2 — Data Wrangling",
-        "topics": [
-          "Pandas DataFrames and NumPy arrays",
-          "Cleaning and transforming messy data",
-          "Combining and reshaping datasets"
-        ]
+        "stat": "76%",
+        "label": "Board Governance Deficit",
+        "detail": "Of corporate boards acknowledge an alarming absence of certified internal AI risk oversight, auditability, and governance capability (Deloitte Board Survey)."
       },
       {
-        "module": "Unit 3 — Analysis & Visualisation",
-        "topics": [
-          "Exploratory data analysis",
-          "Visualisation with Matplotlib and Seaborn",
-          "Communicating insights"
-        ]
-      },
-      {
-        "module": "Unit 4 — Introduction to Machine Learning",
-        "topics": [
-          "Supervised learning with Scikit-learn",
-          "Model evaluation and validation",
-          "Capstone project"
-        ]
+        "stat": "3x",
+        "label": "Deployment Velocity",
+        "detail": "Enterprises with formalized, proactive AI risk governance frameworks achieve 3 times faster time-to-market for production generative AI systems (Gartner Research)."
       }
     ],
+    "whoIsThisFor": [
+      "Chief Risk Officers (CROs) & Enterprise Risk Managers navigating technological liabilities",
+      "General Counsel, Chief Compliance Officers & Legal Directors establishing AI guardrails",
+      "Data Protection Officers (DPOs) & Chief Privacy Officers (CPOs) managing training data governance",
+      "Chief Technology Officers (CTOs), AI Product Heads & Enterprise Solutions Architects",
+      "Management Consultants & Non-Executive Directors advising boards on responsible innovation"
+    ],
+    "keyTakeaways": [
+      "Classify and inventory enterprise AI systems against EU AI Act risk tiers and the NIST AI RMF (Map, Measure, Manage, Govern)",
+      "Design and operationalise an Enterprise AI Ethics Charter, Review Board, and Responsible AI operating model",
+      "Conduct systematic algorithmic bias, fairness, and explainability audits using quantitative metrics",
+      "Implement robust protocols for IP indemnification, data privacy, and mitigation of shadow generative AI",
+      "Author board-level AI assurance reports and audit documentation aligned with ISO/IEC 42001 standards"
+    ],
+    "syllabus": [
+      {
+        "module": "Module 1 — The Global AI Regulatory Landscape & Statutory Mandates",
+        "subtitle": "Navigating the EU AI Act, UK Regulatory Stance, and Global Treaties",
+        "topics": [
+          "EU AI Act enforcement: prohibited practices, high-risk systems, and transparency obligations",
+          "UK pro-innovation regulatory framework, US Executive Orders, and ISO/IEC 42001 certification",
+          "Liability frameworks: corporate director responsibilities, statutory fines (up to €35m or 7% of turnover)",
+          "Harvard Case Analysis: Global Financial Insurer Fined for Unaudited Machine Learning Underwriting"
+        ],
+        "caseStudy": "Harvard Business Case: Algorithmic Discrimination Sanctions in Consumer Credit"
+      },
+      {
+        "module": "Module 2 — AI Risk Identification & NIST AI RMF Operationalisation",
+        "subtitle": "Taxonomy of Modern AI Vulnerabilities and Systemic Threats",
+        "topics": [
+          "NIST AI Risk Management Framework 1.0: Map, Measure, Manage, and Govern functions",
+          "Foundation model and LLM risks: hallucination rates, prompt injection, and data leakage vectors",
+          "Shadow AI mitigation: acceptable use policies, enterprise gateway proxies, and employee monitoring",
+          "Hands-on Lab: Enterprise AI System Classification and Risk Register Formulation"
+        ],
+        "caseStudy": "Hands-on Lab: Constructing a Comprehensive Enterprise AI Risk Register"
+      },
+      {
+        "module": "Module 3 — Algorithmic Bias, Explainability & Privacy Governance",
+        "subtitle": "Auditing Datasets, Model Transparency, and IP Integrity",
+        "topics": [
+          "Auditing training datasets for historical bias, demographic skew, and unrepresentative sampling",
+          "Explainable AI (XAI): SHAP (SHapley Additive exPlanations) and LIME methodologies for executives",
+          "Copyright, synthetic data provenance, and GDPR 'Right to Explanation' compliance",
+          "Harvard Case Analysis: HealthTech Diagnostic Model Bias Scandal & Public Rectification"
+        ],
+        "caseStudy": "Harvard Business Case: Deep Learning Diagnostic Tool Bias Rectification"
+      },
+      {
+        "module": "Module 4 — Enterprise AI Governance Operating Models & Board Reporting",
+        "subtitle": "Architecting Responsible AI Committees, Metrics, and Third-Party Oversight",
+        "topics": [
+          "Structuring the AI Ethics Committee: multidisciplinary charters, escalation protocols, and veto power",
+          "Third-party vendor AI risk due diligence: auditing SaaS AI claims and contractual indemnity clauses",
+          "Key Risk Indicators (KRIs) and executive dashboard design for corporate audit and board committees",
+          "Executive Simulation: Boardroom Defense of an Enterprise LLM Deployment Decision"
+        ],
+        "caseStudy": "Executive Simulation: Emergency Board Committee on GenAI Intellectual Property Exposure"
+      },
+      {
+        "module": "Module 5 — Executive Practical Capstone Project",
+        "subtitle": "Comprehensive Enterprise AI Governance Charter & Audit Dossier",
+        "topics": [
+          "Production of an exhaustive Enterprise AI Governance Charter for a high-risk AI deployment",
+          "Development of a NIST-aligned risk matrix, algorithmic audit methodology, and executive assurance pack",
+          "Independent evaluation and defense assessed against ISO/IEC 42001 and EU AI Act criteria",
+          "Formal assessment weighting: 70% of total programme grade (70% pass standard)"
+        ],
+        "caseStudy": "Comprehensive Enterprise AI Governance Charter & Audit Capstone"
+      }
+    ],
+    "learningExperience": {
+      "harvardCaseMethod": "Analysis of landmark international enforcement cases, intellectual property litigation, and boardroom crises involving algorithmic failures.",
+      "handsOnLabs": "Simulated algorithmic risk scoring, bias audit toolkits, and enterprise AI policy design sandboxes.",
+      "tutorSupport": "Direct personal reviews from certified data protection practitioners, legal scholars, and AI governance directors."
+    },
+    "assessmentBreakdown": {
+      "passRequirement": "70% overall pass mark required for UK CPD certification",
+      "theoryMcq": "30% Theory MCQ Examination — testing global regulatory statutes, risk tiering, ISO/IEC 42001, and algorithmic bias metrics",
+      "practicalCapstone": "70% Practical Capstone Project — delivery of a comprehensive Enterprise AI Governance Charter, Risk Assessment, and Audit Plan",
+      "description": "Graduation requires demonstrating both conceptual mastery via the 30% examination and executive operational competence through the 70% Capstone submission."
+    },
     "support": [
-      "Online sessions & self-paced study",
-      "Project-based learning with real datasets",
-      "Tutor code review",
-      "Interactive teaching methodologies"
+      "Personalised tutor review and feedback on all assignments",
+      "Live quarterly AI Regulatory Briefings covering latest EU & UK statutory changes",
+      "Enterprise AI Governance Template Pack (Charters, Vendor Diligence Checklists, Risk Matrices)",
+      "Lifetime access to our research repositories and case library",
+      "Dedicated Programme Advisor guidance throughout your studies"
     ],
     "assessment": [
-      "Weekly coding exercises",
-      "Quizzes per unit",
-      "Capstone data analysis project",
-      "Final presentation"
+      "Weekly formative compliance knowledge evaluations",
+      "Timed online theoretical MCQ examination (30% weighting)",
+      "Executive Practical Capstone Governance Pack (70% weighting)",
+      "Strict 70% combined standard for CPD certification"
     ],
-    "certification": "GIRSD Certificate in Data Science with Python awarded on successful capstone completion.",
-    "image": "/co-data-science-with-python.png"
+    "certification": "Executive Certificate in AI Governance (CAIG) accredited by The CPD Group (Provider No. 788000), carrying 20 CPD Hours / 20 CPD Credits. Includes verifiable digital credential and physical embossed parchment upon request.",
+    "faqs": [
+      {
+        "question": "Do I need a technical machine learning background to take CAIG?",
+        "answer": "No. The programme is formulated for executive decision-makers, risk managers, legal counsel, and business leaders. While we examine model mechanics and algorithmic transparency tools conceptually, no programming or mathematics is required."
+      },
+      {
+        "question": "What is the time commitment for this programme?",
+        "answer": "The programme comprises 20 hours of focused study (20 CPD credits). It is typically completed over 4 to 6 weeks with a weekly commitment of 3 to 5 hours, accommodating busy executive schedules."
+      },
+      {
+        "question": "Can multiple executives from our company enrol together?",
+        "answer": "Yes. We offer customized corporate cohorts where multidisciplinary teams (legal, risk, and technical leads) can learn together and develop their company's actual AI governance charter during the capstone. Contact our Programme Advisors for cohort pricing."
+      },
+      {
+        "question": "How is the certificate verified by employers and regulators?",
+        "answer": "Upon passing with 70%+, your digital certificate is registered on the national UK CPD Register and verifiable instantly via globalrsd.co.uk/verify with a unique verification code and QR identifier, demonstrating statutory CPD compliance."
+      },
+      {
+        "question": "Does this programme cover the EU AI Act?",
+        "answer": "Yes. The EU AI Act, along with the NIST AI RMF, ISO/IEC 42001, and UK statutory guidance, forms the central regulatory spine of the entire curriculum."
+      }
+    ]
   },
   {
-    "slug": "business-analysis",
-    "title": "Business Analysis",
-    "level": "Intermediate",
-    "duration": "6 weeks",
-    "effort": "3–4 hours per week",
-    "price": 495,
-    "category": "Skills Development Courses",
-    "summary": "Bridge the IT and business sectors: requirements engineering, process modelling and data-driven decision making with the latest analysis tools.",
-    "description": "The Business Analysis course at GIRSD provides a thorough curriculum aimed at connecting the IT and business sectors by integrating the latest data and analysis techniques. You will learn to elicit and document requirements, model business processes, analyse data to support decisions, and communicate effectively with both technical teams and executive stakeholders. The course follows recognised industry frameworks and closes with an end-to-end case study in which you produce a complete business analysis deliverable pack.",
-    "syllabus": [
+    "slug": "ccrm-certificate-in-cybersecurity-risk-management",
+    "code": "CCRM",
+    "title": "CCRM — Certificate in Cybersecurity Risk Management",
+    "subtitle": "Cybersecurity Risk Management: Assessment and Incident Response",
+    "level": "Executive",
+    "duration": "20 Hours (20 CPD Credits)",
+    "effort": "4–6 weeks self-paced (3–5 hours / week)",
+    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
+    "price": 895,
+    "category": "Executive Certificates",
+    "cpdCredits": 20,
+    "cpdProviderNumber": "788000",
+    "image": "/co-ccrm.png",
+    "summary": "Quantify enterprise cyber risks in financial terms, build resilient incident response playbooks, and lead executive crisis governance aligned with NIST CSF 2.0, ISO 27001, DORA, and NIS2.",
+    "description": "The Executive Certificate in Cybersecurity Risk Management (CCRM) transforms technical security challenges into strategic boardroom risk management. In 2026, global cybercrime losses exceed $10.5 trillion, and regulatory regimes like the EU Digital Operational Resilience Act (DORA), NIS2, and UK Cyber Assessment Framework (CAF) enforce personal liability on corporate directors. Cybersecurity can no longer be quarantined in the IT basement. This 20-CPD-credit programme equips leaders to quantify cyber risk in monetary terms (FAIR methodology), govern third-party supply chain vulnerabilities, orchestrate executive crisis incident response, and direct regulatory notifications under intense operational pressure.",
+    "businessCaseIntro": "In 2026, cybersecurity is recognized as an existential enterprise business risk. Leaders who cannot translate threat intelligence into financial exposure leave their organisations vulnerable to catastrophic breach liabilities and regulatory sanctions.",
+    "businessCase": [
       {
-        "module": "Unit 1 — The Business Analyst Role",
-        "topics": [
-          "The BA within projects and organisations",
-          "Stakeholder identification and engagement",
-          "Business analysis frameworks"
-        ]
+        "stat": "$10.5T",
+        "label": "Global Cybercrime Cost",
+        "detail": "Projected annual global cost of cybercrime damages in 2026, with the average enterprise breach recovery costing £3.2 million (Cybersecurity Ventures)."
       },
       {
-        "module": "Unit 2 — Requirements Engineering",
-        "topics": [
-          "Elicitation techniques: interviews, workshops, observation",
-          "Writing user stories and use cases",
-          "Prioritisation and traceability"
-        ]
+        "stat": "68%",
+        "label": "Supply Chain Vulnerability",
+        "detail": "Of major corporate security compromises originate through third-party vendors and supply chain governance oversights rather than direct perimeters."
       },
       {
-        "module": "Unit 3 — Process & Data Modelling",
-        "topics": [
-          "BPMN process mapping",
-          "Gap analysis and to-be design",
-          "Data analysis for decision support"
-        ]
-      },
-      {
-        "module": "Unit 4 — Delivering Change",
-        "topics": [
-          "Solution evaluation",
-          "Agile business analysis",
-          "End-to-end case study"
-        ]
+        "stat": "Personal",
+        "label": "Director Liability",
+        "detail": "Enacted under NIS2, DORA, and UK statutory frameworks, holding corporate officers personally accountable for systemic cyber risk governance failures."
       }
     ],
+    "whoIsThisFor": [
+      "Chief Information Security Officers (CISOs) & Security Directors translating technical risk to boards",
+      "IT Directors, Infrastructure Leads & Enterprise Solutions Architects hardening operational posture",
+      "Enterprise Risk Managers & Chief Risk Officers (CROs) integrating cyber into operational risk",
+      "Business Continuity, Disaster Recovery & Crisis Management Leaders ensuring operational resilience",
+      "Corporate Legal Counsel & Data Protection Officers managing 72-hour breach notification mandates"
+    ],
+    "keyTakeaways": [
+      "Translate complex cyber threat intelligence into quantified monetary risk exposure using the FAIR model",
+      "Align enterprise defensive architectures with NIST Cybersecurity Framework (CSF 2.0) and ISO 27001:2022",
+      "Formulate actionable Computer Security Incident Response Plans (CSIRP) and crisis playbooks",
+      "Conduct rigorous third-party supply-chain cyber risk assessments and establish vendor security covenants",
+      "Direct executive crisis war-rooms, ransomware negotiation strategies, and statutory regulatory disclosures"
+    ],
+    "syllabus": [
+      {
+        "module": "Module 1 — The Modern Threat Landscape & Regulatory Accountability",
+        "subtitle": "Nation-State Actors, Ransomware Syndicates, and Legal Mandates",
+        "topics": [
+          "The modern cyber threat landscape: ransomware-as-a-service, supply-chain attacks, and insider threats",
+          "Regulatory mandates: NIS2 Directive, EU DORA resilience testing, UK CAF, and SEC disclosure rules",
+          "Board-level duty of care, director liability, and cyber insurance underwriting requirements",
+          "Harvard Case Analysis: The Anatomy of a Critical Infrastructure Ransomware Extortion"
+        ],
+        "caseStudy": "Harvard Business Case: Critical Infrastructure Ransomware Crisis and Executive Strategy"
+      },
+      {
+        "module": "Module 2 — Quantitative Cyber Risk Assessment & Threat Modelling",
+        "subtitle": "Moving from Heatmaps to Probabilistic Financial Loss Models",
+        "topics": [
+          "Deficiencies of qualitative heatmaps and introduction to Factor Analysis of Information Risk (FAIR)",
+          "Loss Event Frequency (LEF) and Loss Magnitude (LM) statistical distributions",
+          "Identifying Crown Jewels, critical data assets, and operational dependencies",
+          "Hands-on Lab: Enterprise Cyber Risk Financial Loss Exposure Simulation"
+        ],
+        "caseStudy": "Hands-on Lab: Quantifying Annualised Loss Expectancy (ALE) for an Enterprise Asset"
+      },
+      {
+        "module": "Module 3 — Third-Party Vendor & Supply-Chain Risk Governance",
+        "subtitle": "Auditing Ecosystem Risk and Contractual Hardening",
+        "topics": [
+          "Evaluating third-party risk: SOC 2 Type II reports, ISO 27001 annexes, and questionnaire fatigue",
+          "Contractual risk allocation: security SLAs, indemnities, right-to-audit clauses, and breach liability",
+          "Continuous threat intelligence monitoring across supplier ecosystems",
+          "Harvard Case Analysis: Enterprise Data Exfiltration via an Unaudited Cloud Vendor"
+        ],
+        "caseStudy": "Harvard Business Case: Tier-1 Supplier Compromise and Collateral Damage Control"
+      },
+      {
+        "module": "Module 4 — Incident Response Orchestration & Crisis Management",
+        "subtitle": "Leading Executive War-Rooms and Regulatory Communications",
+        "topics": [
+          "Computer Security Incident Response Teams (CSIRT): roles, escalations, and chain of custody",
+          "The 72-hour regulatory clock: GDPR, NIS2, and DORA statutory notification workflows",
+          "Ransomware crisis protocols: legal defensibility of payments, sanction laws, and crisis communications",
+          "Executive Simulation: High-Stakes Tabletop Exercise of an Ongoing Data Breach"
+        ],
+        "caseStudy": "Executive Simulation: 72-Hour Live Tabletop Breach Notification Exercise"
+      },
+      {
+        "module": "Module 5 — Executive Practical Capstone Project",
+        "subtitle": "Enterprise Cyber Risk Assessment & Executive Incident Playbook",
+        "topics": [
+          "Development of an end-to-end Enterprise Cyber Risk Assessment and financial loss quantification report",
+          "Construction of an executive-level Incident Response Playbook and Crisis Communication Protocol",
+          "Formal assessment evaluated by certified CISOs and enterprise risk auditors",
+          "Formal assessment weighting: 70% of total programme grade (70% pass standard)"
+        ],
+        "caseStudy": "Comprehensive Enterprise Cyber Risk Assessment & Incident Playbook Capstone"
+      }
+    ],
+    "learningExperience": {
+      "harvardCaseMethod": "Real-world boardroom crisis post-mortems examining ransomware negotiations, catastrophic data leaks, and regulatory enforcement actions.",
+      "handsOnLabs": "Practical spreadsheets and simulation toolkits for FAIR quantitative risk modeling and 72-hour incident response tabletop exercises.",
+      "tutorSupport": "Personal mentoring and portfolio assessment from practicing CISOs and accredited UK cybersecurity specialists."
+    },
+    "assessmentBreakdown": {
+      "passRequirement": "70% overall pass mark required for UK CPD certification",
+      "theoryMcq": "30% Theory MCQ Examination — covering NIST CSF 2.0, FAIR mathematics, ISO 27001, and regulatory reporting mandates",
+      "practicalCapstone": "70% Practical Capstone Project — submission of a quantified Enterprise Cyber Risk Assessment and Incident Response Playbook",
+      "description": "Candidates must achieve a 70% overall benchmark to demonstrate both theoretical governance competence and executive crisis execution capability."
+    },
     "support": [
-      "Online sessions & self-paced study",
-      "Case-study based learning",
-      "Template pack for BA deliverables",
-      "Interactive teaching methodologies"
+      "1-on-1 personalized tutor evaluation and capstone feedback",
+      "Full Executive Cyber Risk Toolkit (FAIR calculation templates, CSIRP playbooks, vendor checklists)",
+      "Live interactive executive masterclasses and incident tabletop sessions",
+      "Lifetime access to programme resources and updated cyber threat briefings",
+      "Dedicated Programme Advisor guidance throughout your studies"
     ],
     "assessment": [
-      "Unit assignments",
-      "Quizzes",
-      "End-to-end case study deliverable pack",
-      "Presentation"
+      "Continuous formative scenario assessments after each module",
+      "Timed online theoretical MCQ examination (30% weighting)",
+      "Executive Practical Capstone Incident Playbook (70% weighting)",
+      "Strict 70% combined benchmark for CPD certification"
     ],
-    "certification": "GIRSD Certificate in Business Analysis awarded on successful completion of the case study and assessments.",
-    "image": "/co-generic.png"
+    "certification": "Executive Certificate in Cybersecurity Risk Management (CCRM) accredited by The CPD Group (Provider No. 788000), carrying 20 CPD Hours / 20 CPD Credits. Includes verifiable digital credential and physical embossed parchment upon request.",
+    "faqs": [
+      {
+        "question": "Is CCRM an engineering certification or an executive risk programme?",
+        "answer": "CCRM is an executive risk and governance qualification. While we review defensive technical architectures and incident triage conceptually, you will not be asked to write exploit code or configure firewalls. The focus is on financial quantification, risk frameworks, and executive incident orchestration."
+      },
+      {
+        "question": "What is the study duration and format?",
+        "answer": "The programme entails 20 hours of accredited CPD learning (20 CPD credits), delivered 100% online. Learners typically complete the curriculum in 4 to 6 weeks, dedicating 3 to 5 hours weekly to self-paced materials and capstone drafting."
+      },
+      {
+        "question": "Can our IT and risk department enrol as a team?",
+        "answer": "Yes. Organisations frequently enrol security managers, risk officers, and legal counsel as a combined cohort to build a shared incident response playbook for their enterprise. Contact our Programme Advisors for team arrangements."
+      },
+      {
+        "question": "How do I receive my CPD certificate upon completion?",
+        "answer": "Once you complete the MCQ examination and your Capstone project is graded at 70% or above, your digital certificate is issued within 48 hours with full UK CPD Group verification details and a LinkedIn digital badge."
+      },
+      {
+        "question": "Does CCRM align with European regulations like NIS2 and DORA?",
+        "answer": "Yes. DORA, NIS2, ISO 27001:2022, and the NIST CSF 2.0 represent foundational regulatory benchmarks embedded directly throughout all four modules."
+      }
+    ]
   },
   {
-    "slug": "export-import",
-    "title": "Export & Import",
-    "level": "Foundation",
-    "duration": "4 weeks",
-    "effort": "2–3 hours per week",
-    "price": 450,
-    "category": "Skills Development Courses",
-    "summary": "Become an expert in international trade: documentation, customs, Incoterms, payments and building a compliant import-export operation.",
-    "description": "Want to become an expert in international trade? Take the next step in your professional development with GIRSD's online Export & Import course. Whether you are starting an import-export business, moving into a trade compliance role, or expanding an existing company internationally, this course covers the complete lifecycle of an international transaction: sourcing and market selection, trade documentation, customs procedures and tariffs, Incoterms 2020, international payments and risk management, and UK-specific requirements post-Brexit.",
-    "syllabus": [
+    "slug": "csl-certificate-in-strategic-leadership",
+    "code": "CSL",
+    "title": "CSL — Certificate in Strategic Leadership",
+    "subtitle": "Strategic Leadership: Driving Organisational Change and Performance",
+    "level": "Executive",
+    "duration": "20 Hours (20 CPD Credits)",
+    "effort": "4–6 weeks self-paced (3–5 hours / week)",
+    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
+    "price": 895,
+    "category": "Executive Certificates",
+    "cpdCredits": 20,
+    "cpdProviderNumber": "788000",
+    "image": "/co-csl.png",
+    "summary": "Lead enterprise-wide transformation, align executive stakeholders, and foster adaptive cultures in volatile markets through proven strategic frameworks, change psychology, and execution governance.",
+    "description": "The Executive Certificate in Strategic Leadership (CSL) is engineered for ambitious directors, functional heads, and rising C-suite executives tasked with navigating strategic inflection points and large-scale organisational change. Grounded in advanced management research and executive coaching principles, this 20-CPD-credit programme equips leaders to formulate competitive market strategies, dismantle entrenched organisational silos, overcome change resistance, and build high-performing, psychologically safe teams in turbulent operating environments. Master the art of board-level storytelling, dynamic scenario planning, and strategy execution governance.",
+    "businessCaseIntro": "In 2026, accelerating technological disruption and macroeconomic volatility demand agile, decisive executive leadership. Traditional hierarchical management models are failing to deliver organizational resilience.",
+    "businessCase": [
       {
-        "module": "Unit 1 — International Trade Foundations",
-        "topics": [
-          "How global trade works",
-          "Market research and selection",
-          "Trade regulations and bodies"
-        ]
+        "stat": "70%",
+        "label": "Change Initiative Failure",
+        "detail": "Of enterprise transformation initiatives collapse due to executive misalignment, cultural inertia, and employee resistance (Harvard Business Review)."
       },
       {
-        "module": "Unit 2 — Documentation & Customs",
-        "topics": [
-          "Commercial invoices, packing lists, certificates of origin",
-          "Customs declarations and tariff codes",
-          "UK import/export requirements"
-        ]
+        "stat": "88%",
+        "label": "Strategic Agility Priority",
+        "detail": "Of global CEOs identify adaptive leadership and cross-functional strategic agility as their single most critical organizational capability in 2026."
       },
       {
-        "module": "Unit 3 — Incoterms & Logistics",
-        "topics": [
-          "Incoterms 2020 in practice",
-          "Freight, insurance and carrier selection",
-          "Supply chain risk"
-        ]
-      },
-      {
-        "module": "Unit 4 — Payments & Growing the Business",
-        "topics": [
-          "Letters of credit and payment methods",
-          "Currency and credit risk",
-          "Building a compliant trading operation"
-        ]
+        "stat": "2.4x",
+        "label": "Total Shareholder Return",
+        "detail": "Achieved by enterprises whose leadership teams maintain continuous strategic alignment and agile execution governance (McKinsey Leadership Survey)."
       }
     ],
+    "whoIsThisFor": [
+      "Senior Managers & Functional Directors preparing for executive C-suite transition",
+      "Business Unit Heads & Operations Leaders leading structural reorganisations",
+      "Managing Directors, Founders & C-Suite Executives in scaling mid-market enterprises",
+      "Transformation Directors & Head of Strategy professionals steering corporate agendas",
+      "High-potential leaders identified for succession planning by corporate boards"
+    ],
+    "keyTakeaways": [
+      "Synthesise complex market signals into high-clarity competitive strategies using dynamic scenario planning",
+      "Apply Kotter’s 8-Step Model and ADKAR methodologies to dismantle organizational resistance to change",
+      "Architect high-trust psychological safety and radical accountability within executive leadership teams",
+      "Master high-stakes stakeholder influence, executive boardroom presence, and corporate storytelling",
+      "Establish Balanced Scorecard and OKR cascades that connect overarching corporate vision to frontline execution"
+    ],
+    "syllabus": [
+      {
+        "module": "Module 1 — Strategic Thinking & Competitive Positioning",
+        "subtitle": "Formulating Strategy Under Extreme Market Volatility",
+        "topics": [
+          "Strategic foresight: scenario planning, war-gaming, and weak signal detection in market trends",
+          "Dynamic capabilities theory: sensing, seizing, and transforming organisational assets",
+          "Blue Ocean strategy vs. cost leadership in commoditised sectors",
+          "Harvard Case Analysis: Legacy Manufacturing Giant Pivoting to Digital Subscription Ecosystem"
+        ],
+        "caseStudy": "Harvard Business Case: Industrial Conglomerate Strategic Transformation Pivot"
+      },
+      {
+        "module": "Module 2 — The Psychology of Organisational Change",
+        "subtitle": "Overcoming Cultural Inertia and Sustaining Momentum",
+        "topics": [
+          "Diagnosing systemic resistance: cognitive biases, status-quo bias, and loss aversion",
+          "Change architecture: integrating Kotter’s 8-Step Model with Prosci ADKAR frameworks",
+          "Combatting change fatigue and designing quick-win milestones for sustained organizational energy",
+          "Harvard Case Analysis: Failed Megamerger Integration and Cultural Clashes"
+        ],
+        "caseStudy": "Harvard Business Case: Post-Merger Cultural Integration Breakdown"
+      },
+      {
+        "module": "Module 3 — Executive Presence, Influence & Psychological Safety",
+        "subtitle": "Leading Cross-Functional Matrix Teams Without Positional Coercion",
+        "topics": [
+          "Leading across matrix organisations: informal networks, coalition building, and stakeholder currency",
+          "Amy Edmondson’s psychological safety framework: cultivating speaking-up cultures in high-risk environments",
+          "Boardroom rhetoric: translating data into compelling narrative arcs for board and investor meetings",
+          "Hands-on Lab: Executive Influence Simulation and Stakeholder Negotiation"
+        ],
+        "caseStudy": "Hands-on Lab: Resolving Executive Boardroom Impasse During Restructuring"
+      },
+      {
+        "module": "Module 4 — Strategy Execution Governance & Performance Cascades",
+        "subtitle": "Bridging the Chasm Between Strategic Intent and Daily Operations",
+        "topics": [
+          "The Balanced Scorecard (BSC): financial, customer, internal process, and learning perspectives",
+          "OKRs vs. KPIs: aligning aspirational innovation with rigorous operational metrics",
+          "Governance cadences: quarterly business reviews (QBRs), pivot triggers, and portfolio re-allocation",
+          "Executive Simulation: Defending a 3-Year Strategic Transformation Plan to the Board"
+        ],
+        "caseStudy": "Executive Simulation: Strategic Portfolio Allocation and Board Defense"
+      },
+      {
+        "module": "Module 5 — Executive Practical Capstone Project",
+        "subtitle": "Strategic Transformation Roadmap & Executive Boardroom Dossier",
+        "topics": [
+          "Development of a comprehensive Strategic Transformation Roadmap for an enterprise organisation",
+          "Formulation of vision, market analysis, change management plan, KPI cascade, and executive pitch deck",
+          "Evaluated by former corporate CEOs, managing directors, and senior business school faculty",
+          "Formal assessment weighting: 70% of total programme grade (70% pass standard)"
+        ],
+        "caseStudy": "Comprehensive Strategic Transformation Roadmap & Board Dossier Capstone"
+      }
+    ],
+    "learningExperience": {
+      "harvardCaseMethod": "Rigorous exploration of iconic corporate turnarounds, merger integrations, and leadership succession challenges.",
+      "handsOnLabs": "Interactive strategic scenario matrices, stakeholder power-interest mapping, and executive decision-making simulations.",
+      "tutorSupport": "Direct personal coaching and feedback on your strategic roadmap from veteran executive leaders and management faculty."
+    },
+    "assessmentBreakdown": {
+      "passRequirement": "70% overall pass mark required for UK CPD certification",
+      "theoryMcq": "30% Theory MCQ Examination — evaluating strategic models, change frameworks, performance governance, and organizational psychology",
+      "practicalCapstone": "70% Practical Capstone Project — submission of an end-to-end Strategic Transformation Roadmap and Board Pitch Deck",
+      "description": "Graduation requires achieving at least 70% overall across theoretical examination and your strategic transformation capstone deliverable."
+    },
     "support": [
-      "Online sessions & self-paced study",
-      "Real documentation exercises",
-      "Trade template pack",
-      "Interactive teaching methodologies"
+      "1-on-1 personalized tutor assessment and executive leadership mentoring",
+      "Executive Leadership Toolkit (Scenario planning templates, ADKAR audits, Balanced Scorecard sheets)",
+      "Live interactive masterclasses and peer networking forums with international executives",
+      "Lifetime access to strategic leadership case archives and research briefs",
+      "Dedicated Programme Advisor guidance throughout your studies"
     ],
     "assessment": [
-      "Unit assignments",
-      "Quizzes",
-      "Final trade-plan project"
+      "Formative leadership reflection exercises after each unit",
+      "Timed online theoretical MCQ examination (30% weighting)",
+      "Executive Practical Capstone Transformation Plan (70% weighting)",
+      "Strict 70% combined standard for CPD certification"
     ],
-    "certification": "GIRSD Certificate in Export & Import awarded on successful completion.",
-    "image": "/co-export-import.jpg"
+    "certification": "Executive Certificate in Strategic Leadership (CSL) accredited by The CPD Group (Provider No. 788000), carrying 20 CPD Hours / 20 CPD Credits. Includes verifiable digital credential and physical embossed parchment upon request.",
+    "faqs": [
+      {
+        "question": "What level of leadership experience is recommended for CSL?",
+        "answer": "This executive certificate is tailored for mid-to-senior leaders, directors, department heads, and executives with at least 3 years of management or strategic leadership responsibility. The discussions and assignments assume familiarity with organizational dynamics."
+      },
+      {
+        "question": "What is the expected time commitment?",
+        "answer": "The programme delivers 20 hours of accredited CPD learning (20 CPD credits). Executive participants typically study over 4 to 6 weeks, committing 3 to 5 hours each week to modules, case reflections, and capstone formulation."
+      },
+      {
+        "question": "Can our executive committee or leadership cohort enrol together?",
+        "answer": "Yes. Corporate cohort packages enable leadership teams to align on a unified strategic change framework and build an actionable company roadmap collaboratively. Speak with our Programme Advisors to arrange enterprise terms."
+      },
+      {
+        "question": "How is the certificate accredited?",
+        "answer": "CSL is formally accredited by The CPD Group under Approved Provider #788000, adhering to rigorous UK and international continuing professional development standards, with instantaneous digital verification on globalrsd.co.uk/verify."
+      },
+      {
+        "question": "How practical is the capstone project?",
+        "answer": "The Capstone is entirely practical. You will construct an authentic Strategic Transformation Roadmap and Board Presentation for your actual employer or a target organisation of your choice, producing an asset of immediate real-world value."
+      }
+    ]
   },
   {
-    "slug": "digital-marketing",
-    "title": "Digital Marketing",
-    "level": "Foundation",
-    "duration": "4 weeks",
-    "effort": "2–3 hours per week",
-    "price": 395,
-    "category": "Skills Development Workshops",
-    "summary": "Master the components of marketing that use the internet and digital technologies — SEO, social media, content, email and paid campaigns.",
-    "description": "Organised by the Global Institute of Research & Skills Development, this programme covers the component of marketing that uses the internet and online-based digital technologies to promote products and services. You will build practical skills across the full digital mix: search engine optimisation, social media marketing, content strategy, email campaigns and paid advertising — culminating in a complete digital marketing plan for a real or simulated business, with analytics to measure what works.",
-    "syllabus": [
+    "slug": "cesg-certificate-in-esg-and-corporate-sustainability",
+    "code": "CESG",
+    "title": "CESG — Certificate in Environmental, Social, and Governance",
+    "subtitle": "ESG and Corporate Sustainability: Strategy, Risk, and Reporting",
+    "level": "Executive",
+    "duration": "20 Hours (20 CPD Credits)",
+    "effort": "4–6 weeks self-paced (3–5 hours / week)",
+    "format": "100% Online · Self-Paced Modules · Executive Masterclasses · 1-on-1 Senior Tutor Review",
+    "price": 895,
+    "category": "Executive Certificates",
+    "cpdCredits": 20,
+    "cpdProviderNumber": "788000",
+    "image": "/co-cesg.png",
+    "summary": "Formulate auditable corporate sustainability strategies, navigate double materiality, quantify Scope 1-3 carbon emissions, and lead statutory reporting under CSRD, ISSB, and TCFD mandates.",
+    "description": "The Executive Certificate in ESG and Corporate Sustainability (CESG) provides senior professionals with the authoritative competencies required to embed sustainability into enterprise strategy and statutory financial disclosures. In 2026, ESG has shifted decisively from public relations philanthropy to binding statutory compliance, investor capital allocation, and enterprise risk management. This 20-CPD-credit executive programme teaches leaders how to conduct double materiality assessments, calculate greenhouse gas (GHG) inventories across Scope 1, 2, and 3, align with ISSB (IFRS S1/S2) and EU CSRD standards, and drive authentic decarbonisation across global supply chains.",
+    "businessCaseIntro": "In 2026, mandatory sustainability disclosure frameworks enforce rigorous audit standards globally. Non-compliance risks severe statutory penalties, exclusion from capital markets, and catastrophic greenwashing accusations.",
+    "businessCase": [
       {
-        "module": "Unit 1 — Digital Marketing Landscape",
-        "topics": [
-          "Channels and the customer journey",
-          "Setting objectives and KPIs",
-          "Brand positioning online"
-        ]
+        "stat": "90%+",
+        "label": "Institutional Mandate",
+        "detail": "Of institutional investors integrate verified ESG disclosure data directly into capital allocation and proxy voting decisions in 2026."
       },
       {
-        "module": "Unit 2 — Search & Content",
-        "topics": [
-          "SEO fundamentals",
-          "Content strategy and copywriting",
-          "Google Analytics basics"
-        ]
+        "stat": "64%",
+        "label": "Mandatory Disclosures",
+        "detail": "Of global mid-to-large-cap enterprises are now legally subject to mandatory sustainability reporting under EU CSRD, ISSB, or SEC regulations."
       },
       {
-        "module": "Unit 3 — Social & Email",
-        "topics": [
-          "Organic and paid social campaigns",
-          "Email marketing and automation",
-          "Community management"
-        ]
-      },
-      {
-        "module": "Unit 4 — Campaign Planning",
-        "topics": [
-          "Paid advertising (PPC)",
-          "Budgeting and measurement",
-          "Final campaign plan"
-        ]
+        "stat": "22%",
+        "label": "Executive Salary Premium",
+        "detail": "Commanded by corporate directors, risk managers, and finance professionals who possess accredited sustainability reporting credentials."
       }
     ],
-    "support": [
-      "Live online workshops",
-      "Hands-on tool demonstrations",
-      "Campaign template pack",
-      "Interactive teaching methodologies"
+    "whoIsThisFor": [
+      "Chief Sustainability Officers (CSOs) & Sustainability Directors shaping corporate strategy",
+      "Corporate Governance, Legal Counsel & Enterprise Risk Executives ensuring regulatory compliance",
+      "Chief Financial Officers (CFOs), Financial Controllers & ESG Reporting Specialists leading audits",
+      "Supply Chain & Procurement Directors managing Scope 3 carbon reduction and human rights due diligence",
+      "Investment Analysts, Asset Managers & Strategy Consultants advising institutional capital"
     ],
-    "assessment": [
-      "Unit exercises",
-      "Quizzes",
-      "Final digital marketing plan"
+    "keyTakeaways": [
+      "Conduct rigorous Double Materiality Assessments identifying financial and impact material ESG topics",
+      "Quantify Scope 1, 2, and 3 greenhouse gas emissions using the GHG Protocol Corporate Standard",
+      "Structure compliant sustainability disclosures aligned with CSRD (ESRS) and ISSB (IFRS S1 and S2)",
+      "Formulate science-based net-zero transition roadmaps adhering to SBTi (Science Based Targets initiative) criteria",
+      "Integrate ESG metrics into executive remuneration, enterprise risk management (ERM), and investor relations"
     ],
-    "certification": "GIRSD Certificate in Digital Marketing awarded on successful completion.",
-    "image": "/co-digital-marketing.jpg"
-  },
-  {
-    "slug": "effective-managerial-skills",
-    "title": "Effective Managerial Skills",
-    "level": "Intermediate",
-    "duration": "4 weeks",
-    "effort": "2–3 hours per week",
-    "price": 450,
-    "category": "Skills Development Workshops",
-    "summary": "Essential leadership skills for managers — communication, delegation, motivation and performance management, taught through live online workshops.",
-    "description": "An effective managerial skills programme that teaches managers essential leadership capabilities: clear communication, confident delegation, team motivation, conflict resolution and performance management. Delivered as a series of interactive online workshops, the course blends evidence-based frameworks with role-play scenarios and candid case discussions, so you leave with techniques you can apply with your team the following morning. Suitable for new managers and experienced leaders looking to refresh their practice.",
     "syllabus": [
       {
-        "module": "Unit 1 — Leading Yourself",
+        "module": "Module 1 — The New ESG Imperative & Global Regulatory Architecture",
+        "subtitle": "Navigating CSRD, ESRS, ISSB, and SEC Mandates",
         "topics": [
-          "Management vs leadership",
-          "Time management and prioritisation",
-          "Emotional intelligence"
-        ]
+          "The evolution of ESG: from voluntary CSR to mandatory statutory disclosure",
+          "EU Corporate Sustainability Reporting Directive (CSRD) and European Sustainability Reporting Standards (ESRS)",
+          "International Sustainability Standards Board (ISSB): IFRS S1 general requirements and IFRS S2 climate disclosures",
+          "Harvard Case Analysis: Multinational Conglomerate Overhauling Supply-Chain Reporting under CSRD"
+        ],
+        "caseStudy": "Harvard Business Case: CSRD Compliance Crisis in a Global Consumer Goods Conglomerate"
       },
       {
-        "module": "Unit 2 — Leading People",
+        "module": "Module 2 — Double Materiality & Stakeholder Due Diligence",
+        "subtitle": "Scoring Financial Materiality and Impact Materiality",
         "topics": [
-          "Communication and active listening",
-          "Delegation and empowerment",
-          "Motivating diverse teams"
-        ]
+          "Double materiality conceptual framework: financial materiality (outside-in) vs. impact materiality (inside-out)",
+          "Stakeholder mapping and engagement protocols across investors, civil society, employees, and suppliers",
+          "Setting quantitative thresholds and materiality matrices for auditable reporting boundaries",
+          "Hands-on Lab: Double Materiality Matrix Formulation and Prioritisation"
+        ],
+        "caseStudy": "Hands-on Lab: Conducting a Double Materiality Assessment for an Industrial Enterprise"
       },
       {
-        "module": "Unit 3 — Difficult Moments",
+        "module": "Module 3 — Carbon Accounting, Scope 1–3 & Decarbonisation Pathways",
+        "subtitle": "Calculating GHG Inventories and Net-Zero Trajectories",
         "topics": [
-          "Conflict resolution",
-          "Difficult conversations",
-          "Giving and receiving feedback"
-        ]
+          "GHG Protocol Corporate Accounting and Reporting Standard: direct Scope 1 and indirect Scope 2 accounting",
+          "Scope 3 value chain emissions: evaluating upstream procurement, freight, and downstream product lifecycles",
+          "Science Based Targets initiative (SBTi) criteria: setting 1.5°C aligned short-term and long-term net-zero goals",
+          "Harvard Case Analysis: Energy Transition Decarbonisation and Green Capital Capex Allocation"
+        ],
+        "caseStudy": "Harvard Business Case: Decarbonising Upstream Supply Chains in Heavy Industry"
       },
       {
-        "module": "Unit 4 — Performance",
+        "module": "Module 4 — Sustainable Finance, Social Capital & Board Governance",
+        "subtitle": "Green Bonds, DEI, Executive Remuneration, and Greenwashing Defense",
         "topics": [
-          "Setting SMART goals",
-          "Performance management cycles",
-          "Coaching for growth"
-        ]
+          "Sustainable finance instruments: Green Bonds, Sustainability-Linked Loans (SLLs), and EU Green Taxonomy",
+          "The 'S' and 'G' in ESG: workforce human rights due diligence, DEI metrics, whistleblowing, and board composition",
+          "Executive compensation linkage: tying C-suite bonuses to verified sustainability KPIs",
+          "Greenwashing prevention: legal defense protocols, third-party limited/reasonable assurance standards"
+        ],
+        "caseStudy": "Executive Simulation: Audit Defense Against Regulatory Greenwashing Allegations"
+      },
+      {
+        "module": "Module 5 — Executive Practical Capstone Project",
+        "subtitle": "Corporate ESG Strategy & Double Materiality Disclosure Pack",
+        "topics": [
+          "Delivery of a complete, auditable Corporate ESG Strategy and Double Materiality Report for an enterprise",
+          "Formulation of Scope 1-3 baseline, materiality matrix, net-zero roadmap, and ISSB/CSRD alignment",
+          "Evaluated by accredited ESG auditors, sustainability directors, and climate finance academics",
+          "Formal assessment weighting: 70% of total programme grade (70% pass standard)"
+        ],
+        "caseStudy": "Comprehensive Corporate ESG Strategy & Double Materiality Disclosure Capstone"
       }
     ],
+    "learningExperience": {
+      "harvardCaseMethod": "Examination of real-world corporate sustainability transformations, activist shareholder campaigns, and greenwashing regulatory actions.",
+      "handsOnLabs": "Practical spreadsheets and interactive toolkits for Scope 1–3 GHG emissions accounting and double materiality matrix scoring.",
+      "tutorSupport": "Direct personal reviews from certified sustainability auditors, environmental economists, and corporate governance specialists."
+    },
+    "assessmentBreakdown": {
+      "passRequirement": "70% overall pass mark required for UK CPD certification",
+      "theoryMcq": "30% Theory MCQ Examination — testing international standards (CSRD, ISSB, GHG Protocol), materiality methodology, and regulatory mandates",
+      "practicalCapstone": "70% Practical Capstone Project — submission of an end-to-end Corporate ESG Strategy, Materiality Matrix, and Net-Zero Roadmap",
+      "description": "Candidates must achieve at least 70% across the theoretical exam and capstone dossier to receive the accredited executive certificate."
+    },
     "support": [
-      "Live interactive workshops",
-      "Role-play scenarios with feedback",
-      "Manager's toolkit download",
-      "Peer discussion groups"
+      "1-on-1 personalized tutor assessment and detailed feedback",
+      "Executive ESG Toolkit (Double materiality matrix models, GHG Scope 1-3 calculation sheets, CSRD checklist)",
+      "Live interactive masterclasses and ESG regulatory update sessions",
+      "Lifetime access to sustainability case studies and standardisation briefings",
+      "Dedicated Programme Advisor guidance throughout your studies"
     ],
     "assessment": [
-      "Scenario exercises",
-      "Reflective practice journal",
-      "Final management action plan"
+      "Module-by-module formative knowledge checks",
+      "Timed online theoretical MCQ examination (30% weighting)",
+      "Executive Practical Capstone Sustainability Pack (70% weighting)",
+      "Strict 70% combined standard for CPD certification"
     ],
-    "certification": "GIRSD Certificate in Effective Managerial Skills awarded on successful completion.",
-    "image": "/co-effective-managerial-skills.jpg"
+    "certification": "Executive Certificate in ESG and Corporate Sustainability (CESG) accredited by The CPD Group (Provider No. 788000), carrying 20 CPD Hours / 20 CPD Credits. Includes verifiable digital credential and physical embossed parchment upon request.",
+    "faqs": [
+      {
+        "question": "What background is required for the CESG programme?",
+        "answer": "The programme is designed for professionals across corporate management, finance, legal, operations, supply chain, and risk. No scientific, mathematical, or engineering degree is required; the focus is on strategy, risk management, and disclosure frameworks."
+      },
+      {
+        "question": "What is the expected time commitment?",
+        "answer": "The programme encompasses 20 hours of structured learning (20 CPD credits). Executive participants generally complete it over 4 to 6 weeks, dedicating approximately 3 to 5 hours each week to modules, labs, and capstone compilation."
+      },
+      {
+        "question": "Can cross-functional corporate teams enrol together?",
+        "answer": "Yes. Sustainability requires alignment across finance, legal, operations, and risk. We provide dedicated corporate cohort options where cross-functional teams work on their organisation's actual double materiality assessment. Inquire with our Programme Advisors."
+      },
+      {
+        "question": "How is the CPD certificate verified?",
+        "answer": "Upon attaining a 70%+ grade across your exam and capstone project, your verifiable digital credential is issued within 48 hours, registered under The CPD Group Provider #788000, and instantly verifiable on globalrsd.co.uk/verify."
+      },
+      {
+        "question": "Does this cover both European and International standards?",
+        "answer": "Yes. The curriculum directly addresses both the EU CSRD (ESRS) and international standards including ISSB (IFRS S1 and S2), TCFD, and the GHG Protocol Corporate Standard."
+      }
+    ]
   }
 ]

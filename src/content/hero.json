@@ -23,24 +23,24 @@
   },
   {
     "id": "courses",
-    "tabTitle": "Online Courses",
-    "title": "Online Courses",
+    "tabTitle": "Executive Education",
+    "title": "Executive Education",
     "href": "/courses",
-    "cta": "Browse courses",
-    "eyebrow": "Certified Online Learning · CPD Accredited",
-    "headline": "Developing Practical Skills.",
-    "highlight": "Certified Online Courses",
-    "description": "Tutor-supported certified courses in research methods, data science, AI cybersecurity, writing and leadership with verifiable UK CPD credentials.",
+    "cta": "Browse executive portfolio",
+    "eyebrow": "CPD Accredited | Provider No. 788000",
+    "headline": "Strategic Leadership & Risk Governance.",
+    "highlight": "CPD-Accredited Executive Certificates",
+    "description": "Rigorous 20-CPD-credit executive certificates in Business Analysis (CIBA), AI Governance (CAIG), Cybersecurity Risk (CCRM), Strategic Leadership (CSL), and ESG (CESG).",
     "primaryCta": {
-      "label": "Browse Certified Courses",
+      "label": "Explore Executive Portfolio",
       "href": "/courses"
     },
     "secondaryCta": {
-      "label": "View Course Syllabus",
-      "href": "/courses"
+      "label": "Speak to a Programme Advisor",
+      "href": "/contact?enquiry=advisor"
     },
     "cardType": "course",
-    "image": "/co-data-science-with-python.jpg",
+    "image": "/co-ciba.png",
     "icon": "M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"
   },
   {

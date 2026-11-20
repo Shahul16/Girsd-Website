@@ -1,0 +1,363 @@
+[
+  {
+    "slug": "ai-in-cybersecurity",
+    "title": "AI in Cybersecurity",
+    "level": "Intermediate",
+    "duration": "4 weeks (8 hours)",
+    "effort": "2 hours per week + self-paced labs",
+    "price": 550,
+    "category": "Skills Development Courses",
+    "summary": "A deep dive into the integration of artificial intelligence with core cybersecurity practices — detect, analyse and respond to cyber threats with intelligent systems.",
+    "description": "GIRSD's AI in Cybersecurity Course offers a deep dive into the integration of artificial intelligence with core cybersecurity practices. This course is structured to deliver a strong foundation in AI technologies while applying them to real-world security challenges. You will gain both theoretical understanding and hands-on expertise in using intelligent systems to detect, analyse and respond to cyber threats, and learn how AI is revolutionising threat detection, incident response and predictive defence. Technologies covered include TensorFlow, Scikit-learn, Keras, Pandas & NumPy, the ELK Stack, Snort with AI integration, Hugging Face Transformers, Jupyter Notebooks and OpenCV.",
+    "syllabus": [
+      {
+        "module": "Unit 1 — Introduction to AI in Cybersecurity",
+        "topics": [
+          "Overview of AI and machine learning in cybersecurity",
+          "Key concepts and terminology",
+          "Evolution of cyber threats and AI defence strategies"
+        ]
+      },
+      {
+        "module": "Unit 2 — Machine Learning Fundamentals for Cybersecurity",
+        "topics": [
+          "Basics of machine learning algorithms",
+          "Data preprocessing and feature engineering",
+          "Supervised vs unsupervised learning in security contexts"
+        ]
+      },
+      {
+        "module": "Unit 3 — Threat Detection using AI",
+        "topics": [
+          "Anomaly detection techniques",
+          "Behavioural analysis with machine learning",
+          "AI-driven intrusion detection systems (IDS)"
+        ]
+      },
+      {
+        "module": "Unit 4 — NLP for Cybersecurity",
+        "topics": [
+          "NLP for threat intelligence and phishing detection",
+          "Fine-tuning transformer models (BERT, GPT)",
+          "Analysing security logs and alerts with NLP"
+        ]
+      },
+      {
+        "module": "Unit 5 — Tools and Technologies",
+        "topics": [
+          "Hands-on with TensorFlow, Scikit-learn and the ELK Stack",
+          "Integrating AI models with security infrastructure",
+          "Ethical considerations and AI governance in cybersecurity"
+        ]
+      }
+    ],
+    "support": [
+      "Online sessions & self-paced study",
+      "Project-based learning",
+      "Real-world development experience",
+      "Interactive teaching methodologies",
+      "No prior programming knowledge required — bring your own laptop"
+    ],
+    "assessment": [
+      "18 coding exercises",
+      "5 assignments",
+      "5 quizzes",
+      "Capstone project",
+      "Presentations"
+    ],
+    "certification": "GIRSD Certificate in Cybersecurity awarded on successful completion of the capstone project and assessments.",
+    "image": "/co-ai-in-cybersecurity.png"
+  },
+  {
+    "slug": "data-science-with-python",
+    "title": "Data Science with Python",
+    "level": "Foundation",
+    "duration": "6 weeks",
+    "effort": "3–4 hours per week",
+    "price": 495,
+    "category": "Skills Development Courses",
+    "summary": "Launch a data science career: Python programming, data analysis, visualisation and an introduction to machine learning with real datasets.",
+    "description": "Data scientist is one of the most rewarding career paths available today, offering strong salaries, high job satisfaction and outstanding growth opportunities. This course takes you from Python fundamentals through the complete data science workflow: acquiring and cleaning data with Pandas and NumPy, exploring and visualising it with Matplotlib and Seaborn, and building your first predictive models with Scikit-learn. Every unit is anchored in project-based learning using real datasets, and the course concludes with a capstone analysis you can present to employers.",
+    "syllabus": [
+      {
+        "module": "Unit 1 — Python Foundations",
+        "topics": [
+          "Python syntax, data types and control flow",
+          "Working in Jupyter Notebooks",
+          "Functions and libraries"
+        ]
+      },
+      {
+        "module": "Unit 2 — Data Wrangling",
+        "topics": [
+          "Pandas DataFrames and NumPy arrays",
+          "Cleaning and transforming messy data",
+          "Combining and reshaping datasets"
+        ]
+      },
+      {
+        "module": "Unit 3 — Analysis & Visualisation",
+        "topics": [
+          "Exploratory data analysis",
+          "Visualisation with Matplotlib and Seaborn",
+          "Communicating insights"
+        ]
+      },
+      {
+        "module": "Unit 4 — Introduction to Machine Learning",
+        "topics": [
+          "Supervised learning with Scikit-learn",
+          "Model evaluation and validation",
+          "Capstone project"
+        ]
+      }
+    ],
+    "support": [
+      "Online sessions & self-paced study",
+      "Project-based learning with real datasets",
+      "Tutor code review",
+      "Interactive teaching methodologies"
+    ],
+    "assessment": [
+      "Weekly coding exercises",
+      "Quizzes per unit",
+      "Capstone data analysis project",
+      "Final presentation"
+    ],
+    "certification": "GIRSD Certificate in Data Science with Python awarded on successful capstone completion.",
+    "image": "/co-data-science-with-python.png"
+  },
+  {
+    "slug": "business-analysis",
+    "title": "Business Analysis",
+    "level": "Intermediate",
+    "duration": "6 weeks",
+    "effort": "3–4 hours per week",
+    "price": 495,
+    "category": "Skills Development Courses",
+    "summary": "Bridge the IT and business sectors: requirements engineering, process modelling and data-driven decision making with the latest analysis tools.",
+    "description": "The Business Analysis course at GIRSD provides a thorough curriculum aimed at connecting the IT and business sectors by integrating the latest data and analysis techniques. You will learn to elicit and document requirements, model business processes, analyse data to support decisions, and communicate effectively with both technical teams and executive stakeholders. The course follows recognised industry frameworks and closes with an end-to-end case study in which you produce a complete business analysis deliverable pack.",
+    "syllabus": [
+      {
+        "module": "Unit 1 — The Business Analyst Role",
+        "topics": [
+          "The BA within projects and organisations",
+          "Stakeholder identification and engagement",
+          "Business analysis frameworks"
+        ]
+      },
+      {
+        "module": "Unit 2 — Requirements Engineering",
+        "topics": [
+          "Elicitation techniques: interviews, workshops, observation",
+          "Writing user stories and use cases",
+          "Prioritisation and traceability"
+        ]
+      },
+      {
+        "module": "Unit 3 — Process & Data Modelling",
+        "topics": [
+          "BPMN process mapping",
+          "Gap analysis and to-be design",
+          "Data analysis for decision support"
+        ]
+      },
+      {
+        "module": "Unit 4 — Delivering Change",
+        "topics": [
+          "Solution evaluation",
+          "Agile business analysis",
+          "End-to-end case study"
+        ]
+      }
+    ],
+    "support": [
+      "Online sessions & self-paced study",
+      "Case-study based learning",
+      "Template pack for BA deliverables",
+      "Interactive teaching methodologies"
+    ],
+    "assessment": [
+      "Unit assignments",
+      "Quizzes",
+      "End-to-end case study deliverable pack",
+      "Presentation"
+    ],
+    "certification": "GIRSD Certificate in Business Analysis awarded on successful completion of the case study and assessments.",
+    "image": "/co-generic.png"
+  },
+  {
+    "slug": "export-import",
+    "title": "Export & Import",
+    "level": "Foundation",
+    "duration": "4 weeks",
+    "effort": "2–3 hours per week",
+    "price": 450,
+    "category": "Skills Development Courses",
+    "summary": "Become an expert in international trade: documentation, customs, Incoterms, payments and building a compliant import-export operation.",
+    "description": "Want to become an expert in international trade? Take the next step in your professional development with GIRSD's online Export & Import course. Whether you are starting an import-export business, moving into a trade compliance role, or expanding an existing company internationally, this course covers the complete lifecycle of an international transaction: sourcing and market selection, trade documentation, customs procedures and tariffs, Incoterms 2020, international payments and risk management, and UK-specific requirements post-Brexit.",
+    "syllabus": [
+      {
+        "module": "Unit 1 — International Trade Foundations",
+        "topics": [
+          "How global trade works",
+          "Market research and selection",
+          "Trade regulations and bodies"
+        ]
+      },
+      {
+        "module": "Unit 2 — Documentation & Customs",
+        "topics": [
+          "Commercial invoices, packing lists, certificates of origin",
+          "Customs declarations and tariff codes",
+          "UK import/export requirements"
+        ]
+      },
+      {
+        "module": "Unit 3 — Incoterms & Logistics",
+        "topics": [
+          "Incoterms 2020 in practice",
+          "Freight, insurance and carrier selection",
+          "Supply chain risk"
+        ]
+      },
+      {
+        "module": "Unit 4 — Payments & Growing the Business",
+        "topics": [
+          "Letters of credit and payment methods",
+          "Currency and credit risk",
+          "Building a compliant trading operation"
+        ]
+      }
+    ],
+    "support": [
+      "Online sessions & self-paced study",
+      "Real documentation exercises",
+      "Trade template pack",
+      "Interactive teaching methodologies"
+    ],
+    "assessment": [
+      "Unit assignments",
+      "Quizzes",
+      "Final trade-plan project"
+    ],
+    "certification": "GIRSD Certificate in Export & Import awarded on successful completion.",
+    "image": "/co-export-import.jpg"
+  },
+  {
+    "slug": "digital-marketing",
+    "title": "Digital Marketing",
+    "level": "Foundation",
+    "duration": "4 weeks",
+    "effort": "2–3 hours per week",
+    "price": 395,
+    "category": "Skills Development Workshops",
+    "summary": "Master the components of marketing that use the internet and digital technologies — SEO, social media, content, email and paid campaigns.",
+    "description": "Organised by the Global Institute of Research & Skills Development, this programme covers the component of marketing that uses the internet and online-based digital technologies to promote products and services. You will build practical skills across the full digital mix: search engine optimisation, social media marketing, content strategy, email campaigns and paid advertising — culminating in a complete digital marketing plan for a real or simulated business, with analytics to measure what works.",
+    "syllabus": [
+      {
+        "module": "Unit 1 — Digital Marketing Landscape",
+        "topics": [
+          "Channels and the customer journey",
+          "Setting objectives and KPIs",
+          "Brand positioning online"
+        ]
+      },
+      {
+        "module": "Unit 2 — Search & Content",
+        "topics": [
+          "SEO fundamentals",
+          "Content strategy and copywriting",
+          "Google Analytics basics"
+        ]
+      },
+      {
+        "module": "Unit 3 — Social & Email",
+        "topics": [
+          "Organic and paid social campaigns",
+          "Email marketing and automation",
+          "Community management"
+        ]
+      },
+      {
+        "module": "Unit 4 — Campaign Planning",
+        "topics": [
+          "Paid advertising (PPC)",
+          "Budgeting and measurement",
+          "Final campaign plan"
+        ]
+      }
+    ],
+    "support": [
+      "Live online workshops",
+      "Hands-on tool demonstrations",
+      "Campaign template pack",
+      "Interactive teaching methodologies"
+    ],
+    "assessment": [
+      "Unit exercises",
+      "Quizzes",
+      "Final digital marketing plan"
+    ],
+    "certification": "GIRSD Certificate in Digital Marketing awarded on successful completion.",
+    "image": "/co-digital-marketing.jpg"
+  },
+  {
+    "slug": "effective-managerial-skills",
+    "title": "Effective Managerial Skills",
+    "level": "Intermediate",
+    "duration": "4 weeks",
+    "effort": "2–3 hours per week",
+    "price": 450,
+    "category": "Skills Development Workshops",
+    "summary": "Essential leadership skills for managers — communication, delegation, motivation and performance management, taught through live online workshops.",
+    "description": "An effective managerial skills programme that teaches managers essential leadership capabilities: clear communication, confident delegation, team motivation, conflict resolution and performance management. Delivered as a series of interactive online workshops, the course blends evidence-based frameworks with role-play scenarios and candid case discussions, so you leave with techniques you can apply with your team the following morning. Suitable for new managers and experienced leaders looking to refresh their practice.",
+    "syllabus": [
+      {
+        "module": "Unit 1 — Leading Yourself",
+        "topics": [
+          "Management vs leadership",
+          "Time management and prioritisation",
+          "Emotional intelligence"
+        ]
+      },
+      {
+        "module": "Unit 2 — Leading People",
+        "topics": [
+          "Communication and active listening",
+          "Delegation and empowerment",
+          "Motivating diverse teams"
+        ]
+      },
+      {
+        "module": "Unit 3 — Difficult Moments",
+        "topics": [
+          "Conflict resolution",
+          "Difficult conversations",
+          "Giving and receiving feedback"
+        ]
+      },
+      {
+        "module": "Unit 4 — Performance",
+        "topics": [
+          "Setting SMART goals",
+          "Performance management cycles",
+          "Coaching for growth"
+        ]
+      }
+    ],
+    "support": [
+      "Live interactive workshops",
+      "Role-play scenarios with feedback",
+      "Manager's toolkit download",
+      "Peer discussion groups"
+    ],
+    "assessment": [
+      "Scenario exercises",
+      "Reflective practice journal",
+      "Final management action plan"
+    ],
+    "certification": "GIRSD Certificate in Effective Managerial Skills awarded on successful completion.",
+    "image": "/co-effective-managerial-skills.jpg"
+  }
+]

@@ -1220,7 +1220,7 @@ export default function AdminPage() {
                       duration: "6 weeks",
                       effort: "3–4 hours per week",
                       price: 295,
-                      image: "/co-data-science-with-python.jpg",
+                      image: "/co-generic.png",
                       summary: "Course overview summary.",
                       description: "Detailed curriculum description.",
                       syllabus: [{ module: "Module 1", topics: ["Introduction"] }],
