@@ -2,19 +2,27 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+const normalizedUrl =
+  rawUrl && !rawUrl.includes("your-project.supabase.co")
+    ? rawUrl.startsWith("http")
+      ? rawUrl.replace(/\/+$/, "")
+      : `https://${rawUrl.replace(/\/+$/, "")}`
+    : undefined;
 
-/** True when Supabase env vars are present (Railway → Variables). */
-export const isSupabaseConfigured = Boolean(url && anonKey);
+const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+const normalizedKey = rawKey && !rawKey.includes("xxxx") ? rawKey : undefined;
+
+/** True when Supabase env vars are present and not template placeholders. */
+export const isSupabaseConfigured = Boolean(normalizedUrl && normalizedKey);
 
 let client: SupabaseClient | null = null;
 
 /** Browser Supabase client (singleton). Returns null when not configured. */
 export function getSupabase(): SupabaseClient | null {
-  if (!isSupabaseConfigured) return null;
+  if (!isSupabaseConfigured || !normalizedUrl || !normalizedKey) return null;
   if (!client) {
-    client = createClient(url as string, anonKey as string, {
+    client = createClient(normalizedUrl, normalizedKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
@@ -30,6 +38,10 @@ export function getSupabase(): SupabaseClient | null {
 export async function getAccessToken(): Promise<string | null> {
   const sb = getSupabase();
   if (!sb) return null;
-  const { data } = await sb.auth.getSession();
-  return data.session?.access_token ?? null;
+  try {
+    const { data } = await sb.auth.getSession();
+    return data.session?.access_token ?? null;
+  } catch {
+    return null;
+  }
 }

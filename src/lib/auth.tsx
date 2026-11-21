@@ -137,81 +137,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const emailRef = useRef<string | null>(null);
 
   const loadOrders = useCallback(async () => {
-    const sb = getSupabase();
-    if (!sb) return;
-    const { data: sessionData } = await sb.auth.getSession();
-    const session = sessionData.session;
-    if (!session) return;
-
-    // 1. Load orders (tickets & courses)
-    const { data: ordersData, error: ordersError } = await sb
-      .from("orders")
-      .select("id, kind, title, slug, tier, quantity, amount, created_at, cancelled_at")
-      .order("created_at", { ascending: false });
-
-    // 2. Load membership application verification status
-    let appStatus: string | undefined = undefined;
-    let appId: string | undefined = undefined;
-    let approvedMembership: Membership | null = null;
-
     try {
-      const { data: appData } = await sb
-        .from("membership_applications")
-        .select("id, status, tier_id, tier_name, annual_fee, membership_id, valid_from, valid_until, created_at")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const sb = getSupabase();
+      if (!sb) return;
+      const { data: sessionData, error: sessionErr } = await sb.auth.getSession();
+      if (sessionErr || !sessionData?.session) return;
+      const session = sessionData.session;
 
-      if (appData) {
-        appStatus = appData.status;
-        appId = appData.id;
-        const isApproved =
-          (appData.status === "ACTIVE_MEMBER" || appData.status === "APPROVED" || appData.status === "Active") &&
-          (!appData.valid_until || new Date(appData.valid_until) > new Date());
+      // 1. Load orders (tickets & courses)
+      const { data: ordersData, error: ordersError } = await sb
+        .from("orders")
+        .select("id, kind, title, slug, tier, quantity, amount, created_at, cancelled_at")
+        .order("created_at", { ascending: false });
 
-        if (isApproved) {
-          const renews = appData.valid_until || new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
-          approvedMembership = {
-            tierId: appData.tier_id,
-            tierName: appData.tier_name,
-            price: appData.annual_fee || 49,
-            since: appData.valid_from || appData.created_at,
-            renewsAt: renews,
-            status: "ACTIVE_MEMBER",
-            membershipId: appData.membership_id || appId,
-          };
+      // 2. Load membership application verification status
+      let appStatus: string | undefined = undefined;
+      let appId: string | undefined = undefined;
+      let approvedMembership: Membership | null = null;
+
+      try {
+        const { data: appData } = await sb
+          .from("membership_applications")
+          .select("id, status, tier_id, tier_name, annual_fee, membership_id, valid_from, valid_until, created_at")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (appData) {
+          appStatus = appData.status;
+          appId = appData.id;
+          const isApproved =
+            (appData.status === "ACTIVE_MEMBER" || appData.status === "APPROVED" || appData.status === "Active") &&
+            (!appData.valid_until || new Date(appData.valid_until) > new Date());
+
+          if (isApproved) {
+            const renews = appData.valid_until || new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
+            approvedMembership = {
+              tierId: appData.tier_id,
+              tierName: appData.tier_name,
+              price: appData.annual_fee || 49,
+              since: appData.valid_from || appData.created_at,
+              renewsAt: renews,
+              status: "ACTIVE_MEMBER",
+              membershipId: appData.membership_id || appId,
+            };
+          }
         }
+      } catch {
+        /* Table might not exist yet in local development */
       }
-    } catch {
-      /* Table might not exist yet in local development */
-    }
 
-    if (!ordersError && ordersData) {
-      const derived = deriveFromOrders(ordersData as OrderRow[]);
-      // Active membership is strictly gated: only explicit board approval grants active membership benefits.
-      const finalMembership = approvedMembership !== null ? approvedMembership : null;
-      const hasPaidMembership = Boolean(derived.membership);
-      const effectiveStatus =
-        appStatus ||
-        (approvedMembership
-          ? "ACTIVE_MEMBER"
-          : hasPaidMembership
-          ? "PAYMENT_COMPLETED"
-          : undefined);
+      if (!ordersError && ordersData) {
+        const derived = deriveFromOrders(ordersData as OrderRow[]);
+        // Active membership is strictly gated: only explicit board approval grants active membership benefits.
+        const finalMembership = approvedMembership !== null ? approvedMembership : null;
+        const hasPaidMembership = Boolean(derived.membership);
+        const effectiveStatus =
+          appStatus ||
+          (approvedMembership
+            ? "ACTIVE_MEMBER"
+            : hasPaidMembership
+            ? "PAYMENT_COMPLETED"
+            : undefined);
 
-      setUser((prev) =>
-        prev
-          ? {
-              ...prev,
-              tickets: derived.tickets,
-              enrolments: derived.enrolments,
-              membership: finalMembership,
-              membershipStatus: effectiveStatus,
-              membershipApplicationId: appId,
-            }
-          : prev
-      );
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                tickets: derived.tickets,
+                enrolments: derived.enrolments,
+                membership: finalMembership,
+                membershipStatus: effectiveStatus,
+                membershipApplicationId: appId,
+              }
+            : prev
+        );
+      }
+    } catch (err) {
+      console.warn("Could not synchronize user data with database:", err);
     }
   }, []);
 
@@ -259,10 +263,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       void loadOrders();
     };
 
-    sb.auth.getSession().then(({ data }) => {
-      applySession(data.session?.user ?? null);
-      if (!cancelled) setReady(true);
-    });
+    sb.auth.getSession()
+      .then(({ data }) => {
+        applySession(data.session?.user ?? null);
+        if (!cancelled) setReady(true);
+      })
+      .catch((err) => {
+        console.warn("Could not retrieve Supabase session:", err);
+        if (!cancelled) setReady(true);
+      });
 
     const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
       applySession(session?.user ?? null);
@@ -282,47 +291,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadOrders]);
 
   const login = useCallback(async (email: string, password: string, captchaToken?: string): Promise<AuthResult> => {
-    const sb = getSupabase();
-    if (!sb) return { error: NOT_CONFIGURED };
-    const { error } = await sb.auth.signInWithPassword({
-      email,
-      password,
-      options: captchaToken ? { captchaToken } : undefined,
-    });
-    if (error) return { error: friendly(error.message) };
-    return {};
+    try {
+      const sb = getSupabase();
+      if (!sb) {
+        return {
+          error:
+            "Authentication service is not configured. Please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in Railway variables.",
+        };
+      }
+      const { error } = await sb.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+        options: captchaToken ? { captchaToken } : undefined,
+      });
+      if (error) return { error: friendly(error.message) };
+      return {};
+    } catch (err: any) {
+      console.error("Login network exception:", err);
+      return { error: friendly(err?.message || "Failed to fetch") };
+    }
   }, []);
 
   const register = useCallback(
     async (name: string, email: string, password: string, captchaToken?: string): Promise<AuthResult> => {
-      const sb = getSupabase();
-      if (!sb) return { error: NOT_CONFIGURED };
-      const { data, error } = await sb.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: name }, ...(captchaToken ? { captchaToken } : {}) },
-      });
-      if (error) return { error: friendly(error.message) };
-      if (!data.session) return { needsConfirmation: true };
-      return {};
+      try {
+        const sb = getSupabase();
+        if (!sb) {
+          return {
+            error:
+              "Registration service is not configured. Please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in Railway variables.",
+          };
+        }
+        const { data, error } = await sb.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { data: { full_name: name.trim() }, ...(captchaToken ? { captchaToken } : {}) },
+        });
+        if (error) return { error: friendly(error.message) };
+        if (!data.session) return { needsConfirmation: true };
+        return {};
+      } catch (err: any) {
+        console.error("Registration network exception:", err);
+        return { error: friendly(err?.message || "Failed to fetch") };
+      }
     },
     []
   );
 
   const signInWithProvider = useCallback(
     async (provider: "google" | "azure" | "apple", next = "/dashboard"): Promise<AuthResult> => {
-      const sb = getSupabase();
-      if (!sb) return { error: NOT_CONFIGURED };
-      const redirectTo = `${window.location.origin}${next.startsWith("/") ? next : "/dashboard"}`;
-      const { error } = await sb.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo,
-          ...(provider === "azure" ? { scopes: "openid profile email" } : {}),
-        },
-      });
-      if (error) return { error: friendly(error.message) };
-      return {}; // browser redirects away
+      try {
+        const sb = getSupabase();
+        if (!sb) return { error: NOT_CONFIGURED };
+        const redirectTo = `${window.location.origin}${next.startsWith("/") ? next : "/dashboard"}`;
+        const { error } = await sb.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo,
+            ...(provider === "azure" ? { scopes: "openid profile email" } : {}),
+          },
+        });
+        if (error) return { error: friendly(error.message) };
+        return {}; // browser redirects away
+      } catch (err: any) {
+        console.error("OAuth network exception:", err);
+        return { error: friendly(err?.message || "Failed to fetch") };
+      }
     },
     []
   );
@@ -376,10 +410,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 function friendly(message: string): string {
   const m = message.toLowerCase();
   if (m.includes("invalid login credentials")) return "Incorrect email or password.";
-  if (m.includes("already registered")) return "An account with this email already exists — please log in.";
+  if (m.includes("already registered") || m.includes("user already registered"))
+    return "An account with this email already exists — please log in.";
   if (m.includes("provider is not enabled") || m.includes("unsupported provider"))
     return "This sign-in provider is not enabled yet. Please use email and password.";
-  if (m.includes("rate limit")) return "Too many attempts — please wait a minute and try again.";
+  if (m.includes("rate limit") || m.includes("over_email_send_rate_limit"))
+    return "Too many attempts — please wait a minute and try again.";
+  if (m.includes("email not confirmed"))
+    return "Please confirm your email address before logging in. Check your inbox for the activation link.";
+  if (m.includes("password should be at least"))
+    return "Password must be at least 6 characters.";
+  if (m.includes("failed to fetch") || m.includes("network error") || m.includes("networkrequestfailed")) {
+    return "Database connection failed (Failed to fetch). The Supabase database service is unreachable. Please verify in your Supabase dashboard that your project is not PAUSED, and verify NEXT_PUBLIC_SUPABASE_URL in Railway variables.";
+  }
   return message;
 }
 

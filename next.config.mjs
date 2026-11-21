@@ -32,7 +32,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https: http:",
-      "connect-src 'self' https://*.supabase.co https://api.stripe.com https://challenges.cloudflare.com https://api.resend.com https://api.github.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.supabase.net https://*.supabase.in https://*.supabase.com https://api.stripe.com https://challenges.cloudflare.com https://api.resend.com https://api.github.com",
       "frame-src 'self' https://js.stripe.com https://challenges.cloudflare.com https://www.google.com",
       "object-src 'none'",
       "base-uri 'self'",
