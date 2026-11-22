@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { SITE } from "@/lib/site";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { submitNomination } from "@/lib/server/awards-service";
 
 export const runtime = "nodejs";
 
@@ -141,6 +142,43 @@ export async function POST(req: NextRequest) {
 
   if (formName === "Award nomination" && attachments.length === 0) {
     return NextResponse.json({ error: "Please attach a CV or other supporting document." }, { status: 400 });
+  }
+
+  // Stage 1: Award Nomination handling — stores record in Supabase and triggers official emails
+  if (formName === "Award nomination") {
+    const nominatorName = String(form.get("nominator-name") || form.get("nominatorName") || visitorName || "").trim();
+    const nominatorEmail = String(form.get("nominator-email") || form.get("nominatorEmail") || visitorEmail || "").trim();
+    const nominationType = String(form.get("nomination-type") || form.get("nominationType") || "Self-nomination").trim();
+    const category = String(form.get("category") || form.get("awardCategory") || "").trim();
+    const nomineeName = String(form.get("nominee") || form.get("nomineeName") || nominatorName).trim();
+    const nomineeEmail = String(form.get("nominee-email") || form.get("nomineeEmail") || nominatorEmail).trim();
+    const nomineeAffiliation = String(form.get("affiliation") || form.get("nomineeAffiliation") || "").trim();
+    const nomineeCountry = String(form.get("country") || form.get("nomineeCountry") || "").trim();
+    const statement = String(form.get("statement") || "").trim();
+    const supportingLinks = String(form.get("links") || form.get("supportingLinks") || "").trim();
+
+    const firstAtt = attachments[0];
+
+    const result = await submitNomination({
+      nominatorName,
+      nominatorEmail,
+      nominationType,
+      category,
+      nomineeName,
+      nomineeEmail,
+      nomineeAffiliation,
+      nomineeCountry,
+      statement,
+      supportingLinks,
+      attachmentFilename: firstAtt?.filename,
+      attachmentBuffer: firstAtt?.content,
+    });
+
+    return NextResponse.json({
+      ok: true,
+      nominationRef: result.nominationRef,
+      message: "Nomination submitted successfully.",
+    });
   }
 
   if (fields.length === 0) {

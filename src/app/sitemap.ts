@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/refer-a-colleague",
     "/internship",
     "/awards",
+    "/awards/register",
     "/membership",
     "/contact",
     "/careers",

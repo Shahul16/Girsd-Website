@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getAdminClient } from "@/lib/server/supabase-admin";
+import { handlePaidAwardRegistration } from "@/lib/server/awards-service";
 
 export const runtime = "nodejs";
 
@@ -107,6 +108,19 @@ export async function POST(req: NextRequest) {
           }
         } catch (memErr) {
           console.error("Error updating membership application status from webhook:", memErr);
+        }
+      }
+
+      // If this is an award registration payment (£255 GBP)
+      if (m.kind === "award_registration") {
+        try {
+          await handlePaidAwardRegistration(
+            session.id,
+            String(session.payment_intent || ""),
+            m
+          );
+        } catch (awardErr) {
+          console.error("Error processing award registration webhook:", awardErr);
         }
       }
     }

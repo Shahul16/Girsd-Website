@@ -202,7 +202,7 @@ export default function AwardsPage() {
           <DemoForm
             name="Award nomination"
             submitLabel="Submit nomination"
-            successMessage="Your nomination has been received. The awards committee will confirm receipt by email within two working days."
+            successMessage="Your nomination has been received and logged in our system. A confirmation receipt with your Nomination Reference ID has been sent to your email. The awards committee will review the submission."
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Your full name" id="nominator-name" autoComplete="name" />
@@ -211,6 +211,7 @@ export default function AwardsPage() {
             <Field label="Nomination type" id="nomination-type" as="select" options={["Self-nomination", "Nominating someone else"]} />
             <Field label="Award category" id="category" as="select" options={allCategories} />
             <Field label="Nominee name (individual or institution)" id="nominee" />
+            <Field label="Nominee email" id="nominee-email" type="email" required={false} hint="Where official nomination updates and selection letters will be sent. Defaults to your email if nominating yourself." />
             <Field label="Nominee affiliation / organisation" id="affiliation" />
             <Field label="Nominee country" id="country" required={false} />
             <Field
@@ -241,18 +242,18 @@ export default function AwardsPage() {
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {[
               {
-                tag: "For Award Winners",
-                title: "Winner Prestige & Trophy Package",
-                price: "£295",
-                note: "(AED 1,400 / $385)",
+                tag: "For Selected Recipients",
+                title: "Official Award Registration & Trophy Package",
+                price: "£255",
+                note: "Fixed registration fee",
                 perks: [
-                  "Heavyweight laser-engraved crystal / brass plaque",
+                  "Heavyweight laser-engraved crystal / brass trophy",
                   "Embossed gold-foil parchment certificate",
-                  "Worldwide courier delivery",
-                  "Official press kit for institutional PR use",
+                  "Worldwide courier delivery or ceremony pass",
+                  "Official media kit & Hall of Fame feature",
                 ],
-                cta: "Order Trophy Package",
-                href: "/contact",
+                cta: "Complete Registration",
+                href: "/awards/register",
               },
               {
                 tag: "For Universities & Colleges",

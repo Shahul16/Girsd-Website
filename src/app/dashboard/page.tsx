@@ -1449,9 +1449,12 @@ export default function DashboardPage() {
                       </li>
                     </ul>
 
-                    <div className="mt-6 pt-4 border-t border-slate-100">
+                    <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2">
                       <Link href="/awards" className="btn-gold block text-center text-xs py-2">
                         Submit Official Nomination →
+                      </Link>
+                      <Link href="/awards/register" className="btn-secondary block text-center text-xs py-2">
+                        Have a Selection Code? Register &amp; Confirm Trophy (£255) →
                       </Link>
                     </div>
                   </div>
