@@ -143,7 +143,7 @@ export default function AboutPage() {
           <Reveal className="text-center">
             <h2 className="font-display text-3xl font-bold text-white">Our Committees</h2>
             <p className="mx-auto mt-3 max-w-2xl text-slate-300">
-              GIRSD's programmes are governed by independent committees of senior
+              GIRSD&apos;s programmes are governed by independent committees of senior
               academics and industry leaders.
             </p>
           </Reveal>
@@ -187,7 +187,7 @@ export default function AboutPage() {
                 We are proud to be an approved CPD (Continuing Professional Development)
                 Provider, delivering events and training programs that meet the highest standards
                 of professional education. We are also registered with the UK Register of Learning
-                Providers (UKRLP) and are ICO (Information Commissioner's Office) registered,
+                Providers (UKRLP) and are ICO (Information Commissioner&apos;s Office) registered,
                 demonstrating our commitment to quality, compliance, and data protection.
               </p>
             </div>

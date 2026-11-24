@@ -1,6 +1,6 @@
 import "server-only";
-import { Resend } from "resend";
 import { getAdminClient } from "@/lib/server/supabase-admin";
+import { isEmailConfigured, sendEmail } from "@/lib/server/email";
 import { SITE } from "@/lib/site";
 import {
   type AwardNomination,
@@ -10,12 +10,6 @@ import {
 } from "@/lib/awards";
 
 export const runtime = "nodejs";
-
-function getResendClient(): Resend | null {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return null;
-  return new Resend(apiKey);
-}
 
 function getFromEmail(): string {
   // Use configured LEAD_FROM_EMAIL or standard awards sender
@@ -49,6 +43,7 @@ export async function submitNomination(data: {
   supportingLinks?: string;
   attachmentUrl?: string;
   attachmentFilename?: string;
+  attachmentContentType?: string;
   attachmentBuffer?: Buffer;
 }): Promise<{ ok: boolean; nominationRef?: string; error?: string }> {
   const nominationRef = generateNominationRef();
@@ -103,8 +98,8 @@ export async function submitNomination(data: {
     }
   }
 
-  // Send Emails via Resend
-  await sendNominationEmails(record, data.attachmentBuffer);
+  // Send notification emails through the configured provider.
+  await sendNominationEmails(record, data.attachmentBuffer, data.attachmentContentType);
 
   return { ok: true, nominationRef };
 }
@@ -112,10 +107,13 @@ export async function submitNomination(data: {
 /**
  * Sends nomination receipt to nominee/nominator and admin notification
  */
-async function sendNominationEmails(nomination: AwardNomination, attachmentBuffer?: Buffer) {
-  const resend = getResendClient();
-  if (!resend) {
-    console.warn("Resend API key not set — nomination emails skipped.");
+async function sendNominationEmails(
+  nomination: AwardNomination,
+  attachmentBuffer?: Buffer,
+  attachmentContentType?: string
+) {
+  if (!isEmailConfigured()) {
+    console.warn("Email provider is not configured — nomination emails skipped.");
     return;
   }
 
@@ -170,7 +168,7 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
       recipients.push(nomination.nominator_email);
     }
 
-    await resend.emails.send({
+    await sendEmail({
       from,
       to: recipients,
       subject: `GIRSD Awards Nomination Received – ${nomination.nomination_ref}`,
@@ -218,10 +216,14 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
 
   try {
     const attachments = attachmentBuffer && nomination.attachment_filename
-      ? [{ filename: nomination.attachment_filename, content: attachmentBuffer }]
+      ? [{
+          filename: nomination.attachment_filename,
+          content: attachmentBuffer,
+          contentType: attachmentContentType,
+        }]
       : undefined;
 
-    await resend.emails.send({
+    await sendEmail({
       from,
       to: [adminTo],
       subject: `[NOMINATION] ${nomination.nominee_name} – ${nomination.category} [${nomination.nomination_ref}]`,
@@ -282,8 +284,7 @@ export async function approveSelection(nominationRef: string): Promise<{ ok: boo
  * Sends official Award Selection & Final Registration Invitation email
  */
 export async function sendSelectionInvitationEmail(nomination: AwardNomination) {
-  const resend = getResendClient();
-  if (!resend) return;
+  if (!isEmailConfigured()) return;
 
   const from = getFromEmail();
   const registerUrl = `https://${SITE.domainDisplay}/awards/register?ref=${encodeURIComponent(nomination.nomination_ref)}`;
@@ -342,7 +343,7 @@ export async function sendSelectionInvitationEmail(nomination: AwardNomination) 
 </div>`;
 
   try {
-    await resend.emails.send({
+    await sendEmail({
       from,
       to: [nomination.nominee_email],
       subject: `Official Invitation: GIRSD Award Selection & Final Registration – ${nomination.nomination_ref}`,
@@ -415,11 +416,10 @@ export async function handlePaidAwardRegistration(stripeSessionId: string, payme
 }
 
 /**
- * User Confirmation Email via Resend from awards@globalrsd.co.uk
+ * User Confirmation Email from awards@globalrsd.co.uk
  */
 async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentIntentId: string) {
-  const resend = getResendClient();
-  if (!resend) return;
+  if (!isEmailConfigured()) return;
 
   const from = getFromEmail();
   const subject = `Confirmed: Your GIRSD Award Registration & Payment Receipt (£255 GBP) – ${reg.nomination_ref}`;
@@ -496,7 +496,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
 </div>`;
 
   try {
-    await resend.emails.send({
+    await sendEmail({
       from,
       to: [reg.email],
       subject,
@@ -512,8 +512,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
  * Admin Notification Email: Contains 100% of all submitted data in a clean HTML table
  */
 async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentId: string) {
-  const resend = getResendClient();
-  if (!resend) return;
+  if (!isEmailConfigured()) return;
 
   const from = getFromEmail();
   const to = SITE.awardsEmail;
@@ -606,7 +605,7 @@ async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentI
 </div>`;
 
   try {
-    await resend.emails.send({
+    await sendEmail({
       from,
       to: [to],
       subject,

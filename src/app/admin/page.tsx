@@ -1896,7 +1896,7 @@ export default function AdminPage() {
               <div className="py-12 text-center text-slate-400">Loading media library...</div>
             ) : mediaList.length === 0 ? (
               <div className="rounded-xl border border-white/10 bg-white/5 py-16 text-center text-slate-400">
-                No uploaded pictures found in /public/uploads/. Click "Upload New Picture" above to add some!
+                No uploaded pictures found in /public/uploads/. Click &quot;Upload New Picture&quot; above to add some!
               </div>
             ) : (
               <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">

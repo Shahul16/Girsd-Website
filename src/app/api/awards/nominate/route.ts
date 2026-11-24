@@ -84,6 +84,7 @@ export async function POST(req: NextRequest) {
       supportingLinks,
       attachmentUrl,
       attachmentFilename,
+      attachmentContentType: attachmentFile?.type || undefined,
       attachmentBuffer,
     });
 

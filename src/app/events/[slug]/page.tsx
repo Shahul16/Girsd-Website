@@ -140,7 +140,7 @@ export default async function EventDetailPage({
                 Submit in the standard GIRSD conference template (request the template
                 from the address below). Submissions are double-blind peer reviewed;
                 accepted full papers are recommended to our partner journals, subject to the
-                journal's own editorial process. Selected papers are eligible for the Best
+                journal&apos;s own editorial process. Selected papers are eligible for the Best
                 Paper Award at the conference.
               </p>
 

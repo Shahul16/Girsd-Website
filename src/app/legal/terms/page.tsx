@@ -75,7 +75,7 @@ export default function TermsPage() {
       <h2>7. Awards</h2>
       <p>
         Award nominations are free of charge and are assessed by an
-        independent judging panel against published criteria. The panel's
+        independent judging panel against published criteria. The panel&apos;s
         decisions are final. Nominees consent to the reasonable use of their
         name, likeness and citation in connection with the awards programme.
       </p>
@@ -140,7 +140,7 @@ export default function TermsPage() {
         These terms are governed by the laws of England and Wales, and the
         courts of England and Wales have exclusive jurisdiction, except that
         consumers resident elsewhere in the UK may bring proceedings in their
-        home nation's courts.
+        home nation&apos;s courts.
       </p>
     </LegalPage>
   );

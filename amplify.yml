@@ -1,0 +1,57 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+        - |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const required = [
+            "DATABASE_URL",
+            "STRIPE_SECRET_KEY",
+            "STRIPE_WEBHOOK_SECRET",
+            "GITHUB_TOKEN",
+            "SES_FROM_EMAIL",
+            "EMAIL_PROVIDER",
+            "AWS_REGION",
+            "TURNSTILE_SECRET_KEY",
+          ];
+          const keys = [
+            ...required,
+            "ADMIN_KEY",
+            "GITHUB_REPO",
+            "GITHUB_BRANCH",
+            "RESEND_API_KEY",
+            "LEAD_FROM_EMAIL",
+            "LEAD_TO_EMAIL",
+            "RECAPTCHA_SECRET_KEY",
+            "NEXT_PUBLIC_RECAPTCHA_SITE_KEY",
+            "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
+            "TURNSTILE_HOSTNAMES",
+            "TURNSTILE_SECRET",
+            "NEXT_PUBLIC_SITE_URL",
+            "NEXT_PUBLIC_SUPABASE_URL",
+            "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+            "SUPABASE_SERVICE_ROLE_KEY",
+          ];
+          const missing = required.filter((key) => !process.env[key]);
+          if (missing.length) {
+            throw new Error(`Missing Amplify build environment variables: ${missing.join(", ")}`);
+          }
+          const contents = keys
+            .filter((key) => process.env[key] !== undefined)
+            .map((key) => `${key}=${JSON.stringify(process.env[key])}`)
+            .join("\n");
+          fs.writeFileSync(".env.production", `${contents}\n`, { mode: 0o600 });
+          NODE
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*

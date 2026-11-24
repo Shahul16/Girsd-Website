@@ -5,7 +5,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 ---
 
-## 0. The 14 Railway variables (final list)
+## 0. Environment variables
 
 | # | Variable | Where you get it | Required |
 |---|----------|------------------|----------|
@@ -13,21 +13,27 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 | 2 | `GITHUB_TOKEN` | GitHub → Settings → Developer settings → Fine-grained token, **Contents: Read & Write** on this repo | ✅ for admin CMS |
 | 3 | `GITHUB_REPO` | e.g. `Shahul16/globalrsd-website` — must match your real repo name | ✅ |
 | 4 | `GITHUB_BRANCH` | `main` | optional |
-| 5 | `RESEND_API_KEY` | resend.com → API Keys | ✅ for enquiry forms |
-| 6 | `LEAD_TO_EMAIL` | Your inbox, e.g. `info@globalrsd.co.uk` | optional (defaults to info@) |
-| 7 | `LEAD_FROM_EMAIL` | e.g. `GIRSD Website <leads@globalrsd.co.uk>` — only after domain verified in Resend | optional |
-| 8 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API | ✅ for login/payments |
-| 9 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API (anon public) | ✅ |
-| 10 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API (service_role — keep secret) | ✅ |
-| 11 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys (`sk_test_…` now, `sk_live_…` later) | ✅ for payments |
-| 12 | `STRIPE_WEBHOOK_SECRET` | Stripe → Webhooks → your endpoint (`whsec_…`) | ✅ for orders to record |
-| 13 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | Your registered reCAPTCHA key for www.globalrsd.co.uk: `6LcO_GstAAAAAAIinjg8tu23OoBRqu5ljAof7UVq` | optional (Google bot protection) |
-| 14 | `RECAPTCHA_SECRET_KEY` | Paired secret key: `6LcO_GstAAAAAK3bLkRGCfZXv9O-yTKvDR3YMj6z` — keep this one private, never commit it | optional |
-| 15 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Dashboard → Turnstile → Add widget (or test key `1x00000000000000000000AA`) | optional (Cloudflare bot protection) |
-| 16 | `TURNSTILE_SECRET_KEY` | Cloudflare Dashboard → Turnstile → Widget Secret key (or test key `1x0000000000000000000000000000000AA`) | optional |
+| 5 | `EMAIL_PROVIDER` | `resend` (default) or `ses` | optional |
+| 6 | `RESEND_API_KEY` | resend.com → API Keys | ✅ when `EMAIL_PROVIDER=resend` |
+| 7 | `SES_FROM_EMAIL` | Verified sender address in Amazon SES (eu-west-2) | ✅ when `EMAIL_PROVIDER=ses` |
+| 8 | `AWS_REGION` | AWS region for SES, e.g. `eu-west-2` | ✅ when `EMAIL_PROVIDER=ses` |
+| 9 | `LEAD_TO_EMAIL` | Your inbox, e.g. `info@globalrsd.co.uk` | optional (defaults to info@) |
+| 10 | `LEAD_FROM_EMAIL` | e.g. `GIRSD Website <leads@globalrsd.co.uk>` — verified sender address | optional |
+| 11 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API | ✅ for login/payments |
+| 12 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API (anon public) | ✅ |
+| 13 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API (service_role — keep secret) | ✅ |
+| 14 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys (`sk_test_…` now, `sk_live_…` later) | ✅ for payments |
+| 15 | `STRIPE_WEBHOOK_SECRET` | Stripe → Webhooks → your endpoint (`whsec_…`) | ✅ for orders to record |
+| 16 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | Your registered reCAPTCHA key for www.globalrsd.co.uk | optional (Google bot protection) |
+| 17 | `RECAPTCHA_SECRET_KEY` | Paired private key — never commit it | optional |
+| 18 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Dashboard → Turnstile → Add widget | optional (Cloudflare bot protection) |
+| 19 | `TURNSTILE_SECRET_KEY` | Cloudflare Dashboard → Turnstile → Widget Secret key | optional |
+| 20 | `DATABASE_URL` | RDS PostgreSQL connection string stored in Secrets Manager | required by the AWS migration target |
 
 > After adding/changing variables, Railway redeploys automatically.
 > `NEXT_PUBLIC_*` variables are baked in at build time — a redeploy is required.
+> For Amplify Hosting, `amplify.yml` writes the configured build environment
+> variables into the ignored `.env.production` file before the build.
 
 ---
 
@@ -45,7 +51,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 1. supabase.com → New project (free tier). Region: London (`eu-west-2`).
 2. **SQL Editor → New query** → paste the whole of `supabase/schema.sql` → Run.
    This creates the `orders` and `certificates` tables with row-level security.
-3. Project Settings → API → copy the three values into Railway variables 8, 9, 10.
+3. Project Settings → API → copy the three values into the Supabase variables above.
 4. **Authentication → URL Configuration**:
    - Site URL: `https://www.globalrsd.co.uk` (or your railway.app URL until DNS is done)
    - Redirect URLs: add both `https://www.globalrsd.co.uk/**` and `https://xxxx.up.railway.app/**`
@@ -64,27 +70,35 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 4. Done — the "Continue with Google" button is already wired.
 
 
-## 4. Resend — enquiry emails (10 min + DNS wait)
+## 4. Email delivery — Resend or Amazon SES
 
-1. resend.com → sign up → **API Keys → Create** → put in Railway variable 5.
+Set `EMAIL_PROVIDER=resend` (the default) to keep using Resend, or set
+`EMAIL_PROVIDER=ses` to send through Amazon SES in `AWS_REGION`. For SES, set
+`SES_FROM_EMAIL` to a verified sender identity and grant the runtime role
+`ses:SendEmail`. The app uses the AWS SDK default credential chain; do not put
+AWS access keys in application environment variables. Until SES production
+access is approved, keep Resend selected because SES sandbox recipients are
+restricted.
+
+1. resend.com → sign up → **API Keys → Create** → put in `RESEND_API_KEY`.
 2. Forms work immediately: emails arrive from `onboarding@resend.dev`.
    ⚠️ In this default mode Resend only delivers to **your own Resend account email** —
    fine for testing tonight.
 3. For real delivery to `info@globalrsd.co.uk`: **Domains → Add domain**
    `globalrsd.co.uk` → add the 3 DNS records (SPF, DKIM) at your registrar →
-   wait for "Verified" (minutes to a few hours) → set variable 7
-   `LEAD_FROM_EMAIL="GIRSD Website <leads@globalrsd.co.uk>"` and variable 6 to your inbox.
+   wait for "Verified" (minutes to a few hours) → set
+   `LEAD_FROM_EMAIL="GIRSD Website <leads@globalrsd.co.uk>"` and `LEAD_TO_EMAIL` to your inbox.
 4. Every Contact / Membership / Partner / Awards submission (incl. attachments)
    now lands in your inbox with Reply-To set to the visitor.
 
 ## 5. Stripe — payments (15 min test mode)
 
 1. stripe.com → create account for **Q TECH PRIVATE LTD**.
-2. Developers → API keys → copy **Secret key** (`sk_test_…`) → Railway variable 11.
+2. Developers → API keys → copy **Secret key** (`sk_test_…`) → `STRIPE_SECRET_KEY`.
 3. Developers → **Webhooks → Add endpoint**:
    - URL: `https://www.globalrsd.co.uk/api/stripe/webhook` (or railway.app URL for now)
    - Event: `checkout.session.completed`
-   - Copy the **Signing secret** (`whsec_…`) → Railway variable 12.
+   - Copy the **Signing secret** (`whsec_…`) → `STRIPE_WEBHOOK_SECRET`.
 4. Test the full flow: buy a ticket with card `4242 4242 4242 4242`, any future
    expiry, any CVC → you land on the confirmation page → the order appears on
    the member dashboard (written by the webhook).
@@ -97,7 +111,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 ## What changed in the code (for your records)
 
-- **Forms** → real: POST `/api/lead` → Resend email with attachments, honeypot anti-spam.
+- **Forms** → POST `/api/lead` → selected Resend or SES email provider with attachments, honeypot anti-spam.
 - **Auth** → real Supabase: email/password + Google/Microsoft/Apple OAuth, sessions persist across devices. `src/lib/auth.tsx` rewritten; localStorage demo removed.
 - **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). Prices recomputed **server-side**; member discounts (10% tickets / 5% courses) verified against the database, not the browser.
 - **Orders** → recorded by the Stripe webhook into Supabase; dashboard reads them live. Membership cancel now updates the database.
@@ -152,7 +166,7 @@ directly from each body.
 ## 7. Careers applications
 
 The /careers page emails every application (with the CV attached) through the
-same Resend pipeline as the other forms — no extra setup beyond §6. To edit or
+same configured email provider as the other forms — no extra setup beyond §4. To edit or
 add openings, update `src/lib/data/careers.ts` and push (or ask your developer).
 
 ## 8. reCAPTCHA — bot protection on every form (5 min)

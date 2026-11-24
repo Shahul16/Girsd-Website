@@ -63,7 +63,7 @@ export default function DataProtectionPage() {
       <p>
         We operate a breach response procedure covering identification,
         containment, assessment and notification. Where a breach is likely to
-        result in a risk to individuals' rights and freedoms, we will notify
+        result in a risk to individuals&apos; rights and freedoms, we will notify
         the Information Commissioner&apos;s Office within 72 hours of becoming
         aware, and affected individuals without undue delay where the risk is
         high.

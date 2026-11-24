@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { SITE } from "@/lib/site";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { submitNomination } from "@/lib/server/awards-service";
+import { isEmailConfigured, sendEmail } from "@/lib/server/email";
 
 export const runtime = "nodejs";
 
@@ -48,11 +48,17 @@ async function verifyRecaptcha(token: string, remoteip: string | null, expectedA
 /**
  * Receives every enquiry form (Contact, Membership, Committee, Partner,
  * Awards, Careers, Internship) as multipart/form-data, verifies it isn't a bot via
- * Cloudflare Turnstile or reCAPTCHA, and emails it to the admin via Resend.
+ * Cloudflare Turnstile or reCAPTCHA, and emails it to the admin via the configured provider.
  */
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  let emailConfigured: boolean;
+  try {
+    emailConfigured = isEmailConfigured();
+  } catch (err) {
+    console.error("Email provider configuration error:", err);
+    return NextResponse.json({ error: "The enquiry service is misconfigured." }, { status: 500 });
+  }
+  if (!emailConfigured) {
     return NextResponse.json(
       { error: "The enquiry service is not configured yet. Please email us directly at " + SITE.email },
       { status: 503 }
@@ -101,7 +107,7 @@ export async function POST(req: NextRequest) {
   }
 
   const fields: [string, string][] = [];
-  const attachments: { filename: string; content: Buffer }[] = [];
+  const attachments: { filename: string; content: Buffer; contentType?: string }[] = [];
   let visitorEmail = "";
   let visitorName = "";
 
@@ -125,6 +131,7 @@ export async function POST(req: NextRequest) {
       attachments.push({
         filename: value.name || "attachment",
         content: Buffer.from(await value.arrayBuffer()),
+        contentType: value.type || undefined,
       });
       continue;
     }
@@ -225,25 +232,21 @@ export async function POST(req: NextRequest) {
   const text = fields.map(([k, v]) => `${k}: ${v}`).join("\n");
 
   try {
-    const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
+    await sendEmail({
       from,
-      to: [to],
+      to,
       subject,
       html,
       text,
       replyTo: visitorEmail || undefined,
       attachments: attachments.length
-        ? attachments.map((a) => ({ filename: a.filename, content: a.content }))
+        ? attachments.map((a) => ({
+            filename: a.filename,
+            content: a.content,
+            contentType: a.contentType,
+          }))
         : undefined,
     });
-    if (error) {
-      console.error("Resend error:", error);
-      return NextResponse.json(
-        { error: "We could not send your enquiry just now. Please email us at " + contactEmail },
-        { status: 502 }
-      );
-    }
   } catch (err) {
     console.error("Lead send failed:", err);
     return NextResponse.json(

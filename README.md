@@ -78,12 +78,12 @@ The site runs locally without any environment variables; integration-dependent f
 
 ## 5. Environment Configuration
 
-All twelve variables, their sources and step-by-step acquisition instructions are documented in **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** — the authoritative go-live runbook.
+Environment variables, their sources and step-by-step acquisition instructions are documented in **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** — the authoritative go-live runbook.
 
 | Group | Variables |
 |---|---|
 | Administration | `ADMIN_KEY`, `GITHUB_TOKEN`, `GITHUB_REPO`, `GITHUB_BRANCH` |
-| Email (Resend) | `RESEND_API_KEY`, `LEAD_TO_EMAIL`, `LEAD_FROM_EMAIL` |
+| Email (Resend or SES) | `EMAIL_PROVIDER`, `RESEND_API_KEY`, `SES_FROM_EMAIL`, `AWS_REGION`, `LEAD_TO_EMAIL`, `LEAD_FROM_EMAIL` |
 | Auth & database (Supabase) | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
 | Payments (Stripe) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
 

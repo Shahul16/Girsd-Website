@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { SITE } from "@/lib/site";
+import { isEmailConfigured, sendEmail } from "@/lib/server/email";
 
 export const runtime = "nodejs";
 
@@ -23,8 +23,14 @@ function escapeHtml(s: string): string {
  *  2. A confirmation / thank-you email to the applicant
  */
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  let emailConfigured: boolean;
+  try {
+    emailConfigured = isEmailConfigured();
+  } catch (err) {
+    console.error("Email provider configuration error:", err);
+    return NextResponse.json({ error: "The enquiry service is misconfigured." }, { status: 500 });
+  }
+  if (!emailConfigured) {
     return NextResponse.json(
       {
         error:
@@ -65,7 +71,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Please accept the GDPR consent to proceed." }, { status: 400 });
   }
 
-  const resend = new Resend(apiKey);
   const from = process.env.LEAD_FROM_EMAIL || `GIRSD <${SITE.leadsEmail}>`;
 
   // ── 1. Admin notification email ──────────────────────────────────────────────
@@ -166,28 +171,20 @@ export async function POST(req: NextRequest) {
 
   try {
     // Send admin notification
-    const { error: adminErr } = await resend.emails.send({
+    await sendEmail({
       from,
-      to: [ADMIN_EMAIL],
+      to: ADMIN_EMAIL,
       subject: `[PAAVAI100 Grant Claim] ${fullName} — ${institution}`,
       html: adminHtml,
       text: `New PAAVAI100 grant claim\n\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nRole: ${role}\nInterest: ${interest}\nGrant Code: ${grantCode}\nGDPR: ${gdpr ? "Yes" : "No"}\nSubmitted: ${submittedAt}`,
       replyTo: email || undefined,
     });
 
-    if (adminErr) {
-      console.error("Resend admin email error:", adminErr);
-      return NextResponse.json(
-        { error: "We could not send your application. Please email us at " + ADMIN_EMAIL },
-        { status: 502 }
-      );
-    }
-
     // Send applicant confirmation (best-effort — don't fail the submission if this fails)
     if (email) {
-      await resend.emails.send({
+      await sendEmail({
         from,
-        to: [email],
+        to: email,
         subject: `✅ Your GIRSD Grant Application Is Received — ${grantCode}`,
         html: applicantHtml,
         text: `Dear ${fullName},\n\nThank you for applying for the PAAVAI100 grant. We will contact you within 7 working days.\n\nGrant Code: ${grantCode}\n\nExplore GIRSD: https://www.globalrsd.co.uk/\nLinkedIn: https://www.linkedin.com/company/girsd\nWhatsApp Community: https://chat.whatsapp.com/Hzz8bB36if83vGNL9PFoRE\n\nBest regards,\nGIRSD Team\ninfo@globalrsd.co.uk`,

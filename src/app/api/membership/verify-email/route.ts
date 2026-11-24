@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { getAdminClient } from "@/lib/server/supabase-admin";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
 import { classifyEmailDomain } from "@/lib/membership-verification";
+import { isEmailConfigured, sendEmail } from "@/lib/server/email";
 
 export const runtime = "nodejs";
 
@@ -110,20 +111,17 @@ export async function POST(req: NextRequest) {
         .eq("id", applicationId);
     }
 
-    // Dispatch email via Resend if API key is configured
-    const resendKey = process.env.RESEND_API_KEY;
-    if (resendKey) {
+    // Dispatch email when the selected provider is configured.
+    if (isEmailConfigured()) {
       try {
-        const { Resend } = await import("resend");
-        const resend = new Resend(resendKey);
-        await resend.emails.send({
+        await sendEmail({
           from: "GIRSD Verification <membership@globalrsd.co.uk>",
           to: targetEmail,
           subject: `[GIRSD] ${verificationCode} is your domain verification code`,
           text: `Dear ${targetName},\n\nYour 6-digit verification code for GIRSD membership verification is:\n\n${verificationCode}\n\nThis code will expire in 15 minutes.\n\nInstitutional / University Domain: ${domainInfo.domain || "Registered Domain"}\n\nImportant Note: Verification confirms ownership of your email address. It enables your application to proceed to the Academic Board eligibility review. Benefits are activated only after board approval.\n\nKind regards,\nAcademic & Membership Board\nGlobal Institute of Research & Skills Development\nLondon, United Kingdom · www.globalrsd.co.uk`,
         });
       } catch (emailErr) {
-        console.warn("Could not dispatch verification email via Resend:", emailErr);
+        console.warn("Could not dispatch verification email:", emailErr);
       }
     }
 
