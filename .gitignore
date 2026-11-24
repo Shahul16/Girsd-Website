@@ -3,6 +3,7 @@ node_modules
 out
 .env
 .env*.local
+.env.migration
 .env.production
 .env.development
 private_documents/
