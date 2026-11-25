@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
           from: "GIRSD Verification <membership@globalrsd.co.uk>",
           to: targetEmail,
           subject: `[GIRSD] ${verificationCode} is your domain verification code`,
-          text: `Dear ${targetName},\n\nYour 6-digit verification code for GIRSD membership verification is:\n\n${verificationCode}\n\nThis code will expire in 15 minutes.\n\nInstitutional / University Domain: ${domainInfo.domain || "Registered Domain"}\n\nImportant Note: Verification confirms ownership of your email address. It enables your application to proceed to the Academic Board eligibility review. Benefits are activated only after board approval.\n\nKind regards,\nAcademic & Membership Board\nGlobal Institute of Research & Skills Development\nLondon, United Kingdom · www.globalrsd.co.uk`,
+          text: `Dear ${targetName},\n\nYour 6-digit verification code for GIRSD membership verification is:\n\n${verificationCode}\n\nThis code will expire in 15 minutes.\n\nInstitutional / University Domain: ${domainInfo.domain || "Registered Domain"}\n\nImportant Note: Verification confirms ownership of your email address. It enables your application to proceed to the Academic Board eligibility review. Benefits are activated only after board approval.\n\nKind regards,\nAcademic & Membership Board\nGlobal Innovation for Research and Skills Development\nLondon, United Kingdom · www.globalrsd.co.uk`,
         });
       } catch (emailErr) {
         console.warn("Could not dispatch verification email via Resend:", emailErr);

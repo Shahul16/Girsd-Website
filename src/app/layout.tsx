@@ -14,11 +14,11 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.domain),
   title: {
-    default: "GIRSD — Global Institute of Research & Skills Development",
+    default: "GIRSD — Global Innovation for Research and Skills Development",
     template: "%s | GIRSD",
   },
   description:
-    "The Global Institute of Research & Skills Development (GIRSD) delivers international research conferences, skills workshops, online courses, awards and professional membership. Based in London, serving a growing international community.",
+    "The Global Innovation for Research and Skills Development (GIRSD) delivers international research conferences, skills workshops, online courses, awards and professional membership. Based in London, serving a growing international community.",
   keywords: [
     "research conference UK",
     "academic conference London",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "GIRSD",
-    title: "Global Institute of Research & Skills Development",
+    title: "Global Innovation for Research and Skills Development",
     description:
       "International research conferences, skills workshops, online courses, awards and professional membership.",
     url: SITE.domain,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GIRSD — Global Institute of Research & Skills Development",
+    title: "GIRSD — Global Innovation for Research and Skills Development",
     description: "Research conferences, practical workshops, certified courses, awards and professional membership.",
     images: ["/og-banner.jpg"],
   },

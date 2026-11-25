@@ -11,7 +11,7 @@ import pagesData from "@/content/pages.json";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about the Global Institute of Research & Skills Development — our vision, mission, and commitment to responsible practice.",
+    "Learn about the Global Innovation for Research and Skills Development — our vision, mission, and commitment to responsible practice.",
   alternates: { canonical: "/about" },
 };
 

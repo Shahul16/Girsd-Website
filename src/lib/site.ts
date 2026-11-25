@@ -10,7 +10,7 @@ export const formatAddress = (addr: any) => {
 };
 
 export const SITE = {
-  name: siteJson.name || "Global Institute of Research & Skills Development",
+  name: siteJson.name || "Global Innovation for Research and Skills Development",
   shortName: siteJson.shortName || "GIRSD",
   domain: "https://www.globalrsd.co.uk",
   domainDisplay: "www.globalrsd.co.uk",
@@ -47,11 +47,11 @@ export const SITE = {
   credit: { name: "Shahul Hameed", url: "https://www.linkedin.com/in/shahul-hameed16/" },
   companyLine:
     (siteJson as any).companyLine ||
-    "Global Institute of Research & Skills Development (GIRSD) is a trading name of Q Tech Private Ltd, registered in England & Wales (Company No. 15754767).",
+    "Global Innovation for Research and Skills Development (GIRSD) is a trading name of Q Tech Private Ltd, registered in England & Wales (Company No. 15754767).",
   company: {
     legalName: "Q Tech Private Ltd",
     number: "15754767",
-    tradingAs: "Global Institute of Research & Skills Development (GIRSD)",
+    tradingAs: "Global Innovation for Research and Skills Development (GIRSD)",
     address: formatAddress(siteJson.address),
   },
   social: {

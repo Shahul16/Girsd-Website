@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
           tier: data.tier_name,
           institution: data.institution,
           validUntil: data.valid_until ? new Date(data.valid_until).toLocaleDateString("en-GB") : "Active",
-          issuedBy: "Global Institute of Research & Skills Development (GIRSD, UK)",
+          issuedBy: "Global Innovation for Research and Skills Development (GIRSD, UK)",
         });
       }
 
@@ -66,9 +66,9 @@ export async function GET(req: NextRequest) {
           membershipId: certData.id,
           credentialType: "Accredited CPD / Conference Certificate",
           tier: certData.course,
-          institution: "Global Institute of Research & Skills Development",
+          institution: "Global Innovation for Research and Skills Development",
           validUntil: certData.issued_date ? new Date(certData.issued_date).toLocaleDateString("en-GB") : "Verified",
-          issuedBy: "Global Institute of Research & Skills Development (GIRSD, UK)",
+          issuedBy: "Global Innovation for Research and Skills Development (GIRSD, UK)",
         });
       }
     }
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
         tier: local.tier,
         institution: local.institution || "Registered Member Institution",
         validUntil: local.renewsAt ? new Date(local.renewsAt).toLocaleDateString("en-GB") : "Active",
-        issuedBy: "Global Institute of Research & Skills Development (GIRSD, UK)",
+        issuedBy: "Global Innovation for Research and Skills Development (GIRSD, UK)",
       });
     }
 

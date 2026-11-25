@@ -1,6 +1,6 @@
 # GIRSD Membership Verification, Security & Infrastructure Hardening
 
-**Global Institute of Research & Skills Development (GIRSD)**  
+**Global Innovation for Research and Skills Development (GIRSD)**
 *Trading name of Q TECH PRIVATE LTD, Company No. 15754767, London, United Kingdom.*  
 *UK Register of Learning Providers (UKRLP): 10098485 · CPD Group Provider #788000 · ICO: ZB867375*
 
@@ -150,7 +150,7 @@ Public registry lookup allows third-party institutions, employers, and visa auth
   - `Membership Category`: e.g. `Fellow (FGRSD)`
   - `Affiliated Institution`: Verified organization name
   - `Expiry / Issue Date`: e.g. `01/10/2027`
-  - `Issuing Body`: `Global Institute of Research & Skills Development (GIRSD, UK)`
+  - `Issuing Body`: `Global Innovation for Research and Skills Development (GIRSD, UK)`
 - **Data Minimization**: Private applicant emails, home addresses, phone numbers, and payment details are never returned in public responses.
 
 ---

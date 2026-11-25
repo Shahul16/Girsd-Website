@@ -8,7 +8,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: `Careers | ${SITE.shortName}`,
   description:
-    "Join the Global Institute of Research & Skills Development. Current openings across events, marketing, academic programmes and teaching — plus speculative applications.",
+    "Join the Global Innovation for Research and Skills Development. Current openings across events, marketing, academic programmes and teaching — plus speculative applications.",
 };
 
 const values = [

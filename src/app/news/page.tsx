@@ -6,7 +6,7 @@ import { posts } from "@/lib/data/news";
 
 export const metadata: Metadata = {
   title: "News",
-  description: "News and announcements from the Global Institute of Research & Skills Development.",
+  description: "News and announcements from the Global Innovation for Research and Skills Development.",
   alternates: { canonical: "/news" },
 };
 

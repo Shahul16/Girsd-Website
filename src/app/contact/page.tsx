@@ -7,7 +7,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact the Global Institute of Research & Skills Development. Enquiries about conferences, courses, membership, awards and partnerships.",
+    "Contact the Global Innovation for Research and Skills Development. Enquiries about conferences, courses, membership, awards and partnerships.",
   alternates: { canonical: "/contact" },
 };
 

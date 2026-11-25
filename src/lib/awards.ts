@@ -1,5 +1,5 @@
 /**
--- Global Institute of Research & Skills Development (GIRSD)
+-- Global Innovation for Research and Skills Development (GIRSD)
 -- Awards Workflow Types & Utilities
 */
 

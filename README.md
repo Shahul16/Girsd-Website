@@ -1,6 +1,6 @@
 # GIRSD Digital Platform
 
-**Global Institute of Research & Skills Development** — official website and member platform
+**Global Innovation for Research and Skills Development** — official website and member platform
 **Production domain:** [www.globalrsd.co.uk](https://www.globalrsd.co.uk)
 
 | | |
@@ -149,6 +149,6 @@ For technical queries regarding this platform, contact the institute at **info@g
 
 ---
 
-© Q TECH PRIVATE LTD. All rights reserved. "GIRSD" and the Global Institute of Research & Skills Development identity are property of the owner. This repository is proprietary; no licence is granted for reuse or redistribution.
+© Q TECH PRIVATE LTD. All rights reserved. "GIRSD" and the Global Innovation for Research and Skills Development identity are property of the owner. This repository is proprietary; no licence is granted for reuse or redistribution.
 
 *Platform designed & built by [Shahul Hameed](https://www.linkedin.com/in/shahul-hameed16/).*

@@ -2,7 +2,7 @@
   "name": "girsd-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Global Institute of Research & Skills Development — globalrsd.co.uk",
+  "description": "Global Innovation for Research and Skills Development — globalrsd.co.uk",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
