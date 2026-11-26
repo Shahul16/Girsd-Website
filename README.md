@@ -87,7 +87,7 @@ Environment variables and provider setup steps are documented in **[SETUP_GUIDE.
 | Auth & database (Supabase) | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
 | Payments (Stripe) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
 
-Database schema: run [`supabase/schema.sql`](./supabase/schema.sql) and then [`supabase/migrations/20261127_site_management.sql`](./supabase/migrations/20261127_site_management.sql) in the Supabase SQL editor.
+Database setup: run [`supabase/schema.sql`](./supabase/schema.sql), then [`supabase/migrations/20261123_awards_workflow.sql`](./supabase/migrations/20261123_awards_workflow.sql), [`supabase/migrations/20261127_site_management.sql`](./supabase/migrations/20261127_site_management.sql), and [`supabase/migrations/20261127_awards_admin_review.sql`](./supabase/migrations/20261127_awards_admin_review.sql) in the Supabase SQL editor, in that order.
 
 ## 6. Deployment
 

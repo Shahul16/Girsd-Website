@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submitNomination } from "@/lib/server/awards-service";
 import { getAdminClient } from "@/lib/server/supabase-admin";
+import { enforceRateLimit } from "@/lib/server/rate-limit";
 import path from "path";
 import crypto from "crypto";
 
@@ -9,6 +10,9 @@ export const runtime = "nodejs";
 const MAX_ATTACHMENT = 10 * 1024 * 1024; // 10 MB
 
 export async function POST(req: NextRequest) {
+  const limited = enforceRateLimit(req, "award_nomination");
+  if (limited) return limited;
+
   try {
     const form = await req.formData().catch(() => null);
     if (!form) {
@@ -64,9 +68,14 @@ export async function POST(req: NextRequest) {
             upsert: true,
           });
 
-        if (!uploadErr && uploadData) {
-          const { data: publicData } = admin.storage.from("awards-assets").getPublicUrl(storagePath);
-          attachmentUrl = publicData?.publicUrl || "";
+        if (uploadErr || !uploadData) {
+          console.error("Could not save award nomination attachment:", uploadErr);
+          return NextResponse.json({ error: "Could not save the supporting document. Please try again." }, { status: 503 });
+        }
+        const { data: publicData } = admin.storage.from("awards-assets").getPublicUrl(storagePath);
+        attachmentUrl = publicData?.publicUrl || "";
+        if (!attachmentUrl) {
+          return NextResponse.json({ error: "Could not create a supporting document link." }, { status: 503 });
         }
       }
     }
@@ -88,7 +97,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!result.ok) {
-      return NextResponse.json({ error: result.error || "Failed to submit nomination." }, { status: 500 });
+      return NextResponse.json({ error: result.error || "Failed to submit nomination." }, { status: 503 });
     }
 
     return NextResponse.json({

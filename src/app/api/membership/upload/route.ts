@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
-import { getAdminClient, getUserFromRequest } from "@/lib/server/supabase-admin";
+import {
+  getAdminClient,
+  getSupabaseSetupHint,
+  getUserFromRequest,
+} from "@/lib/server/supabase-admin";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
 import { DOCUMENT_UPLOAD_CONSTRAINTS } from "@/lib/membership-verification";
 
@@ -63,6 +67,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const user = await getUserFromRequest(req);
+    if (!user) {
+      return NextResponse.json({ error: "Please sign in before uploading a verification document." }, { status: 401 });
+    }
+
     const form = await req.formData().catch(() => null);
 
     if (!form) {
@@ -71,6 +79,10 @@ export async function POST(req: NextRequest) {
 
     const file = form.get("file") as File | null;
     const applicationId = String(form.get("applicationId") || "").trim();
+
+    if (!applicationId) {
+      return NextResponse.json({ error: "Application reference is required." }, { status: 400 });
+    }
 
     if (!file || file.size === 0) {
       return NextResponse.json({ error: "Please select a verification document." }, { status: 400 });
@@ -104,6 +116,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const admin = getAdminClient();
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error:
+            getSupabaseSetupHint(new Error("Supabase service role is not configured")) ??
+            "Membership applications are temporarily unavailable.",
+        },
+        { status: 503 }
+      );
+    }
+
+    const { data: appRecord, error: lookupError } = await admin
+      .from("membership_applications")
+      .select("user_id, audit_log, status")
+      .eq("id", applicationId)
+      .maybeSingle();
+
+    if (lookupError) {
+      console.error("Could not verify membership application before document upload:", lookupError);
+      return NextResponse.json(
+        {
+          error:
+            getSupabaseSetupHint(lookupError) ??
+            "Could not verify the membership application. Please try again.",
+        },
+        { status: 503 }
+      );
+    }
+    if (!appRecord || appRecord.user_id !== user.id) {
+      return NextResponse.json({ error: "Membership application not found." }, { status: 404 });
+    }
+
     // 5. Generate secure random filename outside public web root
     const cleanExt = originalExt.replace(/[^a-z0-9]/g, "");
     const safeStorageName = `girsd-doc-${crypto.randomUUID()}.${cleanExt}`;
@@ -111,44 +156,53 @@ export async function POST(req: NextRequest) {
     // Stored in private directory outside web root
     const privateDir = path.join(process.cwd(), "private_documents", "verifications");
     await fs.mkdir(privateDir, { recursive: true });
-    await fs.writeFile(path.join(privateDir, safeStorageName), buffer);
+    const filePath = path.join(privateDir, safeStorageName);
+    await fs.writeFile(filePath, buffer);
 
     const secureUrl = `/api/membership/document?file=${safeStorageName}`;
+    const currentAudit = Array.isArray(appRecord.audit_log) ? appRecord.audit_log : [];
+    const newAudit = [
+      ...currentAudit,
+      {
+        timestamp: new Date().toISOString(),
+        actor: user.email || user.id,
+        action: "DOCUMENT_UPLOADED",
+        reason: `Uploaded ${file.name} (${Math.round(file.size / 1024)} KB).`,
+        fromStatus: appRecord.status || "APPLICATION_SUBMITTED",
+        toStatus: "UNDER_REVIEW",
+      },
+    ];
 
-    // 6. Update application record if applicationId is provided
-    if (applicationId) {
-      const admin = getAdminClient();
-      if (admin) {
-        const { data: appRecord } = await admin
-          .from("membership_applications")
-          .select("audit_log, status")
-          .eq("id", applicationId)
-          .maybeSingle();
+    const { data: updatedRecord, error: updateError } = await admin
+      .from("membership_applications")
+      .update({
+        document_filename: file.name,
+        document_file_url: secureUrl,
+        status: "UNDER_REVIEW",
+        audit_log: newAudit,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", applicationId)
+      .eq("user_id", user.id)
+      .select("id")
+      .maybeSingle();
 
-        const currentAudit = Array.isArray(appRecord?.audit_log) ? appRecord.audit_log : [];
-        const newAudit = [
-          ...currentAudit,
-          {
-            timestamp: new Date().toISOString(),
-            actor: user?.email || user?.id || "applicant",
-            action: "DOCUMENT_UPLOADED",
-            reason: `Uploaded ${file.name} (${Math.round(file.size / 1024)} KB).`,
-            fromStatus: appRecord?.status || "APPLICATION_SUBMITTED",
-            toStatus: "UNDER_REVIEW",
-          },
-        ];
-
-        await admin
-          .from("membership_applications")
-          .update({
-            document_filename: file.name,
-            document_file_url: secureUrl,
-            status: "UNDER_REVIEW",
-            audit_log: newAudit,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", applicationId);
+    if (updateError || !updatedRecord) {
+      console.error("Could not save membership document details:", updateError);
+      await fs.unlink(filePath).catch((cleanupError) => {
+        console.error("Could not remove unreferenced membership document:", cleanupError);
+      });
+      if (!updatedRecord && !updateError) {
+        return NextResponse.json({ error: "Membership application not found." }, { status: 404 });
       }
+      return NextResponse.json(
+        {
+          error:
+            getSupabaseSetupHint(updateError) ??
+            "Could not save the verification document. Please try again.",
+        },
+        { status: 503 }
+      );
     }
 
     return NextResponse.json({

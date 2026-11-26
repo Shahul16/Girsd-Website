@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient, getUserFromRequest } from "@/lib/server/supabase-admin";
+import {
+  getAdminClient,
+  getSupabaseSetupHint,
+  getUserFromRequest,
+} from "@/lib/server/supabase-admin";
 import {
   classifyEmailDomain,
   generateApplicationId,
@@ -117,7 +121,14 @@ export async function POST(req: NextRequest) {
 
     const admin = getAdminClient();
     if (!admin) {
-      return NextResponse.json({ error: "Membership applications are temporarily unavailable." }, { status: 503 });
+      return NextResponse.json(
+        {
+          error:
+            getSupabaseSetupHint(new Error("Supabase service role is not configured")) ??
+            "Membership applications are temporarily unavailable.",
+        },
+        { status: 503 }
+      );
     }
     const newRecord = {
       id: applicationId,
@@ -149,7 +160,14 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error("Database insert error for membership application:", dbError);
-      return NextResponse.json({ error: "Could not save your membership application. Please try again." }, { status: 503 });
+      return NextResponse.json(
+        {
+          error:
+            getSupabaseSetupHint(dbError) ??
+            "Could not save your membership application. Please try again.",
+        },
+        { status: 503 }
+      );
     }
 
     return NextResponse.json({

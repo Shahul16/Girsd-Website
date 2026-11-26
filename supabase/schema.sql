@@ -9,7 +9,7 @@ create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users (id) on delete set null,
   email text,
-  kind text not null check (kind in ('ticket', 'course', 'membership', 'unknown')),
+  kind text not null check (kind in ('ticket', 'course', 'membership', 'award_registration', 'unknown')),
   title text not null,
   slug text,
   tier text,

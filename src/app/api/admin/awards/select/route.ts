@@ -23,12 +23,14 @@ export async function POST(req: NextRequest) {
 
     const result = await approveSelection(nominationRef);
     if (!result.ok) {
-      return NextResponse.json({ error: result.error || "Failed to approve nomination selection." }, { status: 500 });
+      return NextResponse.json({ error: result.error || "Failed to approve nomination selection." }, { status: 503 });
     }
 
     return NextResponse.json({
       ok: true,
-      message: `Nomination ${nominationRef} marked as selected and invitation email dispatched.`,
+      message: result.resent
+        ? `Invitation resent to the nominee for ${nominationRef}.`
+        : `Nomination ${nominationRef} selected and invitation email sent.`,
     });
   } catch (err: any) {
     console.error("Error in awards select API:", err);

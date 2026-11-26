@@ -158,11 +158,11 @@ function RegisterForm() {
         }
       } else {
         setIsVerified(false);
-        setVerifyError(data.error || "Nomination reference code not found. You may still complete the form with a valid reference.");
+        setVerifyError(data.error || "This reference could not be verified. Registration requires a selected nomination.");
       }
     } catch {
       setIsVerified(false);
-      setVerifyError("Could not connect to nomination verification service. Manual entry enabled.");
+      setVerifyError("Could not verify the nomination. Try again or contact the Awards Committee.");
     } finally {
       setVerifying(false);
     }
@@ -231,9 +231,11 @@ function RegisterForm() {
       const data = await res.json();
       if (res.ok && data.url) {
         setLogoUrl(data.url);
+      } else {
+        setFormError(data.error || "Failed to upload logo. Please try again.");
       }
     } catch {
-      console.warn("Logo upload failed");
+      setFormError("Network error while uploading the logo.");
     } finally {
       setLogoUploading(false);
     }
@@ -251,6 +253,10 @@ function RegisterForm() {
     e.preventDefault();
     setFormError("");
 
+    if (!isVerified) {
+      setFormError("Verify a selected nomination before continuing to award registration.");
+      return;
+    }
     if (!nominationRef.trim()) {
       setFormError("Please enter your Nomination Reference ID.");
       return;
@@ -465,7 +471,7 @@ function RegisterForm() {
                 value={nominationRef}
                 readOnly={isVerified}
                 onChange={(e) => setNominationRef(e.target.value.toUpperCase())}
-                placeholder="e.g. GIRSD-AWD-2026-XXXX"
+                placeholder="e.g. GIRSD-AWD-2026-XXXXXXXXXX"
                 className={`input font-mono font-bold tracking-wider ${isVerified ? "bg-slate-100 text-slate-700 cursor-not-allowed" : ""}`}
               />
               {!isVerified && (

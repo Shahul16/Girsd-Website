@@ -82,14 +82,13 @@ export interface AwardRegistration {
 
 /**
  * Generates an official unique nomination reference in the format:
- * GIRSD-AWD-2026-XXXX (4 uppercase alphanumeric chars excluding ambiguous ones)
+ * GIRSD-AWD-2026-XXXXXXXXXX (10 uppercase alphanumeric chars excluding ambiguous ones)
  */
 export function generateNominationRef(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let randomPart = "";
-  for (let i = 0; i < 4; i++) {
-    randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
+  const randomValues = new Uint32Array(10);
+  globalThis.crypto.getRandomValues(randomValues);
+  const randomPart = Array.from(randomValues, (value) => chars[value % chars.length]).join("");
   return `GIRSD-AWD-2026-${randomPart}`;
 }
 

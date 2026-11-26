@@ -41,7 +41,9 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 1. supabase.com → New project (free tier). Region: London (`eu-west-2`).
 2. **SQL Editor → New query** → run `supabase/schema.sql`, then run
-   `supabase/migrations/20261127_site_management.sql`. These create the
+   `supabase/migrations/20261123_awards_workflow.sql`,
+   `supabase/migrations/20261127_site_management.sql`, and
+   `supabase/migrations/20261127_awards_admin_review.sql` in that order. These create the
    business tables, CMS collection store, enquiry table, and public media bucket.
 3. Project Settings → API → add the project URL, anon key, and service-role key
    to Railway. Keep the service-role key server-side only.
@@ -102,7 +104,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 - **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). Prices recomputed **server-side**; member discounts (10% tickets / 5% courses) verified against the database, not the browser.
 - **Orders** → recorded by the Stripe webhook into Supabase; dashboard reads them live. Membership checkout is linked to the signed-in member's application, and cancellation revokes active membership benefits.
 - **Admin CMS** → `/admin` uses an HttpOnly admin session and Supabase for content and media. It includes a read-only business-data browser and workflow actions for membership and award approvals.
-- **Certificate verification** → reads the Supabase `certificates` table (add rows in Table Editor); sample data only as fallback.
+- **Certificate verification** → reads the Supabase `certificates` table (add rows in Table Editor); the verification API never treats sample data as valid.
 - Removed every "demo mode / not transmitted / test mode" notice from the UI.
 
 ## Remaining honest limitations

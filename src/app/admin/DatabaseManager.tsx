@@ -67,10 +67,10 @@ export default function DatabaseManager() {
   async function runAction(record: RecordRow, action: "approve" | "reject" | "select" | "enquiry-status") {
     const recordId = String(record.id ?? record.nomination_ref ?? "");
     if (!recordId) return;
-    const rejectReason = action === "reject" && table === "membership_applications"
-      ? window.prompt("Add a short reason for rejecting this application:")
+    const rejectReason = action === "reject" && (table === "membership_applications" || table === "award_nominations")
+      ? window.prompt(table === "award_nominations" ? "Add a reason for rejecting this nomination:" : "Add a short reason for rejecting this application:")
       : undefined;
-    if (action === "reject" && table === "membership_applications" && !rejectReason?.trim()) return;
+    if (action === "reject" && (table === "membership_applications" || table === "award_nominations") && !rejectReason?.trim()) return;
 
     setBusyId(recordId);
     setError("");
@@ -97,7 +97,7 @@ export default function DatabaseManager() {
         response = await fetch("/api/admin/awards/reject", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nominationRef: record.nomination_ref }),
+          body: JSON.stringify({ nominationRef: record.nomination_ref, reason: rejectReason }),
         });
       } else if (table === "website_enquiries") {
         const nextStatus = record.status === "resolved" ? "in_progress" : "resolved";
@@ -112,7 +112,7 @@ export default function DatabaseManager() {
 
       const body = await response.json().catch(() => null);
       if (!response.ok) throw new Error(body?.error || "Action could not be completed.");
-      setNotice("Record updated.");
+      setNotice(body?.message || "Record updated.");
       await loadRecords();
     } catch (actionError) {
       setError(actionError instanceof Error ? actionError.message : "Action could not be completed.");
@@ -225,7 +225,7 @@ export default function DatabaseManager() {
                   <tr key={recordId} className="align-top hover:bg-white/[0.03]">
                     {columns.map((column) => (
                       <td key={column} className="max-w-64 break-words px-3 py-3 leading-relaxed">
-                        {column === "audit_log" || column === "fields" || column === "data" || column === "profile_snapshot" ? (
+                        {column === "audit_log" || column === "fields" || column === "data" || column === "profile_snapshot" || column === "statement" || column === "supporting_links" || column === "guests_details" ? (
                           <details>
                             <summary className="cursor-pointer text-gold">View details</summary>
                             <pre className="mt-2 max-h-64 max-w-lg overflow-auto whitespace-pre-wrap break-words text-[10px] text-slate-300">
@@ -233,7 +233,11 @@ export default function DatabaseManager() {
                             </pre>
                           </details>
                         ) : (
-                          column === "cv_path" && typeof record[column] === "string" ? (
+                          column === "attachment_url" && typeof record[column] === "string" && /^https?:\/\//i.test(String(record[column])) ? (
+                            <a href={String(record[column])} target="_blank" rel="noopener noreferrer" className="font-semibold text-gold underline">
+                              Open supporting document
+                            </a>
+                          ) : column === "cv_path" && typeof record[column] === "string" ? (
                             <a
                               href={`/api/admin/member-file?path=${encodeURIComponent(String(record[column]))}`}
                               target="_blank"
@@ -270,6 +274,11 @@ export default function DatabaseManager() {
                           <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "select")} className="rounded-md bg-emerald-700 px-2.5 py-1.5 font-semibold text-white hover:bg-emerald-600 disabled:opacity-50">Select</button>
                           <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "reject")} className="rounded-md border border-rose-400/30 px-2.5 py-1.5 font-semibold text-rose-200 hover:bg-rose-950/40 disabled:opacity-50">Reject</button>
                         </div>
+                      )}
+                      {table === "award_nominations" && record.status === "selected" && (
+                        <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "select")} className="rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50">
+                          Resend invitation
+                        </button>
                       )}
                       {table === "website_enquiries" && record.status !== "spam" && (
                         <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "enquiry-status")} className="rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50">

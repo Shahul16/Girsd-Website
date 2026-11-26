@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   classifyEmailDomain,
-  generateApplicationId,
   PROOF_TYPE_LABELS,
   type ProofType,
 } from "@/lib/membership-verification";
@@ -183,33 +182,38 @@ export default function MembershipVerificationModal({
       const token = await getAccessToken();
       if (!token) throw new Error("Please sign in again before submitting your application.");
 
-      // 1. Submit initial application record
-      const res = await fetch("/api/membership/apply", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim().toLowerCase(),
-          institution: institution.trim(),
-          roleTitle: role,
-          tierId: tier.id,
-          verificationMethod,
-          proofType: verificationMethod === "university" ? proofType : undefined,
-          documentFileName: fileName || undefined,
-          emailVerified: isEmailVerified || emailVerified,
-        }),
-      });
+      let assignedAppId = applicationId;
+      if (!assignedAppId) {
+        const res = await fetch("/api/membership/apply", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: name.trim(),
+            email: email.trim().toLowerCase(),
+            institution: institution.trim(),
+            roleTitle: role,
+            tierId: tier.id,
+            verificationMethod,
+            proofType: verificationMethod === "university" ? proofType : undefined,
+            documentFileName: fileName || undefined,
+            emailVerified: isEmailVerified || emailVerified,
+          }),
+        });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to submit application.");
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to submit application.");
+        }
+
+        assignedAppId = data.application?.id;
+        if (!assignedAppId) {
+          throw new Error("The application was saved but no reference number was returned. Please contact support.");
+        }
+        setApplicationId(assignedAppId);
       }
-
-      const assignedAppId = data.application?.id || generateApplicationId();
-      setApplicationId(assignedAppId);
 
       // 2. If applicant attached a verification file, securely upload to private storage
       if (selectedFile) {
@@ -225,21 +229,8 @@ export default function MembershipVerificationModal({
 
         if (!uploadRes.ok) {
           const uploadErr = await uploadRes.json().catch(() => ({}));
-          console.warn("Document upload warning:", uploadErr.error);
+          throw new Error(uploadErr.error || "Your application was saved, but the verification document could not be uploaded. Please retry.");
         }
-      }
-
-      // 3. If email code was verified, confirm against application in DB
-      if (isEmailVerified || emailVerified) {
-        await fetch("/api/membership/verify-email", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email.trim().toLowerCase(),
-            code: emailCode.trim() || "123456",
-            applicationId: assignedAppId,
-          }),
-        }).catch(() => null);
       }
 
       setStep(3);

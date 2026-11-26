@@ -53,6 +53,9 @@ export async function submitNomination(data: {
 }): Promise<{ ok: boolean; nominationRef?: string; error?: string }> {
   const nominationRef = generateNominationRef();
   const admin = getAdminClient();
+  if (!admin) {
+    return { ok: false, error: "Award nominations are temporarily unavailable. Please try again later." };
+  }
 
   const record: AwardNomination = {
     nomination_ref: nominationRef,
@@ -73,34 +76,33 @@ export async function submitNomination(data: {
     updated_at: new Date().toISOString(),
   };
 
-  // If Supabase is available, persist the nomination
-  if (admin) {
-    try {
-      const { error: insertErr } = await admin.from("award_nominations").insert({
-        nomination_ref: record.nomination_ref,
-        nominator_name: record.nominator_name,
-        nominator_email: record.nominator_email,
-        nomination_type: record.nomination_type,
-        category: record.category,
-        nominee_name: record.nominee_name,
-        nominee_email: record.nominee_email,
-        nominee_affiliation: record.nominee_affiliation,
-        nominee_country: record.nominee_country,
-        statement: record.statement,
-        supporting_links: record.supporting_links,
-        attachment_url: record.attachment_url,
-        attachment_filename: record.attachment_filename,
-        status: record.status,
-        created_at: record.created_at,
-        updated_at: record.updated_at,
-      });
+  try {
+    const { error: insertErr } = await admin.from("award_nominations").insert({
+      nomination_ref: record.nomination_ref,
+      nominator_name: record.nominator_name,
+      nominator_email: record.nominator_email,
+      nomination_type: record.nomination_type,
+      category: record.category,
+      nominee_name: record.nominee_name,
+      nominee_email: record.nominee_email,
+      nominee_affiliation: record.nominee_affiliation,
+      nominee_country: record.nominee_country,
+      statement: record.statement,
+      supporting_links: record.supporting_links,
+      attachment_url: record.attachment_url,
+      attachment_filename: record.attachment_filename,
+      status: record.status,
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+    });
 
-      if (insertErr) {
-        console.error("Supabase error saving award nomination:", insertErr);
-      }
-    } catch (dbErr) {
-      console.error("Database connection exception saving nomination:", dbErr);
+    if (insertErr) {
+      console.error("Supabase error saving award nomination:", insertErr);
+      return { ok: false, error: "Could not save your nomination. Please try again." };
     }
+  } catch (dbErr) {
+    console.error("Database connection exception saving nomination:", dbErr);
+    return { ok: false, error: "Could not save your nomination. Please try again." };
   }
 
   // Send Emails via Resend
@@ -240,50 +242,69 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
  * Marks nomination as 'selected' and sends official registration invitation
  * ─────────────────────────────────────────────────────────────────────────────
  */
-export async function approveSelection(nominationRef: string): Promise<{ ok: boolean; error?: string }> {
+export async function approveSelection(
+  nominationRef: string
+): Promise<{ ok: boolean; error?: string; resent?: boolean }> {
   const admin = getAdminClient();
-  let nomination: AwardNomination | null = null;
+  if (!admin) return { ok: false, error: "Database not configured." };
 
-  if (admin) {
-    const { data, error } = await admin
+  const { data: selected, error: selectError } = await admin
+    .from("award_nominations")
+    .update({
+      status: "selected",
+      selected_at: new Date().toISOString(),
+      reviewed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("nomination_ref", nominationRef)
+    .eq("status", "pending_review")
+    .select("*")
+    .maybeSingle();
+
+  if (selectError) {
+    console.error("Could not select award nomination:", selectError);
+    return { ok: false, error: "Could not update the nomination status." };
+  }
+
+  let nomination = selected as AwardNomination | null;
+  let resent = false;
+  if (!nomination) {
+    const { data: existing, error: readError } = await admin
       .from("award_nominations")
       .select("*")
       .eq("nomination_ref", nominationRef)
       .maybeSingle();
-
-    if (error || !data) {
-      return { ok: false, error: "Nomination record not found." };
+    if (readError) {
+      console.error("Could not load award nomination for invitation resend:", readError);
+      return { ok: false, error: "Could not load the nomination." };
     }
-    nomination = data as AwardNomination;
-
-    const { error: updateErr } = await admin
-      .from("award_nominations")
-      .update({
-        status: "selected",
-        selected_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("nomination_ref", nominationRef);
-
-    if (updateErr) {
-      return { ok: false, error: "Failed to update nomination status in database." };
+    if (!existing) return { ok: false, error: "Nomination record not found." };
+    if (existing.status !== "selected") {
+      return { ok: false, error: `Cannot send an invitation while nomination status is ${existing.status}.` };
     }
-  } else {
-    return { ok: false, error: "Database not configured." };
+    nomination = existing as AwardNomination;
+    resent = true;
   }
 
-  // Send official invitation email with the pre-filled link
-  await sendSelectionInvitationEmail(nomination);
-
-  return { ok: true };
+  const invitation = await sendSelectionInvitationEmail(nomination);
+  if (!invitation.ok) {
+    return {
+      ok: false,
+      resent,
+      error: `Nomination is selected, but the invitation was not sent: ${invitation.error}`,
+    };
+  }
+  return { ok: true, resent };
 }
 
 /**
  * Sends official Award Selection & Final Registration Invitation email
  */
-export async function sendSelectionInvitationEmail(nomination: AwardNomination) {
+export async function sendSelectionInvitationEmail(
+  nomination: AwardNomination
+): Promise<{ ok: boolean; error?: string }> {
   const resend = getResendClient();
-  if (!resend) return;
+  if (!resend) return { ok: false, error: "Resend is not configured." };
 
   const from = getFromEmail();
   const registerUrl = `https://${SITE.domainDisplay}/awards/register?ref=${encodeURIComponent(nomination.nomination_ref)}`;
@@ -342,15 +363,21 @@ export async function sendSelectionInvitationEmail(nomination: AwardNomination) 
 </div>`;
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from,
       to: [nomination.nominee_email],
       subject: `Official Invitation: GIRSD Award Selection & Final Registration – ${nomination.nomination_ref}`,
       html: invitationHtml,
       replyTo: SITE.awardsEmail,
     });
+    if (error) {
+      console.error("Could not send award selection invitation:", error);
+      return { ok: false, error: "Email delivery failed." };
+    }
+    return { ok: true };
   } catch (err) {
     console.error("Error sending selection invitation email:", err);
+    return { ok: false, error: "Email delivery failed." };
   }
 }
 
@@ -362,8 +389,7 @@ export async function sendSelectionInvitationEmail(nomination: AwardNomination) 
 export async function handlePaidAwardRegistration(stripeSessionId: string, paymentIntentId: string, metadata: Record<string, any>) {
   const admin = getAdminClient();
   if (!admin) {
-    console.error("Admin client unavailable for paid award registration:", stripeSessionId);
-    return;
+    throw new Error(`Admin client unavailable for paid award registration ${stripeSessionId}.`);
   }
 
   const registrationId = metadata.registration_id;
@@ -382,35 +408,76 @@ export async function handlePaidAwardRegistration(stripeSessionId: string, payme
   const { data: reg, error: fetchErr } = await regQuery.maybeSingle();
 
   if (fetchErr || !reg) {
-    console.error("Award registration record not found for webhook processing:", { registrationId, nominationRef, stripeSessionId });
-    return;
+    throw new Error(`Award registration record not found for webhook processing: ${fetchErr?.message ?? registrationId ?? nominationRef ?? stripeSessionId}`);
+  }
+  if (nominationRef && reg.nomination_ref !== nominationRef) {
+    throw new Error(`Award registration ${reg.id} does not match the Stripe nomination reference.`);
+  }
+  if (reg.stripe_session_id && reg.stripe_session_id !== stripeSessionId) {
+    throw new Error(`Stripe session does not match award registration ${reg.id}.`);
+  }
+  if (!["pending", "paid"].includes(reg.payment_status)) {
+    throw new Error(`Award registration ${reg.id} cannot transition from ${reg.payment_status} to paid.`);
+  }
+  let alreadyPaid = reg.payment_status === "paid" && reg.stripe_session_id === stripeSessionId;
+
+  if (!alreadyPaid) {
+    const { data: updatedRegistration, error: paymentUpdateError } = await admin
+      .from("award_registrations")
+      .update({
+        payment_status: "paid",
+        stripe_session_id: stripeSessionId,
+        stripe_payment_intent: paymentIntentId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", reg.id)
+      .eq("payment_status", "pending")
+      .select("id")
+      .maybeSingle();
+    if (paymentUpdateError) {
+      throw new Error(`Could not mark award registration ${reg.id} as paid: ${paymentUpdateError.message}`);
+    }
+    if (!updatedRegistration) {
+      const { data: current, error: currentError } = await admin
+        .from("award_registrations")
+        .select("payment_status, stripe_session_id")
+        .eq("id", reg.id)
+        .maybeSingle();
+      if (currentError || current?.payment_status !== "paid" || current.stripe_session_id !== stripeSessionId) {
+        throw new Error(`Award registration ${reg.id} could not be marked as paid.`);
+      }
+      alreadyPaid = true;
+    }
   }
 
-  // 2. Update Registration payment status
-  await admin
-    .from("award_registrations")
-    .update({
-      payment_status: "paid",
-      stripe_session_id: stripeSessionId,
-      stripe_payment_intent: paymentIntentId,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", reg.id);
-
-  // 3. Update linked nomination status to 'registered'
-  await admin
+  const { data: registeredNomination, error: nominationUpdateError } = await admin
     .from("award_nominations")
     .update({
       status: "registered",
       registered_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
-    .eq("nomination_ref", reg.nomination_ref);
+    .eq("nomination_ref", reg.nomination_ref)
+    .eq("status", "selected")
+    .select("nomination_ref")
+    .maybeSingle();
+  if (nominationUpdateError) {
+    throw new Error(`Could not mark award nomination ${reg.nomination_ref} as registered: ${nominationUpdateError.message}`);
+  }
+  if (!registeredNomination) {
+    const { data: nomination, error: readNominationError } = await admin
+      .from("award_nominations")
+      .select("status")
+      .eq("nomination_ref", reg.nomination_ref)
+      .maybeSingle();
+    if (readNominationError || nomination?.status !== "registered") {
+      throw new Error(`Award nomination ${reg.nomination_ref} is not in a payable state.`);
+    }
+  }
 
-  // 4. Send Confirmation Email to User
+  if (alreadyPaid) return;
+
   await sendUserPaymentConfirmationEmail(reg, paymentIntentId);
-
-  // 5. Send Complete 100% Data Email to Admin (awards@globalrsd.co.uk)
   await sendAdminCompleteDataEmail(reg, paymentIntentId);
 }
 

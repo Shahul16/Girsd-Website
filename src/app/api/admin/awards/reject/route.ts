@@ -8,15 +8,24 @@ export async function POST(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   const body = await req.json().catch(() => null);
   const nominationRef = typeof body?.nominationRef === "string" ? body.nominationRef.trim() : "";
+  const reason = typeof body?.reason === "string" ? body.reason.trim() : "";
   if (!nominationRef) return NextResponse.json({ error: "Nomination reference is required." }, { status: 400 });
+  if (!reason || reason.length > 500) {
+    return NextResponse.json({ error: "Provide a rejection reason of up to 500 characters." }, { status: 400 });
+  }
 
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
   const { data, error } = await admin
     .from("award_nominations")
-    .update({ status: "rejected", updated_at: new Date().toISOString() })
+    .update({
+      status: "rejected",
+      reviewer_notes: reason,
+      reviewed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
     .eq("nomination_ref", nominationRef)
-    .in("status", ["pending_review", "selected"])
+    .eq("status", "pending_review")
     .select("nomination_ref")
     .maybeSingle();
 

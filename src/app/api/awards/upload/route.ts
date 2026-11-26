@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import crypto from "crypto";
 import { getAdminClient } from "@/lib/server/supabase-admin";
+import { enforceRateLimit } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -10,14 +11,12 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_MIME_TYPES: Record<string, string[]> = {
   headshot: ["image/jpeg", "image/png", "image/webp"],
   logo: ["image/png", "image/svg+xml", "image/jpeg", "image/webp"],
-  attachment: [
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  ],
 };
 
 export async function POST(req: NextRequest) {
+  const limited = enforceRateLimit(req, "document_upload");
+  if (limited) return limited;
+
   try {
     const formData = await req.formData().catch(() => null);
     if (!formData) {
@@ -26,6 +25,9 @@ export async function POST(req: NextRequest) {
 
     const file = formData.get("file") as File | null;
     const kind = String(formData.get("kind") || "headshot").toLowerCase();
+    if (kind !== "headshot" && kind !== "logo") {
+      return NextResponse.json({ error: "Choose a supported award image type." }, { status: 400 });
+    }
 
     if (!file || file.size === 0) {
       return NextResponse.json({ error: "Please select a valid file to upload." }, { status: 400 });
@@ -38,8 +40,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const allowedTypes = ALLOWED_MIME_TYPES[kind] || ALLOWED_MIME_TYPES.headshot;
-    if (file.type && !allowedTypes.includes(file.type)) {
+    const allowedTypes = ALLOWED_MIME_TYPES[kind];
+    if (!file.type || !allowedTypes.includes(file.type)) {
       return NextResponse.json(
         { error: `File type "${file.type}" is not supported. Allowed formats: ${allowedTypes.join(", ")}` },
         { status: 415 }
@@ -56,40 +58,26 @@ export async function POST(req: NextRequest) {
     const storagePath = `${kind}s/${safeFilename}`;
 
     const admin = getAdminClient();
-    if (admin) {
-      // Ensure bucket exists or attempt upload
-      const { data: uploadData, error: uploadErr } = await admin.storage
-        .from("awards-assets")
-        .upload(storagePath, buffer, {
-          contentType: file.type || "application/octet-stream",
-          upsert: true,
-        });
-
-      if (!uploadErr && uploadData) {
-        const { data: publicUrlData } = admin.storage
-          .from("awards-assets")
-          .getPublicUrl(storagePath);
-
-        if (publicUrlData?.publicUrl) {
-          return NextResponse.json({
-            ok: true,
-            url: publicUrlData.publicUrl,
-            filename: file.name,
-            size: file.size,
-          });
-        }
-      } else if (uploadErr) {
-        console.warn("Supabase Storage upload warning, falling back to data URL:", uploadErr.message);
-      }
+    if (!admin) {
+      return NextResponse.json({ error: "Award media storage is temporarily unavailable." }, { status: 503 });
     }
-
-    // Fallback: Return data URL so user can still complete checkout even if bucket is pending
-    const base64Data = buffer.toString("base64");
-    const dataUrl = `data:${file.type || "application/octet-stream"};base64,${base64Data}`;
-
+    const { data: uploadData, error: uploadErr } = await admin.storage
+      .from("awards-assets")
+      .upload(storagePath, buffer, {
+        contentType: file.type,
+        upsert: true,
+      });
+    if (uploadErr || !uploadData) {
+      console.error("Could not save award media:", uploadErr);
+      return NextResponse.json({ error: "Could not save award media. Please try again." }, { status: 503 });
+    }
+    const { data: publicUrlData } = admin.storage.from("awards-assets").getPublicUrl(storagePath);
+    if (!publicUrlData?.publicUrl) {
+      return NextResponse.json({ error: "Could not create an award media link." }, { status: 503 });
+    }
     return NextResponse.json({
       ok: true,
-      url: dataUrl,
+      url: publicUrlData.publicUrl,
       filename: file.name,
       size: file.size,
     });

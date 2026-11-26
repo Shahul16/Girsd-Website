@@ -126,6 +126,7 @@ export async function POST(req: NextRequest) {
           );
         } catch (awardErr) {
           console.error("Error processing award registration webhook:", awardErr);
+          return NextResponse.json({ error: "Could not process award registration payment." }, { status: 500 });
         }
       }
     }

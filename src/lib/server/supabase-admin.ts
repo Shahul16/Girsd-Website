@@ -26,7 +26,13 @@ export function getAdminClient(): SupabaseClient | null {
 }
 
 export function getSupabaseSetupHint(error: unknown): string | null {
-  const message = error instanceof Error ? error.message : "";
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === "object" && error !== null && "message" in error &&
+          typeof error.message === "string"
+        ? error.message
+        : "";
   const code =
     typeof error === "object" && error !== null && "code" in error
       ? String(error.code)
@@ -35,8 +41,11 @@ export function getSupabaseSetupHint(error: unknown): string | null {
   if (message.includes("Supabase service role is not configured")) {
     return "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in the deployment environment.";
   }
-  if (code === "42P01" || code === "PGRST205" || /schema cache|relation .* does not exist/i.test(message)) {
-    return "Required Supabase tables are missing. Run supabase/schema.sql, then supabase/migrations/20261127_site_management.sql.";
+  if (
+    ["42P01", "42703", "PGRST204", "PGRST205"].includes(code) ||
+    /schema cache|relation .* does not exist|column .* does not exist/i.test(message)
+  ) {
+    return "Supabase tables or columns are missing or out of date. Run supabase/schema.sql, then migrations 20261123_awards_workflow.sql, 20261127_site_management.sql, and 20261127_awards_admin_review.sql.";
   }
   return null;
 }

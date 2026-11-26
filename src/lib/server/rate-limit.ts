@@ -28,6 +28,7 @@ export interface RateLimitConfig {
 export const RATE_LIMIT_PROFILES: Record<string, RateLimitConfig> = {
   auth: { windowSeconds: 15 * 60, maxRequests: 5 },          // 5 attempts / 15 mins
   membership_apply: { windowSeconds: 60 * 60, maxRequests: 8 }, // 8 applications / hr
+  award_nomination: { windowSeconds: 60 * 60, maxRequests: 10 }, // 10 nominations / hr
   document_upload: { windowSeconds: 60 * 60, maxRequests: 10 }, // 10 uploads / hr
   verify_lookup: { windowSeconds: 60, maxRequests: 30 },        // 30 lookups / min
   checkout: { windowSeconds: 60, maxRequests: 15 },             // 15 checkouts / min

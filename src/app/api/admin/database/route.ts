@@ -37,7 +37,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Choose a supported database table." }, { status: 400 });
   }
   const admin = getAdminClient();
-  if (!admin) return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+  if (!admin) {
+    return NextResponse.json({
+      error: "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in the deployment environment.",
+    }, { status: 503 });
+  }
 
   const requestedPage = Number(req.nextUrl.searchParams.get("page") || 1);
   const pageSize = 50;
