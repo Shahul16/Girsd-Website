@@ -25,38 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-MEM-1001",
-    "name": "Dr. Eleanor Vance",
-    "email": "e.vance@ucl.ac.uk",
-    "phone": "+44 7911 123456",
-    "location": "London, United Kingdom",
-    "institution": "University College London",
-    "title": "Senior Research Fellow & Associate Professor",
-    "tier": "Fellow (FGRSD)",
-    "status": "Active",
-    "since": "2024-09-15",
-    "renewsAt": "2027-09-15",
-    "annualFee": 399,
-    "paymentStatus": "Paid (Stripe)",
-    "cvAttached": true,
-    "cvFileName": "Dr_Eleanor_Vance_Fellowship_CV.pdf",
-    "profileCompletion": 100,
-    "disciplines": [
-      "Multidisciplinary Research",
-      "Bioinformatics",
-      "Data Analytics"
-    ],
-    "eventsRegistered": [
-      "ICMDR 2026",
-      "ICRIET 2026"
-    ],
-    "coursesEnrolled": [
-      "AI in Cybersecurity"
-    ],
-    "certificatesIssued": 3,
-    "notes": "Confirmed Keynote speaker at ICMDR 2026 London Symposium."
-  },
-  {
     "id": "GRSD-MEM-1002",
     "name": "Prof. Alistair MacIntyre",
     "email": "a.macintyre@ox.ac.uk",
