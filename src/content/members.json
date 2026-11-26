@@ -25,39 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-MEM-1003",
-    "name": "Dr. Amina El-Sayed",
-    "email": "amina.elsayed@imperial.ac.uk",
-    "phone": "+44 7933 987654",
-    "location": "London, United Kingdom",
-    "institution": "Imperial College London",
-    "title": "Senior Lecturer & Health Informatics Lead",
-    "tier": "Professional Member",
-    "status": "Active",
-    "since": "2025-02-10",
-    "renewsAt": "2027-02-10",
-    "annualFee": 149,
-    "paymentStatus": "Active Subscription",
-    "cvAttached": true,
-    "cvFileName": "Amina_ElSayed_Academic_CV.pdf",
-    "profileCompletion": 90,
-    "disciplines": [
-      "Healthcare Informatics",
-      "Machine Learning",
-      "Public Health"
-    ],
-    "eventsRegistered": [
-      "ICASH 2026",
-      "ICMDR 2026"
-    ],
-    "coursesEnrolled": [
-      "Data Science with Python",
-      "Business Analysis & Systems"
-    ],
-    "certificatesIssued": 2,
-    "notes": "CPD Accredited Certificate recipient #788000."
-  },
-  {
     "id": "GRSD-CAND-2041",
     "name": "Sarah Jenkins",
     "email": "s.jenkins@manchester.ac.uk",
