@@ -58,37 +58,6 @@
     "notes": "CPD Accredited Certificate recipient #788000."
   },
   {
-    "id": "GRSD-MEM-1004",
-    "name": "Marcus Zhang",
-    "email": "m.zhang@cantab.ac.uk",
-    "phone": "+44 7944 112233",
-    "location": "Cambridge, United Kingdom",
-    "institution": "University of Cambridge",
-    "title": "Doctoral Researcher in Environmental Analytics",
-    "tier": "Student Member",
-    "status": "Active",
-    "since": "2025-05-18",
-    "renewsAt": "2027-05-18",
-    "annualFee": 49,
-    "paymentStatus": "Paid (Stripe)",
-    "cvAttached": true,
-    "cvFileName": "Marcus_Zhang_Doctoral_CV.docx",
-    "profileCompletion": 85,
-    "disciplines": [
-      "Environmental Science",
-      "Sustainable Development",
-      "Remote Sensing"
-    ],
-    "eventsRegistered": [
-      "ICRIET 2026"
-    ],
-    "coursesEnrolled": [
-      "Prompt Engineering for Scholars"
-    ],
-    "certificatesIssued": 1,
-    "notes": "Student travel grant applicant for ICRIET 2026."
-  },
-  {
     "id": "GRSD-CAND-2041",
     "name": "Sarah Jenkins",
     "email": "s.jenkins@manchester.ac.uk",
