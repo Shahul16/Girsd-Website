@@ -25,37 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-MEM-1002",
-    "name": "Prof. Alistair MacIntyre",
-    "email": "a.macintyre@ox.ac.uk",
-    "phone": "+44 7922 654321",
-    "location": "Oxford, United Kingdom",
-    "institution": "University of Oxford",
-    "title": "Professor of Applied Computing & Data Systems",
-    "tier": "Fellow (FGRSD)",
-    "status": "Active",
-    "since": "2024-11-01",
-    "renewsAt": "2027-11-01",
-    "annualFee": 399,
-    "paymentStatus": "Paid (Stripe)",
-    "cvAttached": true,
-    "cvFileName": "Prof_Alistair_MacIntyre_CV.pdf",
-    "profileCompletion": 95,
-    "disciplines": [
-      "Information Technology",
-      "Artificial Intelligence",
-      "Systems Analysis"
-    ],
-    "eventsRegistered": [
-      "ICRIET 2026"
-    ],
-    "coursesEnrolled": [
-      "Data Science with Python"
-    ],
-    "certificatesIssued": 2,
-    "notes": "Scientific Advisory Board & Peer Review Committee Chair."
-  },
-  {
     "id": "GRSD-MEM-1003",
     "name": "Dr. Amina El-Sayed",
     "email": "amina.elsayed@imperial.ac.uk",
