@@ -25,37 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-MEM-1006",
-    "name": "Dr. Priya Sundaram",
-    "email": "priya.sundaram@iisc.ac.in",
-    "phone": "+91 80 2293 2004",
-    "location": "Bengaluru, India",
-    "institution": "Indian Institute of Science",
-    "title": "Associate Professor & Renewable Energy Scientist",
-    "tier": "Professional Member",
-    "status": "Active",
-    "since": "2025-03-01",
-    "renewsAt": "2027-03-01",
-    "annualFee": 149,
-    "paymentStatus": "Active Subscription",
-    "cvAttached": true,
-    "cvFileName": "Dr_Priya_Sundaram_CV.pdf",
-    "profileCompletion": 90,
-    "disciplines": [
-      "Renewable Energy",
-      "Photovoltaics",
-      "Materials Engineering"
-    ],
-    "eventsRegistered": [
-      "ICRIET 2026"
-    ],
-    "coursesEnrolled": [
-      "Data Science with Python"
-    ],
-    "certificatesIssued": 1,
-    "notes": "Presenter for Green Technology symposium."
-  },
-  {
     "id": "GRSD-CAND-2042",
     "name": "James O'Connor",
     "email": "j.oconnor@tcd.ie",
