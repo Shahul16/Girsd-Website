@@ -25,35 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-CAND-2042",
-    "name": "James O'Connor",
-    "email": "j.oconnor@tcd.ie",
-    "phone": "+353 1 896 1000",
-    "location": "Dublin, Ireland",
-    "institution": "Trinity College Dublin",
-    "title": "Postgraduate Scholar in Cybersecurity",
-    "tier": "Student Member",
-    "status": "Pending Verification",
-    "since": "2026-01-15",
-    "renewsAt": "2027-01-15",
-    "annualFee": 49,
-    "paymentStatus": "Awaiting Payment",
-    "cvAttached": false,
-    "cvFileName": "",
-    "profileCompletion": 45,
-    "disciplines": [
-      "Cybersecurity",
-      "Network Architecture",
-      "Cryptography"
-    ],
-    "eventsRegistered": [],
-    "coursesEnrolled": [
-      "AI in Cybersecurity"
-    ],
-    "certificatesIssued": 0,
-    "notes": "Student ID verification document uploaded, pending Secretariat sign-off."
-  },
-  {
     "id": "GRSD-MEM-1007",
     "name": "Dr. Hannah Becker",
     "email": "h.becker@tum.de",
