@@ -25,36 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-MEM-1005",
-    "name": "Prof. Kenji Takahashi",
-    "email": "takahashi@u-tokyo.ac.jp",
-    "phone": "+81 3 5841 1234",
-    "location": "Tokyo, Japan",
-    "institution": "University of Tokyo",
-    "title": "Distinguished Professor of Robotics & Automation",
-    "tier": "Fellow (FGRSD)",
-    "status": "Active",
-    "since": "2024-10-12",
-    "renewsAt": "2027-10-12",
-    "annualFee": 399,
-    "paymentStatus": "Paid (Bank Transfer)",
-    "cvAttached": true,
-    "cvFileName": "Prof_Kenji_Takahashi_Publications_CV.pdf",
-    "profileCompletion": 100,
-    "disciplines": [
-      "Robotics",
-      "Mechatronics",
-      "Neural Engineering"
-    ],
-    "eventsRegistered": [
-      "ICRIET 2026",
-      "ICMDR 2026"
-    ],
-    "coursesEnrolled": [],
-    "certificatesIssued": 4,
-    "notes": "GIRSD International Awards 2026 Nominee."
-  },
-  {
     "id": "GRSD-MEM-1006",
     "name": "Dr. Priya Sundaram",
     "email": "priya.sundaram@iisc.ac.in",
