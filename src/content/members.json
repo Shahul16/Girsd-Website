@@ -25,37 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-MEM-1007",
-    "name": "Dr. Hannah Becker",
-    "email": "h.becker@tum.de",
-    "phone": "+49 89 289 01",
-    "location": "Munich, Germany",
-    "institution": "Technical University of Munich",
-    "title": "Head of Sustainable Urban Systems Lab",
-    "tier": "Professional Member",
-    "status": "Active",
-    "since": "2025-04-10",
-    "renewsAt": "2027-04-10",
-    "annualFee": 149,
-    "paymentStatus": "Paid (Stripe)",
-    "cvAttached": true,
-    "cvFileName": "Dr_Hannah_Becker_CV.pdf",
-    "profileCompletion": 95,
-    "disciplines": [
-      "Urban Planning",
-      "Sustainable Systems",
-      "GIS"
-    ],
-    "eventsRegistered": [
-      "ICMDR 2026"
-    ],
-    "coursesEnrolled": [
-      "Project Management in Research"
-    ],
-    "certificatesIssued": 1,
-    "notes": "Co-authoring cross-institutional policy brief."
-  },
-  {
     "id": "GRSD-MEM-1008",
     "name": "David K. Mwangi",
     "email": "d.mwangi@uonbi.ac.ke",
