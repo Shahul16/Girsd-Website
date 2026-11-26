@@ -23,34 +23,5 @@
     "coursesEnrolled": [],
     "certificatesIssued": 0,
     "notes": ""
-  },
-  {
-    "id": "GRSD-MEM-1008",
-    "name": "David K. Mwangi",
-    "email": "d.mwangi@uonbi.ac.ke",
-    "phone": "+254 20 491 0000",
-    "location": "Nairobi, Kenya",
-    "institution": "University of Nairobi",
-    "title": "Senior Lecturer & Agribusiness Researcher",
-    "tier": "Professional Member",
-    "status": "Expired",
-    "since": "2024-08-01",
-    "renewsAt": "2025-08-01",
-    "annualFee": 149,
-    "paymentStatus": "Awaiting Renewal",
-    "cvAttached": true,
-    "cvFileName": "David_Mwangi_Agribusiness_CV.pdf",
-    "profileCompletion": 85,
-    "disciplines": [
-      "Agricultural Economics",
-      "Rural Development",
-      "Sustainable Agri-Food"
-    ],
-    "eventsRegistered": [
-      "ICASH 2026"
-    ],
-    "coursesEnrolled": [],
-    "certificatesIssued": 1,
-    "notes": "Renewal notification reminder sent via email."
   }
 ]
