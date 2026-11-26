@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { SITE } from "@/lib/site";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { submitNomination } from "@/lib/server/awards-service";
+import { sanitizeEmailContent, isEmpty, isValidEmail } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -208,11 +209,12 @@ export async function POST(req: NextRequest) {
   const contactEmail = to;
   const subject = `[${formName}] ${visitorName || visitorEmail || "New submission"}`;
 
+  // Sanitize HTML content to prevent XSS attacks
   const rows = fields
     .map(
       ([k, v]) =>
         `<tr><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;white-space:nowrap;vertical-align:top">${escapeHtml(k)}</td>` +
-        `<td style="padding:8px 12px;border:1px solid #e2e8f0;white-space:pre-wrap">${escapeHtml(v)}</td></tr>`
+        `<td style="padding:8px 12px;border:1px solid #e2e8f0;white-space:pre-wrap">${sanitizeEmailContent(v)}</td></tr>`
     )
     .join("");
   const html =
@@ -222,9 +224,14 @@ export async function POST(req: NextRequest) {
     `<table style="border-collapse:collapse;font-size:14px">${rows}</table>` +
     (attachments.length ? `<p style="font-size:13px;color:#64748b">${attachments.length} attachment(s) included.</p>` : "") +
     `</div>`;
-  const text = fields.map(([k, v]) => `${k}: ${v}`).join("\n");
+  const text = fields.map(([k, v]) => `${k}: ${sanitizeEmailContent(v)}`).join("\n");
 
   try {
+    // Validate email format if visitorEmail is provided
+    if (!isEmpty(visitorEmail) && !isValidEmail(visitorEmail)) {
+      return NextResponse.json({ error: "Invalid email format." }, { status: 400 });
+    }
+    
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from,

@@ -99,3 +99,61 @@ export function enforceRateLimit(
 
   return null;
 }
+
+/**
+ * HTML sanitizer to prevent XSS attacks in user-submitted content
+ * Used for sanitizing form submissions and email content
+ */
+export function sanitizeHtml(input: string): string {
+  if (typeof input !== "string") return "";
+  
+  const htmlEntities = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '/': '&#x2F;',
+  };
+  
+  return input.replace(/[&<>"'/]/g, (match) => htmlEntities[match as keyof typeof htmlEntities]);
+}
+
+/**
+ * Email content sanitizer specifically for email templates
+ * Preserves basic line breaks while sanitizing unsafe HTML
+ */
+export function sanitizeEmailContent(content: string): string {
+  if (typeof content !== "string") return "";
+  const sanitized = sanitizeHtml(content);
+  // Allow basic formatting that's safe
+  return sanitized.replace(/\n/g, "<br>").replace(/\r/g, "");
+}
+
+/**
+ * Validates if a value is empty (null, undefined, empty string, or whitespace-only)
+ */
+export function isEmpty(value: unknown): boolean {
+  if (value === null || value === undefined) return true;
+  if (typeof value === "string") return value.trim().length === 0;
+  return false;
+}
+
+/**
+ * Validates email format
+ */
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
+}
+
+/**
+ * Validates phone number format (basic)
+ * Accepts international formats with + prefix
+ */
+export function isValidPhoneNumber(phone: string): boolean {
+  // Remove all non-digit characters except +
+  const digitsOnly = phone.replace(/\D/g, "");
+  // Basic validation: at least 10 digits and at most 15 digits
+  return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+}

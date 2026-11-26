@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { getSupabase, getAccessToken, isSupabaseConfigured } from "@/lib/supabase";
+import { normalizeStatus } from "@/lib/status-normalization";
 
 export type Ticket = {
   orderId: string;
@@ -168,7 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           appStatus = appData.status;
           appId = appData.id;
           const isApproved =
-            (appData.status === "ACTIVE_MEMBER" || appData.status === "APPROVED" || appData.status === "Active") &&
+            (normalizeStatus(appData.status) === "ACTIVE_MEMBER" || normalizeStatus(appData.status) === "APPROVED") &&
             (!appData.valid_until || new Date(appData.valid_until) > new Date());
 
           if (isApproved) {
@@ -179,7 +180,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               price: appData.annual_fee || 49,
               since: appData.valid_from || appData.created_at,
               renewsAt: renews,
-              status: "ACTIVE_MEMBER",
+              status: normalizeStatus(appData.status),
               membershipId: appData.membership_id || appId,
             };
           }
@@ -194,7 +195,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const finalMembership = approvedMembership !== null ? approvedMembership : null;
         const hasPaidMembership = Boolean(derived.membership);
         const effectiveStatus =
-          appStatus ||
+          appStatus ? normalizeStatus(appStatus) :
           (approvedMembership
             ? "ACTIVE_MEMBER"
             : hasPaidMembership
