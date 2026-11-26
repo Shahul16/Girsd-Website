@@ -25,6 +25,22 @@ export function getAdminClient(): SupabaseClient | null {
   });
 }
 
+export function getSupabaseSetupHint(error: unknown): string | null {
+  const message = error instanceof Error ? error.message : "";
+  const code =
+    typeof error === "object" && error !== null && "code" in error
+      ? String(error.code)
+      : "";
+
+  if (message.includes("Supabase service role is not configured")) {
+    return "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in the deployment environment.";
+  }
+  if (code === "42P01" || code === "PGRST205" || /schema cache|relation .* does not exist/i.test(message)) {
+    return "Required Supabase tables are missing. Run supabase/schema.sql, then supabase/migrations/20261127_site_management.sql.";
+  }
+  return null;
+}
+
 /** Verifies a bearer JWT from the request and returns the Supabase user. */
 export async function getUserFromRequest(req: Request): Promise<User | null> {
   const header = req.headers.get("authorization") ?? "";

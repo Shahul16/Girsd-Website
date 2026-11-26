@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/server/admin-auth";
-import { getAdminClient } from "@/lib/server/supabase-admin";
+import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -53,7 +53,9 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.error(`Admin database query failed for ${table}:`, error);
-    return NextResponse.json({ error: `Could not load ${table}.` }, { status: 503 });
+    return NextResponse.json({
+      error: getSupabaseSetupHint(error) ?? `Could not load ${table}. Check the deployment server logs.`,
+    }, { status: 503 });
   }
 
   return NextResponse.json({

@@ -5,6 +5,7 @@ import {
   getSiteContent,
   isSiteContentCollection,
 } from "@/lib/server/site-content";
+import { getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -23,7 +24,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ content: await getAllSiteContent() });
   } catch (error) {
     console.error("Could not load admin content:", error);
-    return NextResponse.json({ error: "Could not load content from Supabase." }, { status: 503 });
+    const hint = getSupabaseSetupHint(error);
+    return NextResponse.json({
+      error: hint ?? "Could not load content from Supabase. Check the deployment server logs.",
+    }, { status: 503 });
   }
 }
 
