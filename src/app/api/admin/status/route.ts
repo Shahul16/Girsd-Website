@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
@@ -11,12 +12,11 @@ export const runtime = "nodejs";
  */
 export async function GET(req: NextRequest) {
   const adminKey = process.env.ADMIN_KEY;
-  const suppliedKey = req.nextUrl.searchParams.get("key") ?? req.headers.get("x-admin-key");
 
   if (!adminKey) {
     return NextResponse.json({ error: "ADMIN_KEY is not set on the server" }, { status: 503 });
   }
-  if (suppliedKey !== adminKey) {
+  if (!isAdminRequest(req)) {
     return NextResponse.json({ error: "Invalid admin key" }, { status: 401 });
   }
 

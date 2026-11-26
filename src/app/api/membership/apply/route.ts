@@ -6,7 +6,8 @@ import {
   type MembershipStatus,
   type ProofType,
 } from "@/lib/membership-verification";
-import { getTier } from "@/lib/data/memberships";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { MembershipTier } from "@/lib/data/memberships";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
@@ -26,6 +27,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const user = await getUserFromRequest(req);
+    if (!user) {
+      return NextResponse.json({ error: "Please sign in before applying for membership." }, { status: 401 });
+    }
     const body = await req.json().catch(() => null);
 
     if (!body) {
@@ -72,7 +76,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Institution name must be between 2 and 150 characters." }, { status: 400 });
     }
 
-    const tier = getTier(tierId);
+    const tierContent = await getSiteContent("membership_tiers");
+    const tiers = Array.isArray(tierContent) ? tierContent as MembershipTier[] : [];
+    const tier = tiers.find((item) => item.id === tierId);
     if (!tier) {
       return NextResponse.json({ error: "Invalid membership tier selected." }, { status: 400 });
     }
@@ -110,9 +116,12 @@ export async function POST(req: NextRequest) {
     ];
 
     const admin = getAdminClient();
+    if (!admin) {
+      return NextResponse.json({ error: "Membership applications are temporarily unavailable." }, { status: 503 });
+    }
     const newRecord = {
       id: applicationId,
-      user_id: user?.id ?? null,
+      user_id: user.id,
       applicant_name: cleanName,
       email: cleanEmail,
       email_type: classification.type,
@@ -134,14 +143,13 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (admin) {
-      const { error: dbError } = await admin
-        .from("membership_applications")
-        .insert(newRecord);
+    const { error: dbError } = await admin
+      .from("membership_applications")
+      .insert(newRecord);
 
-      if (dbError) {
-        console.error("Database insert error for membership application:", dbError);
-      }
+    if (dbError) {
+      console.error("Database insert error for membership application:", dbError);
+      return NextResponse.json({ error: "Could not save your membership application. Please try again." }, { status: 503 });
     }
 
     return NextResponse.json({

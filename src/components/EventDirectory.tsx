@@ -2,6 +2,7 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { events, type Event } from "@/lib/data/events";
 import { eventImage } from "@/lib/images";
+import { getSiteContent } from "@/lib/server/site-content";
 
 type EventDirectoryProps = {
   title: string;
@@ -9,8 +10,10 @@ type EventDirectoryProps = {
   category?: Event["category"];
 };
 
-export default function EventDirectory({ title, intro, category }: EventDirectoryProps) {
-  const visibleEvents = category ? events.filter((event) => event.category === category) : events;
+export default async function EventDirectory({ title, intro, category }: EventDirectoryProps) {
+  const content = await getSiteContent("events");
+  const currentEvents = Array.isArray(content) ? content as Event[] : events;
+  const visibleEvents = category ? currentEvents.filter((event) => event.category === category) : currentEvents;
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-16" aria-labelledby="event-directory-heading">

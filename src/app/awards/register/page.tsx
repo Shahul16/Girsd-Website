@@ -20,6 +20,27 @@ function RegisterForm() {
   const router = useRouter();
 
   const refParam = searchParams.get("ref") || "";
+  const [categories, setCategories] = useState(allCategories);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/site-content?collection=awards", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Could not load award categories.");
+        return response.json();
+      })
+      .then((body) => {
+        if (!Array.isArray(body.data)) return;
+        const names = body.data.flatMap((group: { awards?: { name?: string }[] }) =>
+          Array.isArray(group.awards) ? group.awards.map((award) => award.name).filter((name): name is string => Boolean(name)) : []
+        );
+        if (names.length) setCategories(names);
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) console.error("Could not load award categories:", error);
+      });
+    return () => controller.abort();
+  }, []);
 
   // Verification state
   const [nominationRef, setNominationRef] = useState(refParam);
@@ -483,7 +504,7 @@ function RegisterForm() {
                 className="input mt-1.5"
               >
                 <option value="">Select Award Category...</option>
-                {allCategories.map((cat) => (
+                {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>

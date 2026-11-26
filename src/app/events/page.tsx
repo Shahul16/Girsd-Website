@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import EventDirectory from "@/components/EventDirectory";
+import PromotionBanner from "@/components/PromotionBanner";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
     "Explore GIRSD conferences, workshops and education events. Present your work, develop practical skills or join as a delegate.",
   alternates: { canonical: "/events" },
 };
+export const dynamic = "force-dynamic";
 
 const eventViews = [
   ["All events", "/events", "Browse the complete GIRSD programme."],
@@ -25,6 +27,7 @@ export default function EventsPage() {
         title="Learn, present and connect"
         intro="Choose the experience that fits your goals: attend a conference, build practical skills in a workshop, or study online through a certified course."
       />
+      <PromotionBanner placement="events" />
       <section className="border-b border-line bg-cream" aria-label="Event sections">
         <div className="mx-auto flex max-w-7xl flex-wrap gap-2 px-4 py-5">
           {eventViews.map(([label, href, description]) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Reveal from "@/components/Reveal";
 import { membershipTiers, type MembershipTier } from "@/lib/data/memberships";
 import { useAuth } from "@/lib/auth";
@@ -8,7 +8,24 @@ import MembershipVerificationModal from "@/components/MembershipVerificationModa
 
 export default function MembershipTiersSection() {
   const { user } = useAuth();
+  const [tiers, setTiers] = useState<MembershipTier[]>(membershipTiers);
   const [selectedTier, setSelectedTier] = useState<MembershipTier | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/site-content?collection=membership_tiers", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Could not load membership options.");
+        return response.json();
+      })
+      .then((body) => {
+        if (Array.isArray(body.data)) setTiers(body.data as MembershipTier[]);
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) console.error("Could not load membership options:", error);
+      });
+    return () => controller.abort();
+  }, []);
 
   return (
     <>
@@ -23,7 +40,7 @@ export default function MembershipTiersSection() {
         </Reveal>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-3">
-          {membershipTiers.map((tier, i) => (
+          {tiers.map((tier, i) => (
             <Reveal key={tier.id} delay={i * 100}>
               <article
                 className={`card relative flex h-full flex-col p-8 ${
@@ -53,13 +70,22 @@ export default function MembershipTiersSection() {
                   ))}
                 </ul>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedTier(tier)}
-                  className={`${tier.featured ? "btn-gold" : "btn-navy"} mt-8 w-full py-3`}
-                >
-                  Apply &amp; Verify for {tier.name}
-                </button>
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTier(tier)}
+                    className={`${tier.featured ? "btn-gold" : "btn-navy"} mt-8 w-full py-3`}
+                  >
+                    Apply &amp; Verify for {tier.name}
+                  </button>
+                ) : (
+                  <a
+                    href="/login?next=%2Fmembership"
+                    className={`${tier.featured ? "btn-gold" : "btn-navy"} mt-8 w-full py-3 text-center`}
+                  >
+                    Sign in to apply
+                  </a>
+                )}
                 <p className="mt-2 text-center text-[11px] text-slate-400">
                   Subject to institutional / academic review
                 </p>

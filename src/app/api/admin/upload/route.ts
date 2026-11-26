@@ -1,127 +1,76 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
+import { randomUUID } from "crypto";
 import path from "path";
+import { isAdminRequest } from "@/lib/server/admin-auth";
+import { getAdminClient } from "@/lib/server/supabase-admin";
 
 export const runtime = "nodejs";
 
-/**
- * Uploads an image into public/uploads/<filename> (or a specified target like /logo-header.png).
- * In local development, saves directly to the public folder so it can be previewed immediately.
- * In production (with GITHUB_TOKEN & GITHUB_REPO), commits to GitHub to trigger live redeployment.
- */
+const MIME_BY_EXTENSION: Record<string, string> = {
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".ico": "image/x-icon",
+};
+
+function hasValidImageSignature(buffer: Buffer, ext: string): boolean {
+  if (ext === ".jpg" || ext === ".jpeg") return buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  if (ext === ".png") return buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  if (ext === ".webp") return buffer.toString("ascii", 0, 4) === "RIFF" && buffer.toString("ascii", 8, 12) === "WEBP";
+  if (ext === ".gif") return ["GIF87a", "GIF89a"].includes(buffer.toString("ascii", 0, 6));
+  if (ext === ".ico") return buffer.subarray(0, 4).equals(Buffer.from([0x00, 0x00, 0x01, 0x00]));
+  return false;
+}
+
 export async function POST(req: NextRequest) {
-  const adminKey = process.env.ADMIN_KEY;
-  const token = process.env.GITHUB_TOKEN;
-  const repo = process.env.GITHUB_REPO;
-  const branch = process.env.GITHUB_BRANCH ?? "main";
+  if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  const admin = getAdminClient();
+  if (!admin) return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
 
-  const form = await req.formData();
-  const suppliedKey = String(form.get("adminKey") || "");
-
-  if (adminKey && suppliedKey !== adminKey) {
-    return NextResponse.json({ error: "Invalid admin password" }, { status: 401 });
-  }
-
-  const file = form.get("file") as File | null;
-  if (!file || file.size === 0) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+  const form = await req.formData().catch(() => null);
+  if (!form) return NextResponse.json({ error: "Invalid upload." }, { status: 400 });
+  const file = form.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return NextResponse.json({ error: "Choose an image to upload." }, { status: 400 });
   }
   if (file.size > 15 * 1024 * 1024) {
-    return NextResponse.json({ error: "Image too large (15 MB max)" }, { status: 413 });
-  }
-  if (!/^image\//.test(file.type) && !file.name.match(/\.(jpg|jpeg|png|webp|svg|gif|ico)$/i)) {
-    return NextResponse.json({ error: "Only image files (JPG, PNG, WebP, SVG, ICO) are allowed" }, { status: 415 });
+    return NextResponse.json({ error: "Image must be 15 MB or smaller." }, { status: 413 });
   }
 
-  const customFilename = String(form.get("filename") || "").trim();
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-  const base = (file.name.replace(/\.[^.]+$/, "") || "image")
+  const extension = path.extname(file.name).toLowerCase();
+  const contentType = MIME_BY_EXTENSION[extension];
+  if (!contentType || (file.type && file.type !== contentType)) {
+    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF, or ICO image." }, { status: 415 });
+  }
+
+  const bytes = Buffer.from(await file.arrayBuffer());
+  if (!hasValidImageSignature(bytes, extension)) {
+    return NextResponse.json({ error: "The image contents do not match the selected file type." }, { status: 400 });
+  }
+
+  const requestedName = String(form.get("filename") || "").trim();
+  const fixedName = ["logo-header", "logo-white", "favicon"].includes(requestedName) ? requestedName : "";
+  const originalBase = path.basename(file.name, extension)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 40);
+    .replace(/^-|-$/g, "")
+    .slice(0, 48) || "image";
+  const objectName = fixedName
+    ? `${fixedName}${extension}`
+    : `${originalBase}-${randomUUID()}${extension}`;
 
-  let targetRelative = `uploads/${base}-${Date.now()}.${ext}`;
-  if (customFilename === "logo-header") targetRelative = "logo-header.png";
-  else if (customFilename === "logo-white") targetRelative = "logo-white.png";
-  else if (customFilename === "favicon") targetRelative = "favicon.ico";
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  // 1. Write to local disk if running locally
-  let localSaved = false;
-  try {
-    const publicDir = path.join(process.cwd(), "public");
-    const targetDir = path.dirname(path.join(publicDir, targetRelative));
-    await fs.mkdir(targetDir, { recursive: true });
-    await fs.writeFile(path.join(publicDir, targetRelative), buffer);
-    localSaved = true;
-  } catch (err) {
-    console.warn("Could not save image to local disk:", err);
+  const { error } = await admin.storage.from("site-media").upload(objectName, bytes, {
+    contentType,
+    cacheControl: "3600",
+    upsert: Boolean(fixedName),
+  });
+  if (error) {
+    console.error("Could not upload site media:", error);
+    return NextResponse.json({ error: "Could not store image in Supabase Storage." }, { status: 503 });
   }
 
-  // 2. Commit to GitHub if credentials exist
-  if (token && repo) {
-    const api = `https://api.github.com/repos/${repo}/contents/public/${targetRelative}`;
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "User-Agent": "girsd-admin",
-    };
-
-    try {
-      // Check if file already exists to get SHA for updates
-      let sha: string | undefined;
-      const existing = await fetch(`${api}?ref=${branch}`, { headers });
-      if (existing.ok) {
-        const d = await existing.json();
-        sha = d.sha;
-      }
-
-      const res = await fetch(api, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({
-          message: `Admin image upload: ${targetRelative}`,
-          content: buffer.toString("base64"),
-          sha,
-          branch,
-        }),
-      });
-
-      if (!res.ok) {
-        const detail = await res.text();
-        return NextResponse.json(
-          { error: `GitHub image commit failed (${res.status})`, detail, path: `/${targetRelative}`, localSaved },
-          { status: 502 }
-        );
-      }
-
-      return NextResponse.json({
-        ok: true,
-        path: `/${targetRelative}`,
-        message: "Image uploaded and committed to GitHub.",
-        localSaved: true,
-      });
-    } catch (err: any) {
-      return NextResponse.json(
-        { error: "Error committing image: " + (err.message || String(err)), path: `/${targetRelative}`, localSaved },
-        { status: 502 }
-      );
-    }
-  }
-
-  if (localSaved) {
-    return NextResponse.json({
-      ok: true,
-      path: `/${targetRelative}`,
-      message: "Image saved locally.",
-      localSaved: true,
-    });
-  }
-
-  return NextResponse.json(
-    { error: "Upload is not configured. Missing GITHUB_TOKEN or GITHUB_REPO." },
-    { status: 503 }
-  );
+  const { data } = admin.storage.from("site-media").getPublicUrl(objectName);
+  return NextResponse.json({ ok: true, path: data.publicUrl, message: "Image uploaded to Supabase Storage." });
 }

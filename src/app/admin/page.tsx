@@ -10,12 +10,14 @@ import coursesJson from "@/content/courses.json";
 import awardsJson from "@/content/awards.json";
 import newsJson from "@/content/news.json";
 import pagesJson from "@/content/pages.json";
-import membersJson from "@/content/members.json";
-import reportsJson from "@/content/reports.json";
-import MembersManager from "./MembersManager";
-import ReportsManager from "./ReportsManager";
+import promotionsJson from "@/content/promotions.json";
+import { openings as defaultCareers } from "@/lib/data/careers";
+import { membershipTiers as defaultMembershipTiers } from "@/lib/data/memberships";
+import AdminVerificationQueue from "@/components/AdminVerificationQueue";
+import DatabaseManager from "./DatabaseManager";
+import PromotionManager from "./PromotionManager";
 
-type TabKey = "members" | "reports" | "site" | "hero" | "events" | "courses" | "awards" | "news" | "pages" | "media";
+type TabKey = "database" | "members" | "site" | "hero" | "events" | "courses" | "awards" | "news" | "pages" | "careers" | "membership_tiers" | "promotions" | "media";
 
 type MediaItem = {
   name: string;
@@ -31,11 +33,9 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<TabKey>("members");
+  const [activeTab, setActiveTab] = useState<TabKey>("database");
 
   // State data for all collections
-  const [membersData, setMembersData] = useState<any[]>(membersJson);
-  const [reportsData, setReportsData] = useState<any>(reportsJson);
   const [siteData, setSiteData] = useState<any>(siteJson);
   const [heroData, setHeroData] = useState<any[]>(heroJson);
   const [eventsData, setEventsData] = useState<any[]>(eventsJson);
@@ -43,6 +43,9 @@ export default function AdminPage() {
   const [awardsData, setAwardsData] = useState<any[]>(awardsJson);
   const [newsData, setNewsData] = useState<any[]>(newsJson);
   const [pagesData, setPagesData] = useState<any>(pagesJson);
+  const [promotionsData, setPromotionsData] = useState<any[]>(promotionsJson);
+  const [careersEditor, setCareersEditor] = useState(JSON.stringify(defaultCareers, null, 2));
+  const [membershipTiersEditor, setMembershipTiersEditor] = useState(JSON.stringify(defaultMembershipTiers, null, 2));
 
   // Media Library
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
@@ -61,23 +64,55 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("girsd_admin_key");
-    if (saved) {
-      setKey(saved);
-      setUnlocked(true);
-    }
+    let active = true;
+    fetch("/api/admin/session")
+      .then((res) => {
+        if (active && res.ok) setUnlocked(true);
+      })
+      .catch(() => {
+        if (active) setLoginError("Could not verify the admin session. Please try signing in again.");
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
     if (unlocked) {
       fetchMedia();
+      fetchContent();
     }
   }, [unlocked]);
+
+  async function fetchContent() {
+    try {
+      const res = await fetch("/api/admin/content");
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error || "Could not load content.");
+      const content = body.content ?? {};
+      if (content.site) setSiteData(content.site);
+      if (Array.isArray(content.hero)) setHeroData(content.hero);
+      if (Array.isArray(content.events)) setEventsData(content.events);
+      if (Array.isArray(content.courses)) setCoursesData(content.courses);
+      if (Array.isArray(content.awards)) setAwardsData(content.awards);
+      if (Array.isArray(content.news)) setNewsData(content.news);
+      if (content.pages) setPagesData(content.pages);
+      if (Array.isArray(content.careers)) {
+        setCareersEditor(JSON.stringify(content.careers, null, 2));
+      }
+      if (Array.isArray(content.membership_tiers)) {
+        setMembershipTiersEditor(JSON.stringify(content.membership_tiers, null, 2));
+      }
+      if (Array.isArray(content.promotions)) setPromotionsData(content.promotions);
+    } catch (e) {
+      setStatus({ kind: "err", msg: e instanceof Error ? e.message : "Could not load content from Supabase." });
+    }
+  }
 
   async function fetchMedia() {
     setMediaLoading(true);
     try {
-      const res = await fetch(`/api/admin/media?key=${encodeURIComponent(key)}`);
+      const res = await fetch("/api/admin/media");
       const d = await res.json();
       if (d.ok && Array.isArray(d.media)) {
         setMediaList(d.media);
@@ -100,9 +135,9 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: c }),
       });
-      if (res.ok || res.status === 503) {
-        sessionStorage.setItem("girsd_admin_key", c);
+      if (res.ok) {
         setUnlocked(true);
+        setKey("");
       } else {
         const d = await res.json().catch(() => ({}));
         setLoginError(d.error ?? "Incorrect password.");
@@ -114,31 +149,45 @@ export default function AdminPage() {
   }
 
   function handleLogout() {
-    sessionStorage.removeItem("girsd_admin_key");
+    void fetch("/api/admin/session", { method: "DELETE" });
     setUnlocked(false);
     setKey("");
   }
 
   // Generic Save Handler for any collection
-  async function saveCollection(collection: string, dataToSave: any) {
+  async function saveCollection(collection: string, dataToSave: any): Promise<boolean> {
     setSaving(true);
     setStatus(null);
     try {
       const res = await fetch("/api/admin/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ collection, data: dataToSave, adminKey: key }),
+        body: JSON.stringify({ collection, data: dataToSave }),
       });
       const d = await res.json();
       if (res.ok) {
         setStatus({ kind: "ok", msg: d.message || "Changes saved successfully!" });
+        return true;
       } else {
         setStatus({ kind: "err", msg: d.error || "Save failed." });
+        return false;
       }
     } catch (e: any) {
       setStatus({ kind: "err", msg: "Network error: " + e.message });
+      return false;
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
+  }
+
+  async function saveJsonCollection(collection: "careers" | "membership_tiers", value: string) {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      if (!Array.isArray(parsed)) throw new Error("Content must be a JSON array.");
+      await saveCollection(collection, parsed);
+    } catch (error) {
+      setStatus({ kind: "err", msg: error instanceof Error ? error.message : "Invalid JSON content." });
+    }
   }
 
   // Publish All changes
@@ -147,20 +196,26 @@ export default function AdminPage() {
     setPublishing(true);
     setStatus(null);
     try {
-      // Save all collections
-      await saveCollection("site", siteData);
-      await saveCollection("hero", heroData);
-      await saveCollection("events", eventsData);
-      await saveCollection("courses", coursesData);
-      await saveCollection("awards", awardsData);
-      await saveCollection("news", newsData);
-      await saveCollection("pages", pagesData);
-      await saveCollection("members", membersData);
-      await saveCollection("reports", reportsData);
-      setStatus({
-        kind: "ok",
-        msg: "All changes published! Live site redeploy triggered — updates appear within ~1-2 minutes.",
-      });
+      const careers = JSON.parse(careersEditor);
+      const membershipTiers = JSON.parse(membershipTiersEditor);
+      if (!Array.isArray(careers) || !Array.isArray(membershipTiers)) {
+        throw new Error("Careers and membership tiers must be JSON arrays.");
+      }
+      const saves = [
+        await saveCollection("site", siteData),
+        await saveCollection("hero", heroData),
+        await saveCollection("events", eventsData),
+        await saveCollection("courses", coursesData),
+        await saveCollection("awards", awardsData),
+        await saveCollection("news", newsData),
+        await saveCollection("pages", pagesData),
+        await saveCollection("careers", careers),
+        await saveCollection("membership_tiers", membershipTiers),
+        await saveCollection("promotions", promotionsData),
+      ];
+      setStatus(saves.every(Boolean)
+        ? { kind: "ok", msg: "All content collections saved to Supabase." }
+        : { kind: "err", msg: "Some content collections were not saved. Review the error above and retry." });
     } catch (e: any) {
       setStatus({ kind: "err", msg: "Error publishing all: " + e.message });
     }
@@ -173,7 +228,6 @@ export default function AdminPage() {
     setStatus(null);
     try {
       const fd = new FormData();
-      fd.append("adminKey", key);
       fd.append("file", file);
       if (customFilename) fd.append("filename", customFilename);
 
@@ -199,7 +253,7 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/media", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: filePath, adminKey: key }),
+        body: JSON.stringify({ path: filePath }),
       });
       const d = await res.json();
       if (res.ok) {
@@ -276,7 +330,7 @@ export default function AdminPage() {
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
-                  Publish to Live Site
+                  Save All Content
                 </>
               )}
             </button>
@@ -317,8 +371,8 @@ export default function AdminPage() {
       <nav className="border-b border-white/10 bg-navy-dark/90 px-4">
         <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto py-2 scrollbar-none">
           {[
-            { id: "members", label: "👥 Members & Users" },
-            { id: "reports", label: "📊 Detailed Reports" },
+            { id: "database", label: "🗄️ Database" },
+            { id: "members", label: "🛡️ Membership Approvals" },
             { id: "site", label: "🏢 Site & Logos" },
             { id: "hero", label: "🎠 Hero Slides" },
             { id: "events", label: "📅 Events & Conferences" },
@@ -326,6 +380,9 @@ export default function AdminPage() {
             { id: "awards", label: "🏆 Global Awards" },
             { id: "news", label: "📰 News & Press" },
             { id: "pages", label: "📄 Page Content" },
+            { id: "careers", label: "💼 Careers" },
+            { id: "membership_tiers", label: "🎟️ Membership Tiers" },
+            { id: "promotions", label: "📣 Ads & Banners" },
             { id: "media", label: "🖼️ Media Library" },
           ].map((tab) => (
             <button
@@ -351,32 +408,14 @@ export default function AdminPage() {
       {/* Main Content Area */}
       <main className="mx-auto max-w-7xl flex-1 w-full px-4 py-8">
         {/* ========================================================= */}
-        {/* TAB 0A: MEMBERS & CANDIDATE DATABASE */}
+        {/* TAB 0A: DATABASE BROWSER */}
         {/* ========================================================= */}
-        {activeTab === "members" && (
-          <MembersManager
-            members={membersData}
-            onSave={(updated) => {
-              setMembersData(updated);
-              saveCollection("members", updated);
-            }}
-            saving={saving}
-          />
-        )}
+        {activeTab === "database" && <DatabaseManager />}
 
         {/* ========================================================= */}
-        {/* TAB 0B: INSTITUTIONAL REPORTS */}
+        {/* TAB 0B: MEMBERSHIP APPROVALS */}
         {/* ========================================================= */}
-        {activeTab === "reports" && (
-          <ReportsManager
-            reports={reportsData}
-            onSave={(updated) => {
-              setReportsData(updated);
-              saveCollection("reports", updated);
-            }}
-            saving={saving}
-          />
-        )}
+        {activeTab === "members" && <AdminVerificationQueue />}
 
         {/* ========================================================= */}
         {/* TAB 1: SITE SETTINGS & LOGOS */}
@@ -1860,8 +1899,62 @@ export default function AdminPage() {
           </div>
         )}
 
+        {activeTab === "careers" && (
+          <section className="space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+              <div>
+                <h2 className="text-xl font-bold font-display text-white">Career Listings</h2>
+                <p className="text-sm text-slate-400">Edit the published job openings as a JSON array. Changes appear on the Careers page after saving.</p>
+              </div>
+              <button onClick={() => saveJsonCollection("careers", careersEditor)} disabled={saving} className="btn-gold text-xs py-2 px-5">
+                {saving ? "Saving..." : "Save Careers"}
+              </button>
+            </div>
+            <textarea
+              aria-label="Career listings JSON"
+              spellCheck={false}
+              className="input min-h-[32rem] w-full bg-slate-950 font-mono text-xs leading-relaxed text-slate-100"
+              value={careersEditor}
+              onChange={(event) => setCareersEditor(event.target.value)}
+            />
+          </section>
+        )}
+
+        {activeTab === "membership_tiers" && (
+          <section className="space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+              <div>
+                <h2 className="text-xl font-bold font-display text-white">Membership Tiers</h2>
+                <p className="text-sm text-slate-400">Edit tier names, fees, audience descriptions and benefits. Keep each tier ID stable for existing applications.</p>
+              </div>
+              <button onClick={() => saveJsonCollection("membership_tiers", membershipTiersEditor)} disabled={saving} className="btn-gold text-xs py-2 px-5">
+                {saving ? "Saving..." : "Save Membership Tiers"}
+              </button>
+            </div>
+            <textarea
+              aria-label="Membership tiers JSON"
+              spellCheck={false}
+              className="input min-h-[32rem] w-full bg-slate-950 font-mono text-xs leading-relaxed text-slate-100"
+              value={membershipTiersEditor}
+              onChange={(event) => setMembershipTiersEditor(event.target.value)}
+            />
+          </section>
+        )}
+
+        {activeTab === "promotions" && (
+          <PromotionManager
+            promotions={promotionsData}
+            saving={saving}
+            onSave={async (updated) => {
+              const saved = await saveCollection("promotions", updated);
+              if (saved) setPromotionsData(updated);
+              return saved;
+            }}
+          />
+        )}
+
         {/* ========================================================= */}
-        {/* TAB 8: MEDIA & PICTURE ASSET LIBRARY */}
+        {/* TAB 9: MEDIA & PICTURE ASSET LIBRARY */}
         {/* ========================================================= */}
         {activeTab === "media" && (
           <div className="space-y-6">

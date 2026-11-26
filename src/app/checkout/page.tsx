@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { getAccessToken } from "@/lib/supabase";
-import { getEvent, getRegistrationPhase, phasePrice } from "@/lib/data/events";
-import { getCourse } from "@/lib/data/courses";
-import { getTier } from "@/lib/data/memberships";
+import { events as defaultEvents, getRegistrationPhase, phasePrice, type Event } from "@/lib/data/events";
+import { courses as defaultCourses, type Course } from "@/lib/data/courses";
+import { membershipTiers as defaultTiers, type MembershipTier } from "@/lib/data/memberships";
 import { SITE } from "@/lib/site";
 
 type LineItem = {
@@ -19,10 +19,16 @@ type LineItem = {
 };
 
 /** Display-only pricing. The authoritative price is recomputed server-side in /api/checkout. */
-function buildItem(params: URLSearchParams, isMember: boolean): LineItem | null {
+function buildItem(
+  params: URLSearchParams,
+  isMember: boolean,
+  events: Event[],
+  courses: Course[],
+  tiers: MembershipTier[]
+): LineItem | null {
   const type = params.get("type");
   if (type === "ticket") {
-    const event = getEvent(params.get("event") ?? "");
+    const event = events.find((item) => item.slug === params.get("event"));
     const tier = event?.tickets.find((t) => t.id === params.get("tier"));
     if (!event || !tier) return null;
     const phase = getRegistrationPhase(event);
@@ -35,7 +41,7 @@ function buildItem(params: URLSearchParams, isMember: boolean): LineItem | null 
     };
   }
   if (type === "course") {
-    const course = getCourse(params.get("course") ?? "");
+    const course = courses.find((item) => item.slug === params.get("course"));
     if (!course) return null;
     return {
       kind: "course",
@@ -46,7 +52,7 @@ function buildItem(params: URLSearchParams, isMember: boolean): LineItem | null 
     };
   }
   if (type === "membership") {
-    const tier = getTier(params.get("tier") ?? "");
+    const tier = tiers.find((item) => item.id === params.get("tier"));
     if (!tier) return null;
     return {
       kind: "membership",
@@ -66,11 +72,40 @@ function CheckoutInner() {
   const [qty, setQty] = useState(1);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState("");
+  const [contentReady, setContentReady] = useState(false);
+  const [currentEvents, setCurrentEvents] = useState<Event[]>(defaultEvents);
+  const [currentCourses, setCurrentCourses] = useState<Course[]>(defaultCourses);
+  const [currentTiers, setCurrentTiers] = useState<MembershipTier[]>(defaultTiers);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    Promise.all(["events", "courses", "membership_tiers"].map(async (collection) => {
+      const response = await fetch(`/api/site-content?collection=${collection}`, { signal: controller.signal });
+      if (!response.ok) throw new Error(`Could not load ${collection} for checkout.`);
+      return response.json();
+    }))
+      .then(([eventData, courseData, tierData]) => {
+        if (Array.isArray(eventData.data)) setCurrentEvents(eventData.data);
+        if (Array.isArray(courseData.data)) setCurrentCourses(courseData.data);
+        if (Array.isArray(tierData.data)) setCurrentTiers(tierData.data);
+      })
+      .catch((loadError) => {
+        if (!controller.signal.aborted) console.error("Could not load checkout content:", loadError);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setContentReady(true);
+      });
+    return () => controller.abort();
+  }, []);
 
   const item = useMemo(
-    () => buildItem(new URLSearchParams(params.toString()), isMember),
-    [params, isMember]
+    () => buildItem(new URLSearchParams(params.toString()), isMember, currentEvents, currentCourses, currentTiers),
+    [params, isMember, currentEvents, currentCourses, currentTiers]
   );
+
+  if (!contentReady) {
+    return <p className="card mx-auto max-w-lg p-8 text-center text-slate-600">Loading current checkout details…</p>;
+  }
 
   if (!item) {
     return (
@@ -130,6 +165,7 @@ function CheckoutInner() {
           event: params.get("event"),
           course: params.get("course"),
           tier: params.get("tier"),
+          application_id: params.get("application_id"),
           quantity,
           returnTo: `/checkout?${params.toString()}`,
         }),

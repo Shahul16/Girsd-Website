@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: "Peer-reviewed GIRSD research conferences with international speakers, publication pathways and research presentations.",
   alternates: { canonical: "/events/conferences" },
 };
+export const dynamic = "force-dynamic";
 
 export default function ConferencesPage() {
   return (

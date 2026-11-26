@@ -5,47 +5,46 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 ---
 
-## 0. The 14 Railway variables (final list)
+## 0. Railway variables
 
 | # | Variable | Where you get it | Required |
 |---|----------|------------------|----------|
 | 1 | `ADMIN_KEY` | You invent it (strong password for /admin) | ✅ |
-| 2 | `GITHUB_TOKEN` | GitHub → Settings → Developer settings → Fine-grained token, **Contents: Read & Write** on this repo | ✅ for admin CMS |
-| 3 | `GITHUB_REPO` | e.g. `Shahul16/globalrsd-website` — must match your real repo name | ✅ |
-| 4 | `GITHUB_BRANCH` | `main` | optional |
-| 5 | `RESEND_API_KEY` | resend.com → API Keys | ✅ for enquiry forms |
-| 6 | `LEAD_TO_EMAIL` | Your inbox, e.g. `info@globalrsd.co.uk` | optional (defaults to info@) |
-| 7 | `LEAD_FROM_EMAIL` | e.g. `GIRSD Website <leads@globalrsd.co.uk>` — only after domain verified in Resend | optional |
-| 8 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API | ✅ for login/payments |
-| 9 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API (anon public) | ✅ |
-| 10 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API (service_role — keep secret) | ✅ |
-| 11 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys (`sk_test_…` now, `sk_live_…` later) | ✅ for payments |
-| 12 | `STRIPE_WEBHOOK_SECRET` | Stripe → Webhooks → your endpoint (`whsec_…`) | ✅ for orders to record |
-| 13 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | Your registered reCAPTCHA key for www.globalrsd.co.uk: `6LcO_GstAAAAAAIinjg8tu23OoBRqu5ljAof7UVq` | optional (Google bot protection) |
-| 14 | `RECAPTCHA_SECRET_KEY` | Paired secret key: `6LcO_GstAAAAAK3bLkRGCfZXv9O-yTKvDR3YMj6z` — keep this one private, never commit it | optional |
-| 15 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Dashboard → Turnstile → Add widget (or test key `1x00000000000000000000AA`) | optional (Cloudflare bot protection) |
-| 16 | `TURNSTILE_SECRET_KEY` | Cloudflare Dashboard → Turnstile → Widget Secret key (or test key `1x0000000000000000000000000000000AA`) | optional |
+| 2 | `RESEND_API_KEY` | resend.com → API Keys | ✅ for enquiry forms |
+| 3 | `LEAD_TO_EMAIL` | Owner inbox | optional |
+| 4 | `LEAD_FROM_EMAIL` | Verified sender domain in Resend | optional |
+| 5 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API | ✅ |
+| 6 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API (public client key) | ✅ |
+| 7 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API (server-side secret; never expose) | ✅ |
+| 8 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys | ✅ for payments |
+| 9 | `STRIPE_WEBHOOK_SECRET` | Stripe → Webhooks → endpoint signing secret | ✅ for order recording |
+| 10 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | Google reCAPTCHA console | optional |
+| 11 | `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA console (server-side secret) | optional |
+| 12 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Dashboard → Turnstile | optional |
+| 13 | `TURNSTILE_SECRET_KEY` | Cloudflare Dashboard → Turnstile (server-side secret) | optional |
 
 > After adding/changing variables, Railway redeploys automatically.
 > `NEXT_PUBLIC_*` variables are baked in at build time — a redeploy is required.
 
 ---
 
-## 1. GitHub + Railway (15 min)
+## 1. Railway deployment (15 min)
 
 1. Push this folder to GitHub (private repo is fine), e.g. `Shahul16/globalrsd-website`.
 2. railway.app → New Project → **Deploy from GitHub repo** → select the repo.
    Railway auto-detects Next.js. No start command needed (`npm run build` / `npm start`).
-3. Add variables 1–4 now (the site deploys and works read-only with just these).
+3. Add `ADMIN_KEY` and the required variables from the table above. Supabase is required for the CMS and admin database browser.
 4. Settings → Networking → Generate Domain → you get `xxxx.up.railway.app`.
    Later: add custom domain `www.globalrsd.co.uk` (Railway shows you the CNAME record).
 
 ## 2. Supabase — database + login (20 min)
 
 1. supabase.com → New project (free tier). Region: London (`eu-west-2`).
-2. **SQL Editor → New query** → paste the whole of `supabase/schema.sql` → Run.
-   This creates the `orders` and `certificates` tables with row-level security.
-3. Project Settings → API → copy the three values into Railway variables 8, 9, 10.
+2. **SQL Editor → New query** → run `supabase/schema.sql`, then run
+   `supabase/migrations/20261127_site_management.sql`. These create the
+   business tables, CMS collection store, enquiry table, and public media bucket.
+3. Project Settings → API → add the project URL, anon key, and service-role key
+   to Railway. Keep the service-role key server-side only.
 4. **Authentication → URL Configuration**:
    - Site URL: `https://www.globalrsd.co.uk` (or your railway.app URL until DNS is done)
    - Redirect URLs: add both `https://www.globalrsd.co.uk/**` and `https://xxxx.up.railway.app/**`
@@ -66,41 +65,43 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 ## 4. Resend — enquiry emails (10 min + DNS wait)
 
-1. resend.com → sign up → **API Keys → Create** → put in Railway variable 5.
+1. resend.com → sign up → **API Keys → Create** → set `RESEND_API_KEY` in Railway.
 2. Forms work immediately: emails arrive from `onboarding@resend.dev`.
    ⚠️ In this default mode Resend only delivers to **your own Resend account email** —
    fine for testing tonight.
 3. For real delivery to `info@globalrsd.co.uk`: **Domains → Add domain**
    `globalrsd.co.uk` → add the 3 DNS records (SPF, DKIM) at your registrar →
-   wait for "Verified" (minutes to a few hours) → set variable 7
-   `LEAD_FROM_EMAIL="GIRSD Website <leads@globalrsd.co.uk>"` and variable 6 to your inbox.
-4. Every Contact / Membership / Partner / Awards submission (incl. attachments)
-   now lands in your inbox with Reply-To set to the visitor.
+   wait for "Verified" (minutes to a few hours) → set `LEAD_FROM_EMAIL` and
+   `LEAD_TO_EMAIL` in Railway.
+4. Contact and general enquiry submissions are stored in the admin database
+   and emailed to the configured inbox, with Reply-To set to the visitor.
 
 ## 5. Stripe — payments (15 min test mode)
 
 1. stripe.com → create account for **Q TECH PRIVATE LTD**.
-2. Developers → API keys → copy **Secret key** (`sk_test_…`) → Railway variable 11.
+2. Developers → API keys → copy **Secret key** (`sk_test_…`) → set `STRIPE_SECRET_KEY` in Railway.
 3. Developers → **Webhooks → Add endpoint**:
    - URL: `https://www.globalrsd.co.uk/api/stripe/webhook` (or railway.app URL for now)
    - Event: `checkout.session.completed`
-   - Copy the **Signing secret** (`whsec_…`) → Railway variable 12.
+   - Copy the **Signing secret** (`whsec_…`) → set `STRIPE_WEBHOOK_SECRET` in Railway.
 4. Test the full flow: buy a ticket with card `4242 4242 4242 4242`, any future
    expiry, any CVC → you land on the confirmation page → the order appears on
    the member dashboard (written by the webhook).
 5. **Going live** (when ready): complete Stripe's business activation
-   (company number 15754767, bank account, ID). Then swap variable 11 to the
-   `sk_live_…` key and create a live-mode webhook (new `whsec_…` for variable 12).
+   (company number 15754767, bank account, ID). Then update `STRIPE_SECRET_KEY`
+   to the `sk_live_…` key and create a live-mode webhook with its new
+   `STRIPE_WEBHOOK_SECRET`.
    Activation review is usually same-day but is Stripe's decision, not ours.
 
 ---
 
 ## What changed in the code (for your records)
 
-- **Forms** → real: POST `/api/lead` → Resend email with attachments, honeypot anti-spam.
+- **Forms** → POST `/api/lead` stores enquiries in Supabase and sends Resend email with attachments, with bot protection.
 - **Auth** → real Supabase: email/password + Google/Microsoft/Apple OAuth, sessions persist across devices. `src/lib/auth.tsx` rewritten; localStorage demo removed.
 - **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). Prices recomputed **server-side**; member discounts (10% tickets / 5% courses) verified against the database, not the browser.
-- **Orders** → recorded by the Stripe webhook into Supabase; dashboard reads them live. Membership cancel now updates the database.
+- **Orders** → recorded by the Stripe webhook into Supabase; dashboard reads them live. Membership checkout is linked to the signed-in member's application, and cancellation revokes active membership benefits.
+- **Admin CMS** → `/admin` uses an HttpOnly admin session and Supabase for content and media. It includes a read-only business-data browser and workflow actions for membership and award approvals.
 - **Certificate verification** → reads the Supabase `certificates` table (add rows in Table Editor); sample data only as fallback.
 - Removed every "demo mode / not transmitted / test mode" notice from the UI.
 
@@ -152,18 +153,13 @@ directly from each body.
 ## 7. Careers applications
 
 The /careers page emails every application (with the CV attached) through the
-same Resend pipeline as the other forms — no extra setup beyond §6. To edit or
-add openings, update `src/lib/data/careers.ts` and push (or ask your developer).
+same Resend pipeline as the other forms. Career openings can be edited in the
+Careers tab in `/admin`.
 
 ## 8. reCAPTCHA — bot protection on every form (5 min)
 
-Your reCAPTCHA key is already registered for `www.globalrsd.co.uk` (score-based,
-"no challenge" type — visitors never see a checkbox or puzzle; it silently
-scores each submission in the background).
-
-1. In Railway, add variables 13 and 14 above (the real site key and secret
-   key you registered). Both are already filled in from your registration —
-   just paste them in.
+1. In Railway, add the site key and secret key as environment variables.
+   Never paste the secret into source code or documentation.
 2. That's it — no code changes needed. Once both variables are set:
    - Every page loads the reCAPTCHA v3 script automatically (site key only,
      which is not sensitive — it's designed to be visible in page source).
@@ -184,58 +180,22 @@ scores each submission in the background).
 5. You can watch live traffic and scores any time in the Google Cloud
    Fraud Defense console (Security → reCAPTCHA → your key → Overview).
 
-## 9. Admin panel (/admin) — what it does and how to verify it's working
+## 9. Admin panel (/admin)
 
-**How publishing actually works.** The admin panel does not write to the live
-server directly. When you press "Publish to live site" it commits the updated
-JSON file straight to your GitHub repo (via the GitHub API, using
-`GITHUB_TOKEN`/`GITHUB_REPO`/`GITHUB_BRANCH`). Railway is watching that repo
-and automatically redeploys whenever a commit lands — that redeploy (roughly
-2 minutes) is what actually puts the change on the live site. So three things
-must all be true for a change to "stick": (1) the commit succeeds, (2) Railway
-is connected to and deploying from that same repo/branch, (3) you wait for the
-redeploy to finish before checking.
+Set a strong `ADMIN_KEY` and configure the Supabase project and service-role
+key before using the panel. Admin sessions are short-lived, HTTP-only cookies.
+The panel saves site content directly to the `site_content` table, manages
+images in the `site-media` storage bucket, and provides read-only browsing of
+orders, certificates, membership applications, award records, enquiries, and
+published content. Membership approvals require payment to be recorded or
+waived; award decisions and enquiry status updates are available from the
+database view.
 
-**Root cause of "changes not updating" in the previous build:** the code had a
-hardcoded fallback repo name that was silently used whenever `GITHUB_REPO`
-wasn't set, instead of failing loudly. If your Railway `GITHUB_REPO` value
-didn't exactly match your real repo, admin saves could silently succeed
-against the wrong repo (or a repo that doesn't exist) with no visible error.
-This has been fixed: `GITHUB_REPO` (and `GITHUB_TOKEN` / `ADMIN_KEY`) are now
-required — if any is missing, publishing fails immediately with a clear
-message naming exactly which variable is missing, instead of failing silently.
+Editable collections include site settings, hero slides, events, courses,
+awards, news, page editorial content, career openings, membership tiers, and
+promotions. Most collection edits take effect without a deployment. Apply the
+Supabase migration before the first admin save; test changes in a non-production
+project before making them live.
 
-**A real incident, and how it's now prevented:** an event added through the
-admin's "Advanced" JSON box (tickets/agenda/speakers) had a ticket with no
-`includes` array. That single missing field crashed the entire production
-build on Railway — not just that one event's page, the whole site failed to
-deploy, because Next.js generates every page in one build and one page
-throwing an error fails all of them. The event's bad data has been fixed, the
-event page code now defends against missing arrays so a future gap like this
-can't crash the page even if it slips through, and — most importantly —
-`/api/admin/save` now validates and normalises event data on every publish
-(each ticket needs `id`/`name`/`price`; missing `includes`/`themes`/`agenda`/
-`speakers` arrays are auto-filled instead of left `undefined`; an end date
-before the start date is now rejected with a clear message instead of being
-silently saved). In short: a malformed admin edit can no longer take the
-whole live site down.
-
-**New: "Check connection" button.** Inside `/admin`, under the page header,
-there's now a **Check connection** button. Press it any time to confirm, live:
-whether `ADMIN_KEY` / `GITHUB_TOKEN` / `GITHUB_REPO` are all set, whether the
-token can actually reach the configured repo, whether the configured branch
-exists, and whether the token has write (push) access — not just read. If
-something's wrong it tells you exactly which of those four checks failed and
-why, so you (or your developer) don't have to dig through Railway logs.
-
-**What is and isn't editable from `/admin` today.** The panel covers the four
-content collections that change often: **Events, Courses, Awards, News** —
-add/edit/delete items, upload images, and publish, all without touching code.
-Membership tiers/pricing, careers openings, committee/people bios,
-testimonials, partner logos and site-wide settings (contact hours, discount
-percentages, social links) are intentionally still edited in code
-(`src/lib/data/*.ts`, `src/lib/site.ts`) rather than the admin panel, since
-they change rarely and a wrong edit there (e.g. a broken discount rate or
-membership price) has a much bigger blast radius than a wrong event date. If
-you'd like any of these made admin-editable too, that's a scoped follow-up —
-say which one and it can be added the same way as the existing four.
+If a credential was ever committed to a shared repository or documentation,
+rotate it with its provider and update the deployment environment variables.

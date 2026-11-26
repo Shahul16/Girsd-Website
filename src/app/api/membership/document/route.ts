@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import { getAdminClient, getUserFromRequest } from "@/lib/server/supabase-admin";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
@@ -14,7 +15,6 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const fileName = searchParams.get("file");
-    const adminKey = searchParams.get("adminKey") || req.headers.get("x-admin-key");
 
     if (!fileName) {
       return NextResponse.json({ error: "Missing document reference." }, { status: 400 });
@@ -31,8 +31,7 @@ export async function GET(req: NextRequest) {
     let reviewerEmail: string | null = null;
 
     // 1. Check if admin credentials provided
-    const configuredAdminKey = process.env.ADMIN_KEY;
-    if (configuredAdminKey && adminKey === configuredAdminKey) {
+    if (isAdminRequest(req)) {
       isAuthorized = true;
       reviewerEmail = "admin";
     }

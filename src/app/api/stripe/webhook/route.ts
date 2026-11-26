@@ -71,43 +71,48 @@ export async function POST(req: NextRequest) {
       // If this is a membership payment, update the application record to PAYMENT_COMPLETED / UNDER_REVIEW
       // CRITICAL RULE: Payment does NOT activate membership benefits automatically.
       if (m.kind === "membership") {
-        try {
-          const appId = m.application_id;
-          let targetQuery = admin.from("membership_applications");
+        const appId = m.application_id;
+        if (!appId) {
+          console.error("Membership checkout session is missing its application id:", session.id);
+          return NextResponse.json({ error: "Membership application reference is missing." }, { status: 500 });
+        }
+        const { data: appRecord, error: appReadError } = await admin
+          .from("membership_applications")
+          .select("id, user_id, status, payment_status, stripe_session_id, audit_log")
+          .eq("id", appId)
+          .eq("user_id", m.user_id)
+          .maybeSingle();
+        if (appReadError || !appRecord) {
+          console.error("Could not find membership application for paid checkout:", appReadError ?? appId);
+          return NextResponse.json({ error: "Membership application could not be updated." }, { status: 500 });
+        }
+        if (appRecord.payment_status === "paid" && appRecord.stripe_session_id === session.id) {
+          return NextResponse.json({ received: true });
+        }
 
-          let appRecord: any = null;
-          if (appId) {
-            const { data } = await admin.from("membership_applications").select("*").eq("id", appId).maybeSingle();
-            appRecord = data;
-          } else if (m.user_id) {
-            const { data } = await admin.from("membership_applications").select("*").eq("user_id", m.user_id).order("created_at", { ascending: false }).limit(1).maybeSingle();
-            appRecord = data;
-          }
+        const currentAudit = Array.isArray(appRecord.audit_log) ? appRecord.audit_log : [];
+        const newAudit = [
+          ...currentAudit,
+          {
+            timestamp: new Date().toISOString(),
+            actor: "stripe_webhook",
+            action: "PAYMENT_COMPLETED",
+            reason: `Stripe session ${session.id} confirmed (£${((session.amount_total ?? 0) / 100).toFixed(2)})`,
+            fromStatus: appRecord.status,
+            toStatus: "UNDER_REVIEW",
+          },
+        ];
 
-          if (appRecord) {
-            const currentAudit = Array.isArray(appRecord.audit_log) ? appRecord.audit_log : [];
-            const newAudit = [
-              ...currentAudit,
-              {
-                timestamp: new Date().toISOString(),
-                actor: "stripe_webhook",
-                action: "PAYMENT_COMPLETED",
-                reason: `Stripe session ${session.id} confirmed (£${((session.amount_total ?? 0) / 100).toFixed(2)})`,
-                fromStatus: appRecord.status,
-                toStatus: "UNDER_REVIEW",
-              },
-            ];
-
-            await admin.from("membership_applications").update({
-              payment_status: "paid",
-              stripe_session_id: session.id,
-              status: "UNDER_REVIEW",
-              audit_log: newAudit,
-              updated_at: new Date().toISOString(),
-            }).eq("id", appRecord.id);
-          }
-        } catch (memErr) {
-          console.error("Error updating membership application status from webhook:", memErr);
+        const { error: appUpdateError } = await admin.from("membership_applications").update({
+          payment_status: "paid",
+          stripe_session_id: session.id,
+          status: "UNDER_REVIEW",
+          audit_log: newAudit,
+          updated_at: new Date().toISOString(),
+        }).eq("id", appRecord.id);
+        if (appUpdateError) {
+          console.error("Could not mark membership application as paid:", appUpdateError);
+          return NextResponse.json({ error: "Membership application could not be updated." }, { status: 500 });
         }
       }
 

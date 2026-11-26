@@ -1,23 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { approveSelection } from "@/lib/server/awards-service";
-import { getUserFromRequest } from "@/lib/server/supabase-admin";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
-    const adminKey = process.env.ADMIN_KEY;
     const body = await req.json().catch(() => null);
 
     if (!body) {
       return NextResponse.json({ error: "Invalid payload." }, { status: 400 });
     }
 
-    const suppliedKey = body.adminKey || req.headers.get("x-admin-key");
-    const user = await getUserFromRequest(req);
-
-    // Validate admin key or logged in user
-    if (adminKey && suppliedKey !== adminKey && !user) {
+    if (!isAdminRequest(req)) {
       return NextResponse.json({ error: "Unauthorized access." }, { status: 401 });
     }
 

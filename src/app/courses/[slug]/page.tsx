@@ -3,12 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import EnrolPanel from "@/components/EnrolPanel";
-import { courses, getCourse } from "@/lib/data/courses";
+import { courses } from "@/lib/data/courses";
 import { SITE } from "@/lib/site";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { Course } from "@/lib/data/courses";
 
-export function generateStaticParams() {
-  return courses.map((c) => ({ slug: c.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,7 +16,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const course = getCourse(slug);
+  const content = await getSiteContent("courses");
+  const currentCourses = Array.isArray(content) ? content as Course[] : courses;
+  const course = currentCourses.find((item) => item.slug === slug);
   if (!course) return {};
   return {
     title: `${course.title} | GlobalRSD Executive Education`,
@@ -31,7 +33,9 @@ export default async function CourseDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const course = getCourse(slug);
+  const content = await getSiteContent("courses");
+  const currentCourses = Array.isArray(content) ? content as Course[] : courses;
+  const course = currentCourses.find((item) => item.slug === slug);
   if (!course) notFound();
 
   const advisorSubject = encodeURIComponent(`Advisory Enquiry: ${course.title}`);

@@ -9,6 +9,7 @@ import {
   type ProofType,
 } from "@/lib/membership-verification";
 import type { MembershipTier } from "@/lib/data/memberships";
+import { getAccessToken } from "@/lib/supabase";
 
 interface MembershipVerificationModalProps {
   tier: MembershipTier;
@@ -179,10 +180,16 @@ export default function MembershipVerificationModal({
     setSubmitting(true);
     setError("");
     try {
+      const token = await getAccessToken();
+      if (!token) throw new Error("Please sign in again before submitting your application.");
+
       // 1. Submit initial application record
       const res = await fetch("/api/membership/apply", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim().toLowerCase(),
@@ -212,6 +219,7 @@ export default function MembershipVerificationModal({
 
         const uploadRes = await fetch("/api/membership/upload", {
           method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
           body: formData,
         });
 

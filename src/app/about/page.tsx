@@ -6,7 +6,9 @@ import { committees } from "@/lib/data/people";
 import { posts } from "@/lib/data/news";
 import { SITE } from "@/lib/site";
 import { IMAGES } from "@/lib/images";
-import pagesData from "@/content/pages.json";
+import defaultPages from "@/content/pages.json";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { Post } from "@/lib/data/news";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -14,9 +16,18 @@ export const metadata: Metadata = {
     "Learn about the Global Innovation for Research and Skills Development — our vision, mission, and commitment to responsible practice.",
   alternates: { canonical: "/about" },
 };
+export const dynamic = "force-dynamic";
 
-export default function AboutPage() {
-  const about = pagesData?.about || {
+export default async function AboutPage() {
+  const [pageContent, newsContent] = await Promise.all([
+    getSiteContent("pages"),
+    getSiteContent("news"),
+  ]);
+  const pages = pageContent && typeof pageContent === "object"
+    ? pageContent as typeof defaultPages
+    : defaultPages;
+  const currentPosts = Array.isArray(newsContent) ? newsContent as Post[] : posts;
+  const about = pages?.about || {
     eyebrow: "About GIRSD",
     title: "Where Scholarship Meets Capability",
     intro: "GIRSD is a UK-based institute connecting research excellence with practical skills development for a worldwide community of academics, students and professionals.",
@@ -88,23 +99,16 @@ export default function AboutPage() {
             <div className="card h-full border-t-4 border-t-gold p-8">
               <h2 className="font-display text-2xl font-bold">Our Institutional Purpose</h2>
               <p className="mt-4 leading-relaxed text-slate-600">
-                To support researchers, educators, and postgraduate scholars across multidisciplinary
-                fields through structured peer-reviewed conferences, accredited continuing professional
-                development, and scholarly proceedings. GIRSD provides an international forum where
-                accepted research papers undergo rigorous editorial review, offering authors formal
-                citation records and academic visibility.
+                {about.mission || "To support researchers, educators, and postgraduate scholars across multidisciplinary fields through structured peer-reviewed conferences, accredited continuing professional development, and scholarly proceedings."}
               </p>
             </div>
           </Reveal>
           <Reveal delay={120}>
             <div className="card h-full border-t-4 border-t-navy p-8">
               <h2 className="font-display text-2xl font-bold">Academic Standards &amp; Delivery</h2>
-              <ul className="mt-4 space-y-3 leading-relaxed text-slate-600">
-                <li>Organising multidisciplinary conferences and symposiums benchmarked to UK continuing professional development criteria.</li>
-                <li>Facilitating international research dissemination and peer dialogue across technology, health, and management sciences.</li>
-                <li>Issuing verified, CPD-accredited credentials and certificate records with online authenticity verification.</li>
-                <li>Supporting early-career researchers and international delegates with publication assistance and symposium presentation pathways.</li>
-              </ul>
+              <p className="mt-4 leading-relaxed text-slate-600">
+                {about.vision || "To build an international community where research excellence, practical skills and responsible innovation create lasting value for people and organisations."}
+              </p>
             </div>
           </Reveal>
         </div>
@@ -229,7 +233,7 @@ export default function AboutPage() {
             <Link href="/news" className="btn-navy">Visit the newsroom</Link>
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {posts.map((p, i) => (
+            {currentPosts.map((p, i) => (
               <Reveal key={p.slug} delay={i * 100}>
                 <Link href={`/news/${p.slug}`} className="card group block h-full p-6">
                   <p className="text-xs font-semibold uppercase tracking-widest text-gold-dark">

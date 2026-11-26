@@ -381,7 +381,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const body = await res.json().catch(() => null);
       return { error: body?.error ?? "Could not cancel membership. Please contact us." };
     }
-    setUser((prev) => (prev ? { ...prev, membership: null } : prev));
+    setUser((prev) => (prev ? { ...prev, membership: null, membershipStatus: "CANCELLED" } : prev));
     return {};
   }, []);
 

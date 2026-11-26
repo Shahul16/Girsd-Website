@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { posts, getPost } from "@/lib/data/news";
+import { posts } from "@/lib/data/news";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { Post } from "@/lib/data/news";
 
-export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -13,7 +13,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const content = await getSiteContent("news");
+  const currentPosts = Array.isArray(content) ? content as Post[] : posts;
+  const post = currentPosts.find((item) => item.slug === slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -28,7 +30,9 @@ export default async function NewsPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const content = await getSiteContent("news");
+  const currentPosts = Array.isArray(content) ? content as Post[] : posts;
+  const post = currentPosts.find((item) => item.slug === slug);
   if (!post) notFound();
 
   return (

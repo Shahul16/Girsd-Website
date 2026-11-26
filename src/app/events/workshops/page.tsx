@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: "Practical GIRSD workshops led by experienced practitioners, with focused learning, certificates and follow-up support.",
   alternates: { canonical: "/events/workshops" },
 };
+export const dynamic = "force-dynamic";
 
 const SHORT_WORKSHOPS = [
   {

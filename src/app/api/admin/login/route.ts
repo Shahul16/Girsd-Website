@@ -1,10 +1,11 @@
+import { timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { setAdminSession } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
 /**
- * Verifies the admin password against ADMIN_KEY (set in Railway → Variables).
- * 200 ok · 401 wrong · 503 not configured (allows local preview).
+ * Verifies the admin password and creates a short-lived HttpOnly session.
  */
 export async function POST(req: NextRequest) {
   const adminKey = process.env.ADMIN_KEY;
@@ -17,6 +18,11 @@ export async function POST(req: NextRequest) {
       { status: 503 }
     );
   }
-  if (supplied && supplied === adminKey) return NextResponse.json({ ok: true });
-  return NextResponse.json({ error: "Incorrect password. Please try again." }, { status: 401 });
+  if (!supplied || supplied.length !== adminKey.length || !timingSafeEqual(Buffer.from(supplied), Buffer.from(adminKey))) {
+    return NextResponse.json({ error: "Incorrect password. Please try again." }, { status: 401 });
+  }
+
+  const response = NextResponse.json({ ok: true });
+  setAdminSession(response);
+  return response;
 }

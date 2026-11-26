@@ -3,6 +3,10 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import { posts } from "@/lib/data/news";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { Post } from "@/lib/data/news";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "News",
@@ -10,7 +14,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/news" },
 };
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const content = await getSiteContent("news");
+  const currentPosts = Array.isArray(content) ? content as Post[] : posts;
   return (
     <>
       <PageHero
@@ -20,7 +26,7 @@ export default function NewsPage() {
       />
       <section className="mx-auto max-w-4xl px-4 py-16">
         <div className="space-y-8">
-          {posts.map((p, i) => (
+          {currentPosts.map((p, i) => (
             <Reveal key={p.slug} delay={i * 80}>
               <article className="card p-8">
                 <p className="text-xs font-semibold uppercase tracking-widest text-gold-dark">

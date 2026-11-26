@@ -15,7 +15,7 @@
 
 ## 1. Overview
 
-The GIRSD Digital Platform is the institute's complete online presence: a public marketing and information site, an e-commerce layer for conference tickets, CPD course enrolments and annual memberships, and a secure member area. Content is managed through a built-in administration panel with Git-based publishing, requiring no separate CMS licence.
+The GIRSD Digital Platform is the institute's online presence: a public marketing and information site, checkout for conference tickets, CPD course enrolments and annual memberships, and a member area. Owner-managed content and media are stored in Supabase and edited through the protected administration panel.
 
 The platform is engineered for a small operations team: a single hosted service, managed third-party providers on free or usage-based tiers, and no servers to maintain.
 
@@ -39,8 +39,8 @@ The platform is engineered for a small operations team: a single hosted service,
 - **Member dashboard** — profile, tickets, enrolments, membership status, renewal and cancellation
 
 ### Operations
-- **Admin panel** (`/admin`) — password-protected editor for events, courses, awards and news; publishing commits JSON content to GitHub, which triggers an automatic Railway deployment (full audit trail in Git history)
-- **Lead routing** — every enquiry and application form is delivered by email with reply-to set to the enquirer and attachments preserved; honeypot spam protection included
+- **Admin panel** (`/admin`) — protected content and media management, business database browser, and membership/award/enquiry workflow actions
+- **Lead routing** — general enquiries are recorded in Supabase and delivered by email with reply-to set to the enquirer and attachments preserved
 - **Trust & accreditation badges** — CPD Provider, ICO Registered and UKRLP Registered, rendered site-wide with registration numbers; official artwork auto-detected when placed in `public/accreditations/`
 
 ### Engineering quality
@@ -55,10 +55,10 @@ The platform is engineered for a small operations team: a single hosted service,
 Visitor ──▶ Railway (Next.js 15, SSG + API routes)
                  │
                  ├── Supabase ──── Auth (email, Google, Microsoft, Apple)
-                 │                 PostgreSQL: orders · certificates (RLS enforced)
+                 │                 PostgreSQL: orders · applications · CMS · enquiries
+                 │                 Storage: owner-managed public site media
                  ├── Stripe ────── Hosted Checkout ──▶ webhook ──▶ orders table
-                 ├── Resend ────── Enquiry / application email delivery
-                 └── GitHub ────── Content publishing (admin panel) ──▶ auto-deploy
+                 └── Resend ────── Enquiry and application email delivery
 ```
 
 Design principles: card data never touches the application (Stripe-hosted checkout); all pricing and discount decisions are made server-side; database writes occur only through the service role (webhook and audited API routes) with row-level security governing member reads.
@@ -78,28 +78,28 @@ The site runs locally without any environment variables; integration-dependent f
 
 ## 5. Environment Configuration
 
-All twelve variables, their sources and step-by-step acquisition instructions are documented in **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** — the authoritative go-live runbook.
+Environment variables and provider setup steps are documented in **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** — the authoritative go-live runbook.
 
 | Group | Variables |
 |---|---|
-| Administration | `ADMIN_KEY`, `GITHUB_TOKEN`, `GITHUB_REPO`, `GITHUB_BRANCH` |
+| Administration | `ADMIN_KEY` |
 | Email (Resend) | `RESEND_API_KEY`, `LEAD_TO_EMAIL`, `LEAD_FROM_EMAIL` |
 | Auth & database (Supabase) | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
 | Payments (Stripe) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
 
-Database schema (orders, certificates, policies): [`supabase/schema.sql`](./supabase/schema.sql) — a single script executed once in the Supabase SQL editor.
+Database schema: run [`supabase/schema.sql`](./supabase/schema.sql) and then [`supabase/migrations/20261127_site_management.sql`](./supabase/migrations/20261127_site_management.sql) in the Supabase SQL editor.
 
 ## 6. Deployment
 
-The platform deploys as a single Railway service connected to this repository: every push to `main` — including publishes from the admin panel — builds and releases automatically. Custom-domain and DNS steps, provider console configuration (Supabase, Stripe, Resend, Google Cloud, Microsoft Entra) and go-live verification are covered in [SETUP_GUIDE.md](./SETUP_GUIDE.md).
+The platform deploys as a single Railway service connected to this repository; source-code pushes build and release automatically. CMS content updates are stored in Supabase and do not require a deployment. Custom-domain and DNS steps, provider console configuration (Supabase, Stripe, Resend, Google Cloud, Microsoft Entra) and go-live verification are covered in [SETUP_GUIDE.md](./SETUP_GUIDE.md).
 
 ## 7. Content & Data Management
 
 | Task | Where |
 |---|---|
-| Events, courses, awards, news | `/admin` panel (or edit `src/content/*.json` in Git) |
-| Careers openings | `src/lib/data/careers.ts` |
-| Company details, contact, accreditation numbers | `src/lib/site.ts` |
+| Events, courses, awards, news, pages, careers, memberships, promotions | `/admin` panel |
+| Site settings and hero slides | `/admin` panel |
+| Company details, contact, accreditation numbers | `/admin` panel; defaults in `src/lib/site.ts` |
 | Issue a verifiable certificate | Supabase → Table Editor → `certificates` |
 | Review orders | Supabase → `orders` (mirrors Stripe Dashboard) |
 | Official accreditation artwork | Drop files in `public/accreditations/` (`cpd`/`ico`/`ukrlp` + `.png .svg .webp .jpg`) |
@@ -109,7 +109,7 @@ The platform deploys as a single Railway service connected to this repository: e
 - Payment card data is processed exclusively by Stripe (SAQ-A scope); webhook signatures verified on every event
 - Authentication delegated to Supabase Auth; OAuth secrets held in provider consoles, never in this codebase
 - Row-level security on all tables; the service-role key is server-only and never shipped to the browser
-- Admin actions require `ADMIN_KEY`; content changes are attributable through Git commits
+- Admin actions require an expiring HttpOnly session derived from `ADMIN_KEY`; content writes use the server-only Supabase service role
 - Enquiry endpoints validate input, cap attachment size (10 MB) and include bot honeypots
 - No secrets are committed to the repository; configuration is injected via Railway variables
 
@@ -127,7 +127,7 @@ src/
     api/lead              Enquiry & application email delivery (Resend)
     api/checkout          Stripe session creation (server-side pricing)
     api/stripe/webhook    Order recording (signature-verified)
-    api/admin/*           Content publishing & image upload (GitHub commits)
+    api/admin/*           Content, media, database and workflow administration
     api/verify-certificate  Public certificate lookup
     careers/              Careers page & application form
     forgot-password/ · reset-password/   Credential recovery flows
@@ -139,7 +139,8 @@ src/
     server/supabase-admin.ts  Service-role client (server only)
     site.ts               Brand, company & registration constants
     data/                 Events, courses, memberships, careers, people
-supabase/schema.sql       Database schema & RLS policies
+supabase/schema.sql       Business database schema & RLS policies
+supabase/migrations/      CMS, enquiry and storage migrations
 SETUP_GUIDE.md            Go-live runbook (accounts, variables, consoles)
 ```
 

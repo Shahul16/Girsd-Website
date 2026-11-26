@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getEvent, getRegistrationPhase, phasePrice } from "@/lib/data/events";
-import { getCourse } from "@/lib/data/courses";
-import { getTier } from "@/lib/data/memberships";
+import { getRegistrationPhase, phasePrice, type Event } from "@/lib/data/events";
+import type { Course } from "@/lib/data/courses";
+import type { MembershipTier } from "@/lib/data/memberships";
 import { SITE } from "@/lib/site";
-import { getUserFromRequest, hasActiveMembership } from "@/lib/server/supabase-admin";
+import { getAdminClient, getUserFromRequest, hasActiveMembership } from "@/lib/server/supabase-admin";
+import { getSiteContent } from "@/lib/server/site-content";
 
 export const runtime = "nodejs";
 
@@ -34,6 +35,17 @@ export async function POST(req: NextRequest) {
 
   const type = String(body.type ?? "");
   const quantity = Math.min(5, Math.max(1, Number(body.quantity) || 1));
+  const [eventContent, courseContent, tierContent, siteContent] = await Promise.all([
+    getSiteContent("events"),
+    getSiteContent("courses"),
+    getSiteContent("membership_tiers"),
+    getSiteContent("site"),
+  ]);
+  const currentEvents = Array.isArray(eventContent) ? eventContent as Event[] : [];
+  const currentCourses = Array.isArray(courseContent) ? courseContent as Course[] : [];
+  const currentTiers = Array.isArray(tierContent) ? tierContent as MembershipTier[] : [];
+  const site = siteContent && typeof siteContent === "object" ? siteContent as typeof SITE : SITE;
+  let applicationId = "";
 
   // --- Build the priced item server-side --------------------------------
   let title = "";
@@ -44,7 +56,7 @@ export async function POST(req: NextRequest) {
   let tierName = "";
 
   if (type === "ticket") {
-    const event = getEvent(String(body.event ?? ""));
+    const event = currentEvents.find((item) => item.slug === String(body.event ?? ""));
     const tier = event?.tickets.find((t: { id: string }) => t.id === String(body.tier ?? ""));
     if (!event || !tier) return NextResponse.json({ error: "Unknown event or ticket tier." }, { status: 400 });
     const isMember = await hasActiveMembership(user.id);
@@ -52,26 +64,51 @@ export async function POST(req: NextRequest) {
     title = `${event.acronym} — ${tier.name}`;
     description = `${event.title} · ${phase.label}`;
     unitPrice = phasePrice(tier.price, phase.multiplier);
-    discountRate = isMember ? SITE.memberDiscount : 0;
+    discountRate = isMember ? site.memberDiscount : 0;
     slug = event.slug;
     tierName = tier.name;
   } else if (type === "course") {
-    const course = getCourse(String(body.course ?? ""));
+    const course = currentCourses.find((item) => item.slug === String(body.course ?? ""));
     if (!course) return NextResponse.json({ error: "Unknown course." }, { status: 400 });
     const isMember = await hasActiveMembership(user.id);
     title = course.title;
     description = `${course.duration} online course`;
     unitPrice = course.price;
-    discountRate = isMember ? SITE.courseMemberDiscount : 0;
+    discountRate = isMember ? site.courseMemberDiscount : 0;
     slug = course.slug;
   } else if (type === "membership") {
-    const tier = getTier(String(body.tier ?? ""));
-    if (!tier) return NextResponse.json({ error: "Unknown membership tier." }, { status: 400 });
-    title = `GIRSD ${tier.name} Membership`;
+    applicationId = String(body.application_id ?? "");
+    if (!applicationId) {
+      return NextResponse.json({ error: "Submit a membership application before checkout." }, { status: 400 });
+    }
+    const admin = getAdminClient();
+    if (!admin) return NextResponse.json({ error: "Membership checkout is temporarily unavailable." }, { status: 503 });
+    const { data: application, error: applicationError } = await admin
+      .from("membership_applications")
+      .select("id, user_id, tier_id, tier_name, annual_fee, payment_status")
+      .eq("id", applicationId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (applicationError) {
+      console.error("Could not verify membership application for checkout:", applicationError);
+      return NextResponse.json({ error: "Could not verify your membership application." }, { status: 503 });
+    }
+    if (!application || application.payment_status !== "unpaid") {
+      return NextResponse.json({ error: "This membership application is unavailable for payment." }, { status: 404 });
+    }
+    const selectedTier = currentTiers.find((item) => item.id === application.tier_id);
+    if (!selectedTier || selectedTier.id !== String(body.tier ?? "")) {
+      return NextResponse.json({ error: "The membership tier does not match your application." }, { status: 400 });
+    }
+    const fee = Number(application.annual_fee);
+    if (!Number.isFinite(fee) || fee <= 0) {
+      return NextResponse.json({ error: "The membership fee on your application is invalid." }, { status: 400 });
+    }
+    title = `GIRSD ${application.tier_name} Membership`;
     description = "Annual membership — 12 months from purchase";
-    unitPrice = tier.price;
-    slug = tier.id;
-    tierName = tier.name;
+    unitPrice = fee;
+    slug = application.tier_id;
+    tierName = application.tier_name;
   } else {
     return NextResponse.json({ error: "Unknown item type." }, { status: 400 });
   }
@@ -110,7 +147,7 @@ export async function POST(req: NextRequest) {
         tier: tierName,
         quantity: String(qty),
         title,
-        application_id: typeof body.application_id === "string" ? body.application_id : "",
+        application_id: applicationId,
       },
       success_url: `${origin}/checkout/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${returnTo}`,

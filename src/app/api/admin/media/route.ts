@@ -1,97 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
+import { isAdminRequest } from "@/lib/server/admin-auth";
+import { getAdminClient } from "@/lib/server/supabase-admin";
 
 export const runtime = "nodejs";
 
-const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".svg", ".gif", ".ico"];
-
 export async function GET(req: NextRequest) {
-  const adminKey = process.env.ADMIN_KEY;
-  const supplied = req.nextUrl.searchParams.get("key") || "";
+  if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  const admin = getAdminClient();
+  if (!admin) return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
 
-  if (adminKey && supplied !== adminKey) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data, error } = await admin.storage.from("site-media").list("", {
+    limit: 200,
+    sortBy: { column: "created_at", order: "desc" },
+  });
+  if (error) {
+    console.error("Could not list site media:", error);
+    return NextResponse.json({ error: "Could not load media from Supabase Storage." }, { status: 503 });
   }
 
-  try {
-    const publicDir = path.join(process.cwd(), "public");
-    const uploadsDir = path.join(publicDir, "uploads");
-
-    // Ensure uploads directory exists
-    await fs.mkdir(uploadsDir, { recursive: true });
-
-    const files: Array<{ name: string; path: string; size: number; mtime: number }> = [];
-
-    // Scan uploads directory
-    try {
-      const uploadEntries = await fs.readdir(uploadsDir, { withFileTypes: true });
-      for (const entry of uploadEntries) {
-        if (entry.isFile()) {
-          const ext = path.extname(entry.name).toLowerCase();
-          if (IMAGE_EXTENSIONS.includes(ext)) {
-            const stat = await fs.stat(path.join(uploadsDir, entry.name));
-            files.push({
-              name: entry.name,
-              path: `/uploads/${entry.name}`,
-              size: stat.size,
-              mtime: stat.mtimeMs,
-            });
-          }
-        }
-      }
-    } catch (e) {
-      console.warn("Could not read uploads dir:", e);
-    }
-
-    // Scan public root for standard site images and logos
-    try {
-      const rootEntries = await fs.readdir(publicDir, { withFileTypes: true });
-      for (const entry of rootEntries) {
-        if (entry.isFile()) {
-          const ext = path.extname(entry.name).toLowerCase();
-          if (IMAGE_EXTENSIONS.includes(ext)) {
-            const stat = await fs.stat(path.join(publicDir, entry.name));
-            files.push({
-              name: entry.name,
-              path: `/${entry.name}`,
-              size: stat.size,
-              mtime: stat.mtimeMs,
-            });
-          }
-        }
-      }
-    } catch (e) {
-      console.warn("Could not read public dir:", e);
-    }
-
-    // Sort newest first
-    files.sort((a, b) => b.mtime - a.mtime);
-
-    return NextResponse.json({ ok: true, media: files });
-  } catch (err: any) {
-    return NextResponse.json({ error: "Failed to scan media: " + err.message }, { status: 500 });
-  }
+  const media = (data ?? []).map((file) => {
+    const { data: publicUrl } = admin.storage.from("site-media").getPublicUrl(file.name);
+    return {
+      name: file.name,
+      path: publicUrl.publicUrl,
+      size: Number(file.metadata?.size ?? 0),
+      mtime: file.created_at ? new Date(file.created_at).getTime() : 0,
+    };
+  });
+  return NextResponse.json({ ok: true, media });
 }
 
 export async function DELETE(req: NextRequest) {
-  const adminKey = process.env.ADMIN_KEY;
+  if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  const admin = getAdminClient();
+  if (!admin) return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+
   const body = await req.json().catch(() => null);
-
-  if (adminKey && body?.adminKey !== adminKey) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const filePath = String(body?.path || "").trim();
-  if (!filePath || !filePath.startsWith("/uploads/")) {
-    return NextResponse.json({ error: "Can only delete files in /uploads/" }, { status: 400 });
-  }
-
+  const mediaUrl = typeof body?.path === "string" ? body.path : "";
+  let objectPath = "";
   try {
-    const fullPath = path.join(process.cwd(), "public", filePath.slice(1));
-    await fs.unlink(fullPath);
-    return NextResponse.json({ ok: true, message: "File deleted" });
-  } catch (err: any) {
-    return NextResponse.json({ error: "Failed to delete file: " + err.message }, { status: 500 });
+    const parsedUrl = new URL(mediaUrl);
+    const marker = "/site-media/";
+    const markerIndex = parsedUrl.pathname.indexOf(marker);
+    if (markerIndex >= 0) objectPath = decodeURIComponent(parsedUrl.pathname.slice(markerIndex + marker.length));
+  } catch {
+    return NextResponse.json({ error: "Invalid media reference." }, { status: 400 });
   }
+  if (!objectPath || objectPath.includes("..")) {
+    return NextResponse.json({ error: "Invalid media reference." }, { status: 400 });
+  }
+
+  const { error } = await admin.storage.from("site-media").remove([objectPath]);
+  if (error) {
+    console.error("Could not delete site media:", error);
+    return NextResponse.json({ error: "Could not delete media." }, { status: 503 });
+  }
+  return NextResponse.json({ ok: true });
 }

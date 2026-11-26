@@ -4,15 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useAuth } from "@/lib/auth";
-import { SITE } from "@/lib/site";
-import eventsData from "@/content/events.json";
-import coursesData from "@/content/courses.json";
+import { getAccessToken } from "@/lib/supabase";
+import { events as defaultEvents, type Event } from "@/lib/data/events";
+import { courses as defaultCourses, type Course } from "@/lib/data/courses";
 import { openings, type JobOpening } from "@/lib/data/careers";
 
 const WHATSAPP_COMMUNITY_URL = "https://chat.whatsapp.com/Hzz8bB36if83vGNL9PFoRE?mode=gi_t";
 
 type CandidateProfile = {
-  photoUrl?: string | null;
   phone: string;
   location: string;
   title: string;
@@ -26,41 +25,39 @@ type CandidateProfile = {
     fileName: string;
     fileSize: string;
     uploadedAt: string;
+    path: string;
   } | null;
 };
 
 const DEFAULT_PROFILE: CandidateProfile = {
-  photoUrl: null,
-  phone: "+44 7586 261118",
-  location: "London, United Kingdom",
-  title: "Research Scholar & Candidate",
-  bio: "Passionate multidisciplinary researcher engaged in academic presentations, scientific publications, and continuous professional development.",
-  disciplines: ["Multidisciplinary Research", "Information Technology", "Bioinformatics", "Data Analytics"],
-  skills: ["Research Methodology", "Data Analysis", "Python", "Academic Writing", "Statistical Modelling", "Project Coordination"],
-  languages: ["English (Fluent)", "French (Intermediate)"],
-  education: [
-    {
-      degree: "Postgraduate / Master of Science",
-      institution: "School of Engineering & Advanced Sciences",
-      year: "2024",
-      field: "Data & Systems Analysis",
-    },
-    {
-      degree: "Undergraduate / Bachelor of Science",
-      institution: "Faculty of Applied Sciences & Technology",
-      year: "2021",
-      field: "Computer Applications",
-    },
-  ],
-  experience: [
-    {
-      role: "Graduate Research Assistant",
-      organization: "International Research Consortium",
-      duration: "2023 – Present",
-      summary: "Coordinated conference paper submissions, peer reviews, literature syntheses, and technical symposium proceedings.",
-    },
-  ],
+  phone: "",
+  location: "",
+  title: "",
+  bio: "",
+  disciplines: [],
+  skills: [],
+  languages: [],
+  education: [],
+  experience: [],
   cv: null,
+};
+
+type AbstractSubmission = {
+  id: string;
+  event_slug: string;
+  event_title: string;
+  title: string;
+  track: string | null;
+  status: string;
+  created_at: string;
+};
+
+type JobApplication = {
+  id: string;
+  job_id: string;
+  job_title: string;
+  status: string;
+  created_at: string;
 };
 
 type ActiveTab =
@@ -82,7 +79,12 @@ export default function DashboardPage() {
   const [profileSubTab, setProfileSubTab] = useState<"profile" | "research" | "statistics">("profile");
   const [eventCategoryFilter, setEventCategoryFilter] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [eventsData, setEventsData] = useState<Event[]>(defaultEvents);
+  const [coursesData, setCoursesData] = useState<Course[]>(defaultCourses);
+  const [careersData, setCareersData] = useState<JobOpening[]>(openings);
+  const [abstractSubmissions, setAbstractSubmissions] = useState<AbstractSubmission[]>([]);
+  const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
+  const [submissionError, setSubmissionError] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cancelError, setCancelError] = useState("");
   const [toastMessage, setToastMessage] = useState("");
@@ -101,7 +103,6 @@ export default function DashboardPage() {
 
   // File Upload Refs
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const photoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (ready && !user) router.replace("/login?next=/dashboard");
@@ -112,27 +113,48 @@ export default function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  // Load candidate profile from localStorage
   useEffect(() => {
-    if (user?.email) {
+    if (!user) return;
+    const controller = new AbortController();
+    void (async () => {
       try {
-        const stored = localStorage.getItem(`girsd_profile_${user.email}`);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setProfile(parsed);
-          setEditFormData(parsed);
-        } else {
-          const initial = {
-            ...DEFAULT_PROFILE,
-            title: `Candidate — ${user.name}`,
-          };
-          setProfile(initial);
-          setEditFormData(initial);
+        const [eventsResponse, coursesResponse, careersResponse] = await Promise.all([
+          fetch("/api/site-content?collection=events", { signal: controller.signal }),
+          fetch("/api/site-content?collection=courses", { signal: controller.signal }),
+          fetch("/api/site-content?collection=careers", { signal: controller.signal }),
+        ]);
+        const [eventsBody, coursesBody, careersBody] = await Promise.all([
+          eventsResponse.json(), coursesResponse.json(), careersResponse.json(),
+        ]);
+        if (Array.isArray(eventsBody.data)) setEventsData(eventsBody.data);
+        if (Array.isArray(coursesBody.data)) setCoursesData(coursesBody.data);
+        if (Array.isArray(careersBody.data)) setCareersData(careersBody.data);
+
+        const token = await getAccessToken();
+        if (!token) throw new Error("Your session expired. Please sign in again.");
+        const headers = { Authorization: `Bearer ${token}` };
+        const [profileResponse, submissionsResponse] = await Promise.all([
+          fetch("/api/member/profile", { headers, signal: controller.signal }),
+          fetch("/api/member/submissions", { headers, signal: controller.signal }),
+        ]);
+        const [profileBody, submissionsBody] = await Promise.all([
+          profileResponse.json(), submissionsResponse.json(),
+        ]);
+        if (!profileResponse.ok) throw new Error(profileBody.error || "Could not load your profile.");
+        if (!submissionsResponse.ok) throw new Error(submissionsBody.error || "Could not load your submissions.");
+        const currentProfile = { ...DEFAULT_PROFILE, ...(profileBody.profile ?? {}) } as CandidateProfile;
+        setProfile(currentProfile);
+        setEditFormData(currentProfile);
+        setAbstractSubmissions(Array.isArray(submissionsBody.abstracts) ? submissionsBody.abstracts : []);
+        setJobApplications(Array.isArray(submissionsBody.applications) ? submissionsBody.applications : []);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Could not load member workspace:", error);
+          setSubmissionError(error instanceof Error ? error.message : "Could not load member data.");
         }
-      } catch (err) {
-        console.error("Failed to read profile:", err);
       }
-    }
+    })();
+    return () => controller.abort();
   }, [user]);
 
   function showToast(msg: string) {
@@ -140,93 +162,79 @@ export default function DashboardPage() {
     setTimeout(() => setToastMessage(""), 4500);
   }
 
-  function saveProfileToStorage(updated: CandidateProfile) {
-    setProfile(updated);
-    setEditFormData(updated);
-    if (user?.email) {
-      localStorage.setItem(`girsd_profile_${user.email}`, JSON.stringify(updated));
+  async function saveProfile(updated: CandidateProfile): Promise<boolean> {
+    const token = await getAccessToken();
+    if (!token) {
+      showToast("Your session expired. Please sign in again.");
+      return false;
     }
-    showToast("Profile details saved successfully.");
+    try {
+      const response = await fetch("/api/member/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ profile: updated }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not save your profile.");
+      setProfile(updated);
+      setEditFormData(updated);
+      showToast("Profile saved to your account.");
+      return true;
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not save your profile.");
+      return false;
+    }
   }
 
-  function handleCvUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleCvUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (file.size > 15 * 1024 * 1024) {
-      alert("File size exceeds 15 MB. Please select a smaller document.");
+    const token = await getAccessToken();
+    if (!token) {
+      showToast("Your session expired. Please sign in again.");
       return;
     }
-
-    const sizeFormatted =
-      file.size > 1024 * 1024
-        ? (file.size / (1024 * 1024)).toFixed(1) + " MB"
-        : Math.round(file.size / 1024) + " KB";
-
-    const updated: CandidateProfile = {
-      ...profile,
-      cv: {
-        fileName: file.name,
-        fileSize: sizeFormatted,
-        uploadedAt: new Date().toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
-      },
-    };
-
-    saveProfileToStorage(updated);
-    showToast(`Curriculum Vitae "${file.name}" attached to your profile.`);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await fetch("/api/member/cv", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not upload your CV.");
+      const updated = { ...DEFAULT_PROFILE, ...body.profile } as CandidateProfile;
+      setProfile(updated);
+      setEditFormData(updated);
+      showToast(`CV "${updated.cv?.fileName}" uploaded securely.`);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not upload your CV.");
+    }
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  function handleRemoveCv() {
-    if (!confirm("Remove this CV from your profile?")) return;
-    const updated: CandidateProfile = {
-      ...profile,
-      cv: null,
-    };
-    saveProfileToStorage(updated);
-    showToast("CV removed from profile.");
-  }
-
-  function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      showToast("Please select an image file (PNG, JPG, JPEG, WEBP).");
+  async function handleRemoveCv() {
+    if (!confirm("Remove this CV from your private account storage?")) return;
+    const token = await getAccessToken();
+    if (!token) {
+      showToast("Your session expired. Please sign in again.");
       return;
     }
-
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("Photo must be less than 5 MB.");
-      return;
+    try {
+      const response = await fetch("/api/member/cv", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not remove your CV.");
+      const updated = { ...DEFAULT_PROFILE, ...body.profile } as CandidateProfile;
+      setProfile(updated);
+      setEditFormData(updated);
+      showToast("CV removed from your account.");
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not remove your CV.");
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      const updated: CandidateProfile = {
-        ...profile,
-        photoUrl: base64,
-      };
-      saveProfileToStorage(updated);
-      showToast("Candidate profile photo updated successfully!");
-      if (photoInputRef.current) photoInputRef.current.value = "";
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleRemovePhoto() {
-    if (!confirm("Remove your profile photo?")) return;
-    const updated: CandidateProfile = {
-      ...profile,
-      photoUrl: null,
-    };
-    saveProfileToStorage(updated);
-    showToast("Profile photo removed.");
   }
 
   function addSkill() {
@@ -234,7 +242,7 @@ export default function DashboardPage() {
     const trimmed = newSkillInput.trim();
     if (!profile.skills.includes(trimmed)) {
       const updated = { ...profile, skills: [...profile.skills, trimmed] };
-      saveProfileToStorage(updated);
+      void saveProfile(updated);
     }
     setNewSkillInput("");
   }
@@ -244,7 +252,7 @@ export default function DashboardPage() {
       ...profile,
       skills: profile.skills.filter((s) => s !== skillToRemove),
     };
-    saveProfileToStorage(updated);
+    void saveProfile(updated);
   }
 
   function addDiscipline() {
@@ -252,7 +260,7 @@ export default function DashboardPage() {
     const trimmed = newDisciplineInput.trim();
     if (!profile.disciplines.includes(trimmed)) {
       const updated = { ...profile, disciplines: [...profile.disciplines, trimmed] };
-      saveProfileToStorage(updated);
+      void saveProfile(updated);
     }
     setNewDisciplineInput("");
   }
@@ -262,13 +270,12 @@ export default function DashboardPage() {
       ...profile,
       disciplines: profile.disciplines.filter((d) => d !== dToRemove),
     };
-    saveProfileToStorage(updated);
+    void saveProfile(updated);
   }
 
-  function handleProfileSaveModal(e: React.FormEvent) {
+  async function handleProfileSaveModal(e: React.FormEvent) {
     e.preventDefault();
-    saveProfileToStorage(editFormData);
-    setIsEditingProfile(false);
+    if (await saveProfile(editFormData)) setIsEditingProfile(false);
   }
 
   async function onCancelMembership() {
@@ -279,25 +286,59 @@ export default function DashboardPage() {
     else showToast("Membership successfully cancelled.");
   }
 
-  function handleAbstractSubmit(e: React.FormEvent) {
+  async function handleAbstractSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!abstractForm.title || !abstractForm.abstractText) {
-      alert("Please provide both a paper title and an abstract.");
+      showToast("Please provide both a paper title and an abstract.");
       return;
     }
-    showToast(`Abstract "${abstractForm.title}" submitted successfully for peer review!`);
-    setAbstractModalEvent(null);
-    setAbstractForm({ title: "", track: "", abstractText: "" });
+    const token = await getAccessToken();
+    if (!token) {
+      showToast("Your session expired. Please sign in again.");
+      return;
+    }
+    try {
+      const response = await fetch("/api/member/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ type: "abstract", eventSlug: abstractModalEvent?.slug, ...abstractForm }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not submit your abstract.");
+      setAbstractSubmissions((previous) => [{ ...body.submission, ...abstractForm, event_slug: abstractModalEvent?.slug, event_title: abstractModalEvent?.title }, ...previous]);
+      showToast("Abstract submitted. You can track its status in your workspace.");
+      setAbstractModalEvent(null);
+      setAbstractForm({ title: "", track: "", abstractText: "" });
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not submit your abstract.");
+    }
   }
 
-  function handleQuickJobApply(job: JobOpening) {
-    if (!profile.cv) {
+  async function handleQuickJobApply(job: JobOpening) {
+    if (!profile.cv?.path) {
       setActiveTab("profile");
-      showToast("Please upload your CV in 'My Profile' first to enable 1-Click Application.");
+      showToast("Upload a CV to your private profile before applying.");
       return;
     }
-    showToast(`Application with your CV "${profile.cv.fileName}" submitted for ${job.title}!`);
-    setSelectedJob(null);
+    const token = await getAccessToken();
+    if (!token) {
+      showToast("Your session expired. Please sign in again.");
+      return;
+    }
+    try {
+      const response = await fetch("/api/member/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ type: "job", jobId: job.id }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not submit your application.");
+      setJobApplications((previous) => [{ ...body.application, job_id: job.id, job_title: job.title }, ...previous]);
+      setSelectedJob(null);
+      showToast("Application submitted. You can track it in your workspace.");
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not submit your application.");
+    }
   }
 
   // Filtered Events
@@ -317,7 +358,7 @@ export default function DashboardPage() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [eventCategoryFilter, searchQuery]);
+  }, [eventCategoryFilter, searchQuery, eventsData]);
 
   if (!ready || !user) {
     return (
@@ -331,8 +372,11 @@ export default function DashboardPage() {
   }
 
   const m = user.membership;
-  const candidateId = `GIRSD-${user.email.replace(/[^a-zA-Z0-9]/g, "").slice(0, 4).toUpperCase() || "CAND"}-2026`;
-  const profileCompletion = (profile.cv ? 35 : 0) + (profile.skills.length > 0 ? 25 : 0) + (profile.education.length > 0 ? 25 : 0) + 15;
+  const candidateId = m?.membershipId ?? user.membershipApplicationId ?? "Not issued";
+  const profileCompletion = Math.round(
+    [Boolean(profile.title), Boolean(profile.location), Boolean(profile.bio), profile.skills.length > 0, profile.education.length > 0, Boolean(profile.cv)]
+      .filter(Boolean).length / 6 * 100
+  );
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans antialiased text-slate-800">
@@ -386,17 +430,9 @@ export default function DashboardPage() {
 
             {/* Candidate Identity Pill */}
             <div className="flex items-center gap-2.5 rounded-full border border-slate-200/80 bg-slate-50 py-1 pl-1 pr-3">
-              {profile.photoUrl ? (
-                <img
-                  src={profile.photoUrl}
-                  alt={user.name}
-                  className="h-7 w-7 rounded-full object-cover border border-slate-200 shadow-2xs"
-                />
-              ) : (
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy font-display text-xs font-bold text-white shadow-2xs">
-                  {user.name.charAt(0).toUpperCase()}
-                </span>
-              )}
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy font-display text-xs font-bold text-white shadow-2xs">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
               <div className="text-left text-xs leading-none">
                 <p className="font-semibold text-navy">{user.name.split(" ")[0]}</p>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">{candidateId}</p>
@@ -612,13 +648,13 @@ export default function DashboardPage() {
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-navy/5 px-3 py-1 text-[11px] font-bold text-navy">
-                        Candidate Portal · Academic Year 2026
+                        Member Workspace
                       </span>
                       <h1 className="mt-3 font-display text-2xl font-bold text-navy sm:text-3xl">
                         Welcome back, {user.name}
                       </h1>
                       <p className="mt-1.5 text-xs text-slate-500">
-                        {profile.title} · Member ID: <span className="font-mono font-semibold text-navy">{candidateId}</span>
+                        {profile.title && <>{profile.title} · </>}Member reference: <span className="font-mono font-semibold text-navy">{candidateId}</span>
                       </p>
                     </div>
 
@@ -678,7 +714,7 @@ export default function DashboardPage() {
 
                   <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
                     <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">CPD Courses</p>
-                    <p className="mt-2 font-display text-2xl font-bold text-navy">{coursesData.length} Certified</p>
+                    <p className="mt-2 font-display text-2xl font-bold text-navy">{coursesData.length} Available</p>
                     <button onClick={() => setActiveTab("courses")} className="mt-2 text-xs font-semibold text-navy hover:text-gold transition">
                       Browse Curriculum →
                     </button>
@@ -689,7 +725,7 @@ export default function DashboardPage() {
                     <p className="mt-2 font-display text-xl font-bold text-navy flex items-center gap-1.5">
                       {profile.cv ? (
                         <span className="text-emerald-700 flex items-center gap-1">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500" /> Attached
+                          <span className="h-2 w-2 rounded-full bg-emerald-500" /> Uploaded
                         </span>
                       ) : (
                         <span className="text-amber-700 flex items-center gap-1">
@@ -705,10 +741,10 @@ export default function DashboardPage() {
                   <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
                     <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Affiliation Tier</p>
                     <p className="mt-2 font-display text-xl font-bold text-navy truncate">
-                      {m ? m.tierName : "Registered Member"}
+                      {m ? m.tierName : user.membershipStatus ? user.membershipStatus.replace(/_/g, " ") : "No membership"}
                     </p>
                     <button onClick={() => setActiveTab("membership")} className="mt-2 text-xs font-semibold text-navy hover:text-gold transition">
-                      {m ? "View Member Pass →" : "Upgrade to 10% Off →"}
+                      {m ? "View Member Pass →" : "Explore membership →"}
                     </button>
                   </div>
                 </div>
@@ -731,15 +767,15 @@ export default function DashboardPage() {
                   <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 pt-4 border-t border-slate-100 text-xs">
                     <div className="flex items-center gap-2 text-slate-600">
                       <span className="text-emerald-600 font-bold">✓</span>
-                      <span>Verified Email</span>
+                      <span>Account email</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <span className="text-emerald-600 font-bold">✓</span>
-                      <span>Academic Background</span>
+                    <div className={`flex items-center gap-2 ${profile.education.length ? "text-slate-600" : "text-amber-800 font-semibold"}`}>
+                      <span className={profile.education.length ? "text-emerald-600 font-bold" : "text-amber-600 font-bold"}>{profile.education.length ? "✓" : "!"}</span>
+                      <span>{profile.education.length ? "Education added" : "Add education"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <span className="text-emerald-600 font-bold">✓</span>
-                      <span>Disciplines &amp; Skills</span>
+                    <div className={`flex items-center gap-2 ${profile.skills.length || profile.disciplines.length ? "text-slate-600" : "text-amber-800 font-semibold"}`}>
+                      <span className={profile.skills.length || profile.disciplines.length ? "text-emerald-600 font-bold" : "text-amber-600 font-bold"}>{profile.skills.length || profile.disciplines.length ? "✓" : "!"}</span>
+                      <span>{profile.skills.length || profile.disciplines.length ? "Skills and disciplines" : "Add skills"}</span>
                     </div>
                     <div className={`flex items-center gap-2 ${profile.cv ? "text-slate-600" : "text-amber-800 font-semibold"}`}>
                       {profile.cv ? (
@@ -751,6 +787,53 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
+
+                <section className="grid gap-6 lg:grid-cols-2" aria-label="Your recent submissions">
+                  <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h2 className="text-sm font-bold text-navy">Abstract submissions</h2>
+                      <span className="rounded-full bg-navy/5 px-2.5 py-1 text-[10px] font-bold text-navy">{abstractSubmissions.length}</span>
+                    </div>
+                    {abstractSubmissions.length ? (
+                      <ul className="mt-3 space-y-3">
+                        {abstractSubmissions.slice(0, 3).map((submission) => (
+                          <li key={submission.id} className="flex items-start justify-between gap-3 text-xs">
+                            <div>
+                              <p className="font-semibold text-navy">{submission.title}</p>
+                              <p className="mt-1 text-slate-500">{submission.event_title}</p>
+                            </div>
+                            <span className="shrink-0 rounded-full bg-amber-50 px-2 py-1 text-[10px] font-semibold capitalize text-amber-800">{submission.status.replace(/_/g, " ")}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-3 text-xs text-slate-500">Your submitted abstracts and review status will appear here.</p>
+                    )}
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h2 className="text-sm font-bold text-navy">Job applications</h2>
+                      <span className="rounded-full bg-navy/5 px-2.5 py-1 text-[10px] font-bold text-navy">{jobApplications.length}</span>
+                    </div>
+                    {jobApplications.length ? (
+                      <ul className="mt-3 space-y-3">
+                        {jobApplications.slice(0, 3).map((application) => (
+                          <li key={application.id} className="flex items-start justify-between gap-3 text-xs">
+                            <div>
+                              <p className="font-semibold text-navy">{application.job_title}</p>
+                              <p className="mt-1 text-slate-500">{new Date(application.created_at).toLocaleDateString("en-GB")}</p>
+                            </div>
+                            <span className="shrink-0 rounded-full bg-blue-50 px-2 py-1 text-[10px] font-semibold capitalize text-blue-800">{application.status.replace(/_/g, " ")}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-3 text-xs text-slate-500">Applications you submit will be tracked here.</p>
+                    )}
+                  </div>
+                </section>
+
+                {submissionError && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-800">{submissionError}</p>}
 
                 {/* RECENT ACTIVITY & UPCOMING SESSIONS */}
                 <div className="grid gap-6 md:grid-cols-2">
@@ -769,15 +852,19 @@ export default function DashboardPage() {
                             <p className="text-xs font-bold text-navy line-clamp-1">{ev.title}</p>
                             <p className="text-[11px] text-slate-400">{ev.city} · {new Date(ev.date).toLocaleDateString("en-GB")}</p>
                           </div>
-                          <button
-                            onClick={() => {
-                              setActiveTab("events");
-                              setAbstractModalEvent({ title: ev.title, slug: ev.slug });
-                            }}
-                            className="shrink-0 btn-navy text-[11px] py-1.5 px-3 rounded-lg"
-                          >
-                            Submit Paper
-                          </button>
+                          {ev.category === "Research Conferences" ? (
+                            <button
+                              onClick={() => {
+                                setActiveTab("events");
+                                setAbstractModalEvent({ title: ev.title, slug: ev.slug });
+                              }}
+                              className="shrink-0 btn-navy text-[11px] py-1.5 px-3 rounded-lg"
+                            >
+                              Submit Paper
+                            </button>
+                          ) : (
+                            <Link href={`/events/${ev.slug}`} className="shrink-0 text-[11px] font-semibold text-navy underline">Details</Link>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -791,7 +878,7 @@ export default function DashboardPage() {
                       </button>
                     </div>
                     <div className="mt-4 space-y-3">
-                      {openings.slice(0, 3).map((job) => (
+                      {careersData.slice(0, 3).map((job) => (
                         <div key={job.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-slate-300 transition">
                           <div>
                             <div className="flex items-center gap-1.5">
@@ -853,58 +940,9 @@ export default function DashboardPage() {
                   <div className="space-y-6">
                     <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs text-center">
                       
-                      {/* Avatar & Candidate Photo */}
-                      <div className="relative mx-auto h-24 w-24">
-                        {profile.photoUrl ? (
-                          <img
-                            src={profile.photoUrl}
-                            alt={user.name}
-                            className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-slate-100"
-                          />
-                        ) : (
-                          <div className="h-24 w-24 rounded-full bg-slate-900 flex items-center justify-center font-display text-3xl font-bold text-gold shadow-md">
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => photoInputRef.current?.click()}
-                          title="Upload / Change Photo"
-                          aria-label="Upload profile photo"
-                          className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-navy text-white shadow-md hover:bg-gold hover:text-navy transition"
-                        >
-                          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        </button>
+                      <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-slate-900 font-display text-3xl font-bold text-gold shadow-md">
+                        {user.name.charAt(0).toUpperCase()}
                       </div>
-
-                      {/* Photo Actions */}
-                      <div className="mt-2.5 flex items-center justify-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => photoInputRef.current?.click()}
-                          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-navy hover:bg-slate-50 transition shadow-2xs"
-                        >
-                          {profile.photoUrl ? "Change Photo" : "Upload Photo"}
-                        </button>
-                        {profile.photoUrl && (
-                          <button
-                            type="button"
-                            onClick={handleRemovePhoto}
-                            className="rounded-lg border border-rose-200 px-2 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 transition"
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-
-                      <input
-                        ref={photoInputRef}
-                        type="file"
-                        accept="image/png,image/jpeg,image/jpg,image/webp"
-                        className="hidden"
-                        onChange={handlePhotoUpload}
-                      />
-
                       <h2 className="mt-4 font-display text-lg font-bold text-navy">{user.name}</h2>
                       <p className="text-xs text-slate-500">{profile.location}</p>
                       
@@ -1213,7 +1251,7 @@ export default function DashboardPage() {
                           <p className="font-bold text-sm text-navy">{enr.courseTitle}</p>
                           <p className="text-[11px] text-slate-400 mt-0.5">Enrolled {new Date(enr.date).toLocaleDateString("en-GB")}</p>
                           <div className="mt-3 flex items-center justify-between text-xs">
-                            <span className="text-emerald-700 font-semibold">● CPD Certified</span>
+                            <span className="text-emerald-700 font-semibold">● Paid enrolment</span>
                             <Link href={`/courses/${enr.courseSlug}`} className="text-navy font-bold underline">
                               Open Modules
                             </Link>
@@ -1282,8 +1320,8 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                          <Link href={`/checkout?type=membership&tier=${m.tierId}`} className="btn-navy text-xs py-2 px-4">
-                            Renew Plan
+                          <Link href="/membership" className="btn-navy text-xs py-2 px-4">
+                            Renew or change plan
                           </Link>
                           <button
                             onClick={onCancelMembership}
@@ -1318,7 +1356,7 @@ export default function DashboardPage() {
                     ) : (
                       <div className="mt-4 space-y-4">
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          You do not currently have an active membership. Upgrading unlocks 10% off all international conferences, preferential review, and certified CPD recognition.
+                          You do not currently have an active membership. Applications and payment are processed through the membership workflow.
                         </p>
                         <Link href="/membership" className="btn-gold inline-block text-xs py-2 px-4">
                           Explore Membership →
@@ -1388,7 +1426,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="space-y-4">
-                  {openings.map((job) => (
+                  {careersData.map((job) => (
                     <div key={job.id} className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
@@ -1433,21 +1471,10 @@ export default function DashboardPage() {
 
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
-                    <h3 className="text-sm font-bold text-navy">Nomination Categories</h3>
-                    <ul className="mt-4 space-y-3 text-xs text-slate-600">
-                      <li className="flex items-start gap-2">
-                        <span className="text-gold font-bold">★</span>
-                        <div><strong className="text-navy">Young Researcher Award:</strong> Open to early-career scholars and postgraduates demonstrating outstanding scientific output.</div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-gold font-bold">★</span>
-                        <div><strong className="text-navy">Academic Excellence &amp; Leadership:</strong> Honoring senior faculty and department chairs with notable research mentorship.</div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-gold font-bold">★</span>
-                        <div><strong className="text-navy">Women in Science &amp; Innovation:</strong> Recognizing pioneering contributions by female researchers worldwide.</div>
-                      </li>
-                    </ul>
+                    <h3 className="text-sm font-bold text-navy">Award nominations</h3>
+                    <p className="mt-4 text-xs leading-relaxed text-slate-600">
+                      View the current categories and submit a nomination through the official awards workflow.
+                    </p>
 
                     <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2">
                       <Link href="/awards" className="btn-gold block text-center text-xs py-2">
@@ -1485,20 +1512,10 @@ export default function DashboardPage() {
 
                 <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Available Credentials</h3>
-                  <div className="mt-4 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-4">
-                      <div>
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold text-emerald-800">Verified</span>
-                        <p className="font-bold text-xs text-navy mt-1">Certificate of Candidate Registration</p>
-                        <p className="text-[11px] text-slate-400">Global Institute of Research &amp; Skills Development · CPD Provider #788000</p>
-                      </div>
-                      <Link
-                        href={`/verify-certificate?id=${candidateId}`}
-                        className="rounded-xl border border-navy px-3 py-1.5 text-xs font-semibold text-navy hover:bg-navy hover:text-white transition"
-                      >
-                        Verify Record
-                      </Link>
-                    </div>
+                  <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5">
+                    <p className="text-sm font-semibold text-navy">No certificate is linked to this account yet.</p>
+                    <p className="mt-2 text-xs leading-relaxed text-slate-500">Once a certificate has been issued, enter its certificate number on the public verification page.</p>
+                    <Link href="/verify" className="mt-4 inline-block text-xs font-semibold text-navy underline">Open certificate verification</Link>
                   </div>
                 </div>
               </div>
@@ -1631,47 +1648,6 @@ export default function DashboardPage() {
             </div>
 
             <form onSubmit={handleProfileSaveModal} className="mt-4 space-y-4 text-xs">
-              <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-slate-50 p-3">
-                <div className="relative h-14 w-14 shrink-0">
-                  {editFormData.photoUrl ? (
-                    <img
-                      src={editFormData.photoUrl}
-                      alt="Candidate photo"
-                      className="h-14 w-14 rounded-full object-cover border border-slate-200"
-                    />
-                  ) : (
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 font-display text-lg font-bold text-gold">
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-navy text-xs">Profile Photo</p>
-                  <p className="text-[10px] text-slate-500">JPG, PNG, or WEBP (Max 5 MB)</p>
-                  <div className="mt-1.5 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => photoInputRef.current?.click()}
-                      className="rounded-md border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-navy hover:bg-slate-50"
-                    >
-                      {editFormData.photoUrl ? "Change Photo" : "Upload Photo"}
-                    </button>
-                    {editFormData.photoUrl && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditFormData({ ...editFormData, photoUrl: null });
-                          handleRemovePhoto();
-                        }}
-                        className="rounded-md border border-rose-200 px-2 py-1 text-[10px] font-semibold text-rose-600 hover:bg-rose-50"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               <div>
                 <label className="block font-semibold text-slate-700">Academic Title / Headline</label>
                 <input

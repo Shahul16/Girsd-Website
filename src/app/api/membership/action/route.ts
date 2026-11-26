@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminClient } from "@/lib/server/supabase-admin";
 import { generateMembershipId, type MembershipStatus } from "@/lib/membership-verification";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
@@ -12,14 +13,13 @@ export const runtime = "nodejs";
  */
 export async function POST(req: NextRequest) {
   try {
-    const adminKey = process.env.ADMIN_KEY;
     const body = await req.json().catch(() => null);
 
     if (!body) {
       return NextResponse.json({ error: "Invalid payload." }, { status: 400 });
     }
 
-    if (adminKey && body.adminKey !== adminKey) {
+    if (!isAdminRequest(req)) {
       return NextResponse.json({ error: "Unauthorized administrative access." }, { status: 401 });
     }
 
@@ -66,6 +66,12 @@ export async function POST(req: NextRequest) {
 
     switch (action.toUpperCase()) {
       case "APPROVE": {
+        if (!["paid", "waived"].includes(String(app.payment_status).toLowerCase())) {
+          return NextResponse.json(
+            { error: "Membership applications can only be approved after payment is recorded or waived." },
+            { status: 409 }
+          );
+        }
         toStatus = "ACTIVE_MEMBER";
         const membershipId = app.membership_id || generateMembershipId();
         const validFrom = new Date();

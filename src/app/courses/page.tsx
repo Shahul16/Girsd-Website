@@ -3,6 +3,10 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { courses } from "@/lib/data/courses";
 import { SITE } from "@/lib/site";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { Course } from "@/lib/data/courses";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Executive Certificates & CPD-Accredited Programmes",
@@ -11,7 +15,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/courses" },
 };
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const content = await getSiteContent("courses");
+  const currentCourses = Array.isArray(content) ? content as Course[] : courses;
   const discountPercent = Math.round(SITE.courseMemberDiscount * 100);
 
   return (
@@ -91,7 +97,7 @@ export default function CoursesPage() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3 sm:grid-cols-2">
-          {courses.map((c, i) => {
+          {currentCourses.map((c, i) => {
             const memberPrice = Math.round(c.price * (1 - SITE.courseMemberDiscount));
             return (
               <Reveal key={c.slug} delay={(i % 3) * 90}>

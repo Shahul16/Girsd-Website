@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminClient } from "@/lib/server/supabase-admin";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
@@ -9,13 +10,7 @@ export const runtime = "nodejs";
  */
 export async function GET(req: NextRequest) {
   try {
-    const adminKey = process.env.ADMIN_KEY;
-    const suppliedKey =
-      req.nextUrl.searchParams.get("adminKey") ||
-      req.headers.get("x-admin-key") ||
-      "";
-
-    if (adminKey && suppliedKey !== adminKey) {
+    if (!isAdminRequest(req)) {
       return NextResponse.json({ error: "Unauthorized administrative access." }, { status: 401 });
     }
 

@@ -3,12 +3,12 @@ import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import Countdown from "@/components/Countdown";
 import TicketSelector from "@/components/TicketSelector";
-import { events, getEvent } from "@/lib/data/events";
+import { events } from "@/lib/data/events";
 import { eventImage } from "@/lib/images";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { Event } from "@/lib/data/events";
 
-export function generateStaticParams() {
-  return events.map((e) => ({ slug: e.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,7 +16,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEvent(slug);
+  const content = await getSiteContent("events");
+  const currentEvents = Array.isArray(content) ? content as Event[] : events;
+  const event = currentEvents.find((item) => item.slug === slug);
   if (!event) return {};
   return {
     title: `${event.acronym} — ${event.title}`,
@@ -31,7 +33,9 @@ export default async function EventDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const event = getEvent(slug);
+  const content = await getSiteContent("events");
+  const currentEvents = Array.isArray(content) ? content as Event[] : events;
+  const event = currentEvents.find((item) => item.slug === slug);
   if (!event) notFound();
 
   const dateRange =

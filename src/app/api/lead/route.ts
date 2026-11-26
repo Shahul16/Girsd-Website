@@ -4,6 +4,7 @@ import { SITE } from "@/lib/site";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { submitNomination } from "@/lib/server/awards-service";
 import { sanitizeEmailContent, isEmpty, isValidEmail } from "@/lib/server/rate-limit";
+import { getAdminClient } from "@/lib/server/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -185,6 +186,28 @@ export async function POST(req: NextRequest) {
   if (fields.length === 0) {
     return NextResponse.json({ error: "The form is empty." }, { status: 400 });
   }
+  if (!isEmpty(visitorEmail) && !isValidEmail(visitorEmail)) {
+    return NextResponse.json({ error: "Invalid email format." }, { status: 400 });
+  }
+
+  const admin = getAdminClient();
+  if (!admin) {
+    return NextResponse.json({ error: "The enquiry service is temporarily unavailable. Please email us directly at " + SITE.email }, { status: 503 });
+  }
+  const enquiryFields: Record<string, unknown> = Object.fromEntries(fields);
+  if (attachments.length) {
+    enquiryFields.attachments = attachments.map((attachment) => attachment.filename);
+  }
+  const { error: enquiryError } = await admin.from("website_enquiries").insert({
+    form_name: formName,
+    visitor_name: visitorName || null,
+    visitor_email: visitorEmail || null,
+    fields: enquiryFields,
+  });
+  if (enquiryError) {
+    console.error("Could not save website enquiry:", enquiryError);
+    return NextResponse.json({ error: "We could not record your enquiry. Please try again or email us directly at " + SITE.email }, { status: 503 });
+  }
 
   const selectedSubject = String(form.get("subject") ?? "");
 
@@ -227,11 +250,6 @@ export async function POST(req: NextRequest) {
   const text = fields.map(([k, v]) => `${k}: ${sanitizeEmailContent(v)}`).join("\n");
 
   try {
-    // Validate email format if visitorEmail is provided
-    if (!isEmpty(visitorEmail) && !isValidEmail(visitorEmail)) {
-      return NextResponse.json({ error: "Invalid email format." }, { status: 400 });
-    }
-    
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from,

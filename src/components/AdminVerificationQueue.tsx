@@ -40,111 +40,8 @@ export interface ApplicationRecord {
   created_at: string;
 }
 
-const SAMPLE_APPLICATIONS: ApplicationRecord[] = [
-  {
-    id: "GIRSD-MEM-2026-000123",
-    applicant_name: "Dr. Eleanor Vance",
-    email: "e.vance@ucl.ac.uk",
-    email_type: "corporate_institutional",
-    email_verified: true,
-    institution: "University College London",
-    department: "Computer Science & Technology",
-    role_title: "Senior Lecturer & Research Fellow",
-    tier_id: "fellow",
-    tier_name: "Fellow (FGRSD)",
-    annual_fee: 299,
-    payment_status: "paid",
-    status: "UNDER_REVIEW",
-    document_filename: "ucl-faculty-appointment-letter.pdf",
-    document_file_url: "/api/membership/document?file=ucl-faculty-appointment-letter.pdf",
-    proof_type: "official_appointment",
-    created_at: "2026-10-01T14:30:00Z",
-    audit_log: [
-      {
-        timestamp: "2026-10-01T14:30:00Z",
-        actor: "e.vance@ucl.ac.uk",
-        action: "APPLICATION_SUBMITTED",
-        reason: "Applied using verified university institutional domain (.ac.uk).",
-        fromStatus: "REGISTERED",
-        toStatus: "UNDER_REVIEW",
-      },
-      {
-        timestamp: "2026-10-01T14:35:12Z",
-        actor: "stripe_webhook",
-        action: "PAYMENT_COMPLETED",
-        reason: "Stripe checkout session confirmed (£299.00).",
-        fromStatus: "UNDER_REVIEW",
-        toStatus: "UNDER_REVIEW",
-      },
-    ],
-  },
-  {
-    id: "GIRSD-MEM-2026-000124",
-    applicant_name: "Marcus Aurelius Thorne",
-    email: "marcus.thorne.research@gmail.com",
-    email_type: "personal_public",
-    email_verified: false,
-    institution: "Imperial College London (Affiliate)",
-    department: "Bioengineering",
-    role_title: "Postdoctoral Research Fellow",
-    tier_id: "professional",
-    tier_name: "Professional Member",
-    annual_fee: 149,
-    payment_status: "paid",
-    status: "UNDER_REVIEW",
-    document_filename: "imperial-college-staff-id-badge.pdf",
-    document_file_url: "/api/membership/document?file=imperial-college-staff-id-badge.pdf",
-    proof_type: "faculty_staff_id",
-    created_at: "2026-10-01T16:15:00Z",
-    audit_log: [
-      {
-        timestamp: "2026-10-01T16:15:00Z",
-        actor: "marcus.thorne.research@gmail.com",
-        action: "APPLICATION_SUBMITTED",
-        reason: "Personal email provider detected. Official staff ID submitted for verification.",
-        fromStatus: "REGISTERED",
-        toStatus: "UNDER_REVIEW",
-      },
-      {
-        timestamp: "2026-10-01T16:20:00Z",
-        actor: "stripe_webhook",
-        action: "PAYMENT_COMPLETED",
-        reason: "Stripe payment (£149.00) completed. Application placed in verification queue.",
-        fromStatus: "UNDER_REVIEW",
-        toStatus: "UNDER_REVIEW",
-      },
-    ],
-  },
-  {
-    id: "GIRSD-MEM-2026-000125",
-    applicant_name: "Sophia Lindqvist",
-    email: "sophia.lindqvist@yahoo.co.uk",
-    email_type: "personal_public",
-    email_verified: false,
-    institution: "University of Edinburgh",
-    role_title: "Postgraduate Student",
-    tier_id: "student",
-    tier_name: "Student Member",
-    annual_fee: 49,
-    payment_status: "unpaid",
-    status: "VERIFICATION_REQUIRED",
-    created_at: "2026-10-01T17:00:00Z",
-    reviewer_notes: "Personal email used without student enrolment letter attached. Awaiting proof.",
-    audit_log: [
-      {
-        timestamp: "2026-10-01T17:00:00Z",
-        actor: "sophia.lindqvist@yahoo.co.uk",
-        action: "APPLICATION_SUBMITTED",
-        reason: "Personal email domain. Institutional enrollment verification required.",
-        fromStatus: "REGISTERED",
-        toStatus: "VERIFICATION_REQUIRED",
-      },
-    ],
-  },
-];
-
 export default function AdminVerificationQueue() {
-  const [applications, setApplications] = useState<ApplicationRecord[]>(SAMPLE_APPLICATIONS);
+  const [applications, setApplications] = useState<ApplicationRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("All");
@@ -160,8 +57,6 @@ export default function AdminVerificationQueue() {
   const [processing, setProcessing] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
-  const adminKey = typeof window !== "undefined" ? sessionStorage.getItem("girsd_admin_key") || "" : "";
-
   useEffect(() => {
     loadApplications();
   }, []);
@@ -169,12 +64,10 @@ export default function AdminVerificationQueue() {
   async function loadApplications() {
     setLoading(true);
     try {
-      const res = await fetch(`/api/membership/applications?adminKey=${encodeURIComponent(adminKey)}`);
+      const res = await fetch("/api/membership/applications");
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data.applications) && data.applications.length > 0) {
-          setApplications(data.applications);
-        }
+        if (Array.isArray(data.applications)) setApplications(data.applications);
       }
     } catch (err) {
       console.warn("Could not fetch remote applications; using local registry:", err);
@@ -202,7 +95,6 @@ export default function AdminVerificationQueue() {
           reviewerNotes: actionNotes || undefined,
           rejectionReason: actionReason || undefined,
           reviewerEmail: "admin@globalrsd.co.uk",
-          adminKey,
         }),
       });
 
@@ -480,7 +372,7 @@ export default function AdminVerificationQueue() {
                   <td className="px-4 py-3.5">
                     {app.document_filename ? (
                       <a
-                        href={app.document_file_url ? `${app.document_file_url}&adminKey=${encodeURIComponent(adminKey)}` : "#"}
+                        href={app.document_file_url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-[11px] text-gold hover:underline"
@@ -604,7 +496,7 @@ export default function AdminVerificationQueue() {
                     <span className="text-slate-400">Uploaded Supporting Document:</span>
                     {selectedApp.document_filename ? (
                       <a
-                        href={selectedApp.document_file_url ? `${selectedApp.document_file_url}&adminKey=${encodeURIComponent(adminKey)}` : "#"}
+                        href={selectedApp.document_file_url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-gold/20 text-gold px-3 py-1 font-semibold hover:bg-gold hover:text-navy transition"

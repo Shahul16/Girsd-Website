@@ -9,16 +9,29 @@ import { events, nextEvent } from "@/lib/data/events";
 import { courses } from "@/lib/data/courses";
 import { SITE } from "@/lib/site";
 import { courseImage } from "@/lib/images";
+import type { Event } from "@/lib/data/events";
+import type { Course } from "@/lib/data/courses";
 import type { HeroSlide } from "@/lib/hero";
+import PromotionBanner from "@/components/PromotionBanner";
+import { getSiteContent } from "@/lib/server/site-content";
 
-import heroJson from "@/content/hero.json";
+export const dynamic = "force-dynamic";
 
-const services: HeroSlide[] = heroJson as HeroSlide[];
-
-export default function HomePage() {
-  const upcoming = events.find((e) => e.slug === "icmdr-2026") ?? nextEvent();
-  const featuredEvents = events.slice(0, 3);
-  const featuredCourses = courses.slice(0, 3);
+export default async function HomePage() {
+  const [eventContent, courseContent, heroContent, siteContent] = await Promise.all([
+    getSiteContent("events"),
+    getSiteContent("courses"),
+    getSiteContent("hero"),
+    getSiteContent("site"),
+  ]);
+  const currentEvents = Array.isArray(eventContent) ? eventContent as Event[] : events;
+  const currentCourses = Array.isArray(courseContent) ? courseContent as Course[] : courses;
+  const services = Array.isArray(heroContent) ? heroContent as HeroSlide[] : [];
+  const site = siteContent && typeof siteContent === "object" ? siteContent as typeof SITE : SITE;
+  const upcoming = currentEvents.find((e) => e.slug === "icmdr-2026") ??
+    currentEvents.filter((e) => new Date(e.date) > new Date()).sort((a, b) => +new Date(a.date) - +new Date(b.date))[0] ??
+    currentEvents[0] ?? nextEvent();
+  const featuredCourses = currentCourses.slice(0, 3);
 
   const parseStat = (val: any, fallbackNum: number, fallbackSuffix = "") => {
     if (typeof val === "number") return { num: val, suffix: fallbackSuffix };
@@ -35,15 +48,16 @@ export default function HomePage() {
   return (
     <>
       <HomeHeroCarousel slides={services} upcomingEvent={upcoming} />
+      <PromotionBanner placement="home" />
 
       {/* STATS */}
       <section className="border-b border-slate-200 bg-cream">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 text-center md:grid-cols-4">
           {[
-            { ...parseStat(SITE.stats.members, 2500, "+"), label: "Members worldwide" },
-            { ...parseStat(SITE.stats.conferences, 18, ""), label: "Conferences delivered" },
-            { ...parseStat(SITE.stats.countries, 50, "+"), label: "Countries represented" },
-            { ...parseStat(SITE.stats.papers, 1200, "+"), label: "Papers presented" },
+            { ...parseStat(site.stats.members, 2500, "+"), label: "Members worldwide" },
+            { ...parseStat(site.stats.conferences, 18, ""), label: "Conferences delivered" },
+            { ...parseStat(site.stats.countries, 50, "+"), label: "Countries represented" },
+            { ...parseStat(site.stats.papers, 1200, "+"), label: "Papers presented" },
           ].map((s) => (
             <div key={s.label}>
               <p className="font-display text-4xl font-bold text-navy">
@@ -102,7 +116,7 @@ export default function HomePage() {
             <Link href="/events" className="btn-gold">View all events</Link>
           </Reveal>
           <div className="mt-10">
-            <EventsCarousel events={events} />
+            <EventsCarousel events={currentEvents} />
           </div>
         </div>
       </section>

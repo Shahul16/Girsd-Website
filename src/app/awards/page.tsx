@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import { awardCategories, awards } from "@/lib/data/awards";
+import { awardCategories } from "@/lib/data/awards";
 import { DemoForm, Field } from "@/components/forms";
+import { getSiteContent } from "@/lib/server/site-content";
+import type { AwardCategory } from "@/lib/data/awards";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Global Awards",
@@ -11,9 +15,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/awards" },
 };
 
-const allCategories = awards.map((a) => a.name);
-
-export default function AwardsPage() {
+export default async function AwardsPage() {
+  const content = await getSiteContent("awards");
+  const currentAwardCategories = Array.isArray(content) ? content as AwardCategory[] : awardCategories;
+  const currentAwards = currentAwardCategories.flatMap((group) => group.awards);
+  const allCategories = currentAwards.map((award) => award.name);
   return (
     <>
       <PageHero
@@ -56,7 +62,7 @@ export default function AwardsPage() {
             <div className="card p-7">
               <h3 className="font-display text-xl font-bold">At a glance</h3>
               <ul className="mt-4 space-y-3 text-sm text-muted">
-                <li className="flex justify-between gap-4"><span>Award categories</span><span className="font-semibold text-navy">{awards.length}</span></li>
+                <li className="flex justify-between gap-4"><span>Award categories</span><span className="font-semibold text-navy">{currentAwards.length}</span></li>
                 <li className="flex justify-between gap-4"><span>Nomination fee</span><span className="font-semibold text-navy">Free</span></li>
               </ul>
               <a href="#nominate" className="btn-gold mt-6 w-full">Nominate now</a>
@@ -103,7 +109,7 @@ export default function AwardsPage() {
         </Reveal>
 
         <div className="mt-10 space-y-12">
-          {awardCategories.map((group) => (
+          {currentAwardCategories.map((group) => (
             <div key={group.category}>
               <h3 className="font-display text-xl font-bold text-navy">{group.category}</h3>
               <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import { DemoForm, Field } from "@/components/forms";
-import { openings } from "@/lib/data/careers";
+import { openings, type JobOpening } from "@/lib/data/careers";
 import { SITE } from "@/lib/site";
+import { getSiteContent } from "@/lib/server/site-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `Careers | ${SITE.shortName}`,
@@ -30,7 +33,9 @@ const values = [
   },
 ];
 
-export default function CareersPage() {
+export default async function CareersPage() {
+  const content = await getSiteContent("careers");
+  const currentOpenings = Array.isArray(content) ? content as JobOpening[] : openings;
   return (
     <>
       <PageHero
@@ -62,7 +67,7 @@ export default function CareersPage() {
           <Reveal>
             <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">Open positions</h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-600">
-              {openings.length} current opening{openings.length === 1 ? "" : "s"}. Don&apos;t see your role?
+              {currentOpenings.length} current opening{currentOpenings.length === 1 ? "" : "s"}. Don&apos;t see your role?
               Speculative applications are welcome via the form below.
             </p>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
@@ -70,7 +75,7 @@ export default function CareersPage() {
             </p>
           </Reveal>
           <div className="mt-8 space-y-5">
-            {openings.map((job, i) => (
+            {currentOpenings.map((job, i) => (
               <Reveal key={job.id} delay={i * 80}>
                 <article className="card p-6 sm:p-8" aria-labelledby={`job-${job.id}`}>
                   <div className="flex flex-wrap items-start justify-between gap-4">
