@@ -25,35 +25,6 @@
     "notes": ""
   },
   {
-    "id": "GRSD-CAND-2041",
-    "name": "Sarah Jenkins",
-    "email": "s.jenkins@manchester.ac.uk",
-    "phone": "+44 7955 443322",
-    "location": "Manchester, United Kingdom",
-    "institution": "University of Manchester",
-    "title": "Graduate Scholar & Candidate",
-    "tier": "Candidate Scholar",
-    "status": "Active",
-    "since": "2025-08-20",
-    "renewsAt": "N/A",
-    "annualFee": 0,
-    "paymentStatus": "Complimentary Candidate Account",
-    "cvAttached": true,
-    "cvFileName": "Sarah_Jenkins_CV_2026.pdf",
-    "profileCompletion": 80,
-    "disciplines": [
-      "Operations Management",
-      "Event Logistics",
-      "Multidisciplinary Studies"
-    ],
-    "eventsRegistered": [
-      "ICMDR 2026"
-    ],
-    "coursesEnrolled": [],
-    "certificatesIssued": 0,
-    "notes": "Candidate applicant for Multidisciplinary Events & Operations Intern."
-  },
-  {
     "id": "GRSD-MEM-1005",
     "name": "Prof. Kenji Takahashi",
     "email": "takahashi@u-tokyo.ac.jp",
