@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient } from "@/lib/server/supabase-admin";
+import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 import { generateMembershipId, type MembershipStatus } from "@/lib/membership-verification";
 import { isAdminRequest } from "@/lib/server/admin-auth";
 
@@ -47,7 +47,14 @@ export async function POST(req: NextRequest) {
       .eq("id", applicationId)
       .maybeSingle();
 
-    if (fetchErr || !app) {
+    if (fetchErr) {
+      console.error("Could not load membership application for admin review:", fetchErr);
+      return NextResponse.json(
+        { error: getSupabaseSetupHint(fetchErr) ?? "Could not load membership application." },
+        { status: 503 }
+      );
+    }
+    if (!app) {
       return NextResponse.json({ error: "Application not found." }, { status: 404 });
     }
 
@@ -128,7 +135,10 @@ export async function POST(req: NextRequest) {
 
     if (updateErr) {
       console.error("Failed to update application:", updateErr);
-      return NextResponse.json({ error: "Failed to record decision." }, { status: 500 });
+      return NextResponse.json(
+        { error: getSupabaseSetupHint(updateErr) ?? "Failed to record decision." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({

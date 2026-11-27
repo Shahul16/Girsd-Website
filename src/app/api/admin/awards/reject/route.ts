@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/server/admin-auth";
-import { getAdminClient } from "@/lib/server/supabase-admin";
+import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -31,7 +31,10 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     console.error("Could not reject award nomination:", error);
-    return NextResponse.json({ error: "Could not update nomination." }, { status: 503 });
+    return NextResponse.json(
+      { error: getSupabaseSetupHint(error) ?? "Could not update nomination." },
+      { status: 503 }
+    );
   }
   if (!data) return NextResponse.json({ error: "Nomination not found or already closed." }, { status: 404 });
   return NextResponse.json({ ok: true });

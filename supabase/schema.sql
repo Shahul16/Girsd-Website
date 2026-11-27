@@ -125,6 +125,8 @@ create table if not exists public.award_nominations (
   attachment_filename text,
   status text not null default 'pending_review' check (status in ('pending_review', 'selected', 'rejected', 'registered')),
   selected_at timestamptz,
+  reviewer_notes text,
+  reviewed_at timestamptz,
   registered_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

@@ -57,9 +57,15 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.error(`Admin database query failed for ${table}:`, error);
-    return NextResponse.json({
-      error: getSupabaseSetupHint(error) ?? `Could not load ${table}. Check the deployment server logs.`,
-    }, { status: 503 });
+    const setupHint = getSupabaseSetupHint(error);
+    return NextResponse.json(
+      {
+        error: setupHint
+          ? `Could not load ${table}: ${setupHint}`
+          : `Could not load ${table}. Check the deployment server logs.`,
+      },
+      { status: 503 }
+    );
   }
 
   return NextResponse.json({

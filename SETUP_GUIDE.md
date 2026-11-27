@@ -45,6 +45,9 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
    `supabase/migrations/20261127_site_management.sql`, and
    `supabase/migrations/20261127_awards_admin_review.sql` in that order. These create the
    business tables, CMS collection store, enquiry table, and public media bucket.
+   For existing projects, run every migration too: `schema.sql` creates missing tables but
+   does not add columns to tables that already exist. The awards review migration adds the
+   reviewer fields required by admin select/reject actions.
 3. Project Settings → API → add the project URL, anon key, and service-role key
    to Railway. Keep the service-role key server-side only.
 4. **Authentication → URL Configuration**:

@@ -1,6 +1,6 @@
 import "server-only";
 import { Resend } from "resend";
-import { getAdminClient } from "@/lib/server/supabase-admin";
+import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 import { SITE } from "@/lib/site";
 import {
   type AwardNomination,
@@ -263,7 +263,10 @@ export async function approveSelection(
 
   if (selectError) {
     console.error("Could not select award nomination:", selectError);
-    return { ok: false, error: "Could not update the nomination status." };
+    return {
+      ok: false,
+      error: getSupabaseSetupHint(selectError) ?? "Could not update the nomination status.",
+    };
   }
 
   let nomination = selected as AwardNomination | null;
@@ -276,7 +279,10 @@ export async function approveSelection(
       .maybeSingle();
     if (readError) {
       console.error("Could not load award nomination for invitation resend:", readError);
-      return { ok: false, error: "Could not load the nomination." };
+      return {
+        ok: false,
+        error: getSupabaseSetupHint(readError) ?? "Could not load the nomination.",
+      };
     }
     if (!existing) return { ok: false, error: "Nomination record not found." };
     if (existing.status !== "selected") {
