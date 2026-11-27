@@ -31,6 +31,42 @@ function escapeHtml(str: string | undefined | null): string {
     .replace(/"/g, "&quot;");
 }
 
+function renderAwardsEmailHeader(title: string, subtitle: string): string {
+  const logoUrl = new URL("/email-logo.png", SITE.domain).toString();
+
+  return `
+  <div style="background:#0B192C;padding:28px 24px;text-align:center;border-bottom:3px solid #DDA853">
+    <img src="${escapeHtml(logoUrl)}" width="180" alt="${escapeHtml(SITE.name)} (${escapeHtml(SITE.shortName)})" style="display:block;width:180px;max-width:100%;height:auto;margin:0 auto 16px;border:0">
+    <p style="margin:0 0 12px;font-size:12px;color:#E2E8F0">${escapeHtml(SITE.name)} (${escapeHtml(SITE.shortName)})</p>
+    <h1 style="margin:0;color:#FFFFFF;font-size:24px;font-weight:700">${escapeHtml(title)}</h1>
+    <p style="margin:8px 0 0;color:#CBD5E1;font-size:14px">${escapeHtml(subtitle)}</p>
+  </div>`;
+}
+
+function renderAwardsEmailFooter(): string {
+  const socialLinks = [
+    { label: "LinkedIn", url: SITE.social.linkedin, icon: "in", color: "#0A66C2" },
+    { label: "Instagram", url: SITE.social.instagram, icon: "◎", color: "#C13584" },
+    { label: "YouTube", url: SITE.social.youtube, icon: "▶", color: "#FF0033" },
+  ];
+
+  return `
+  <div style="margin-top:24px;padding-top:18px;border-top:1px solid #E2E8F0;text-align:center">
+    <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#334155">Connect with GIRSD</p>
+    <table role="presentation" align="center" cellpadding="0" cellspacing="0" style="margin:0 auto 14px">
+      <tr>
+        ${socialLinks.map(({ label, url, icon, color }) => `
+        <td style="padding:0 5px">
+          <a href="${escapeHtml(url)}" aria-label="${label}" style="color:#334155;text-decoration:none;font-size:12px;font-weight:600;white-space:nowrap">
+            <span style="display:inline-block;width:22px;height:22px;line-height:22px;margin-right:4px;border-radius:5px;background:${color};color:#FFFFFF;text-align:center;font-size:12px;font-weight:700">${icon}</span>${label}
+          </a>
+        </td>`).join("")}
+      </tr>
+    </table>
+    <p style="margin:0;font-size:11px;color:#64748B">${escapeHtml(SITE.companyLine)}</p>
+  </div>`;
+}
+
 /**
  * ─────────────────────────────────────────────────────────────────────────────
  * STAGE 1: SUBMIT AWARDS NOMINATION
@@ -127,16 +163,12 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
   // 1. Nominee Receipt Email
   const nomineeHtml = `
 <div style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0B192C;max-width:620px;margin:0 auto;line-height:1.6;background:#FDFBF7;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden">
-  <div style="background:#0B192C;padding:32px 28px;text-align:center;border-bottom:3px solid #DDA853">
-    <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#DDA853">Global Institute of Research &amp; Skills Development</p>
-    <h1 style="margin:0;color:#FFFFFF;font-size:24px;font-weight:700">GIRSD Global Awards 2026</h1>
-    <p style="margin:8px 0 0;color:#94A3B8;font-size:13px">Official Nomination Receipt</p>
-  </div>
+  ${renderAwardsEmailHeader("GIRSD Global Awards 2026", "Official Nomination Receipt")}
 
   <div style="padding:28px">
     <p style="font-size:15px;margin:0 0 16px">Dear <strong>${escapeHtml(nomination.nominee_name)}</strong>,</p>
     <p style="font-size:14px;color:#334155;margin:0 0 20px">
-      Thank you for submitting a nomination for the <strong>GIRSD Global Awards 2026</strong>. We are pleased to confirm that your nomination dossier has been safely received by the Awards Secretariat and entered into the preliminary jury evaluation cycle.
+      Thank you for submitting a nomination for the <strong>GIRSD Global Awards 2026</strong>. We confirm receipt of the nomination for <strong>${escapeHtml(nomination.nominee_name)}</strong> in the <strong>${escapeHtml(nomination.category)}</strong> category. The Awards Committee will review the submission.
     </p>
 
     <div style="background:#FFFFFF;border:1px solid #E2E8F0;border-left:4px solid #DDA853;border-radius:8px;padding:18px 20px;margin:20px 0">
@@ -154,15 +186,15 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
       </div>
     </div>
 
-    <h3 style="font-size:15px;font-weight:700;color:#0B192C;margin:24px 0 10px">Next Steps in the Evaluation Process:</h3>
-    <ol style="font-size:13px;color:#475569;margin:0 0 24px;padding-left:20px;line-height:1.7">
-      <li><strong>Peer Review &amp; Merit Assessment:</strong> The independent GIRSD Honours Committee reviews the submitted evidence, scholarly contribution, and institutional impact.</li>
-      <li><strong>Official Notification:</strong> If selected, you will receive an official invitation letter by email containing a secured registration link to confirm your trophy engraving details and ceremony attendance.</li>
-    </ol>
+    <h3 style="font-size:15px;font-weight:700;color:#0B192C;margin:24px 0 10px">What happens next</h3>
+    <p style="font-size:13px;color:#475569;margin:0 0 24px">
+      This email confirms receipt only; it does not confirm selection. If selected, the nominee will receive a separate email with the registration form and instructions.
+    </p>
 
     <p style="font-size:13px;color:#64748B;margin:24px 0 0;border-top:1px solid #E2E8F0;padding-top:16px">
       If you have questions regarding your nomination, quote reference <strong>${escapeHtml(nomination.nomination_ref)}</strong> to <a href="mailto:${SITE.awardsEmail}" style="color:#0B192C;font-weight:600">${SITE.awardsEmail}</a>.
     </p>
+    ${renderAwardsEmailFooter()}
   </div>
 </div>`;
 
@@ -175,7 +207,7 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
     await resend.emails.send({
       from,
       to: recipients,
-      subject: `GIRSD Awards Nomination Received – ${nomination.nomination_ref}`,
+      subject: `GIRSD Global Awards 2026: Nomination received | ${nomination.nomination_ref}`,
       html: nomineeHtml,
       replyTo: SITE.awardsEmail,
     });
@@ -317,17 +349,17 @@ export async function sendSelectionInvitationEmail(
 
   const invitationHtml = `
 <div style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0B192C;max-width:620px;margin:0 auto;line-height:1.6;background:#FDFBF7;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden">
-  <div style="background:#0B192C;padding:36px 28px;text-align:center;border-bottom:3px solid #DDA853">
-    <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#DDA853">Global Institute of Research &amp; Skills Development</p>
-    <h1 style="margin:0;color:#FFFFFF;font-size:24px;font-weight:700">Official Award Selection Notification</h1>
-    <p style="margin:8px 0 0;color:#94A3B8;font-size:14px">GIRSD Global Honours &amp; Awards 2026</p>
-  </div>
+  ${renderAwardsEmailHeader("Official Award Selection Notification", "GIRSD Global Awards 2026")}
 
   <div style="padding:32px 28px">
     <p style="font-size:16px;margin:0 0 16px">Dear <strong>${escapeHtml(nomination.nominee_name)}</strong>,</p>
 
     <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 18px">
-      On behalf of the Governing Council and the International Honours Committee of the <strong>Global Institute of Research and Skills Development (GIRSD)</strong>, we are pleased to inform you that you have been formally <strong>selected as a recipient</strong> in the <strong>GIRSD Global Awards 2026</strong>.
+      The Awards Committee is pleased to confirm your selection in the <strong>${escapeHtml(nomination.category)}</strong> category of the <strong>GIRSD Global Awards 2026</strong>. Congratulations on this recognition. The Committee appreciates the contribution highlighted in your nomination.
+    </p>
+
+    <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 18px">
+      To accept your selection and provide the details needed for your award, please complete the final registration using the link below.
     </p>
 
     <div style="background:#FFFFFF;border:2px solid #DDA853;border-radius:10px;padding:22px;margin:24px 0;text-align:center">
@@ -338,13 +370,9 @@ export async function sendSelectionInvitationEmail(
       </div>
     </div>
 
+    <h3 style="font-size:15px;font-weight:700;color:#0B192C;margin:24px 0 12px">Complete your award registration</h3>
     <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 18px">
-      Your exceptional leadership, contributions to scholarship, and dedication to institutional advancement have distinguished your nomination among an international pool of candidates.
-    </p>
-
-    <h3 style="font-size:15px;font-weight:700;color:#0B192C;margin:24px 0 12px">Required Action: Complete Final Registration &amp; Trophy Confirmation</h3>
-    <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 18px">
-      To accept this honour and initiate the production of your bespoke laser-engraved trophy, embossed parchment certificate, and media features, please complete the final registration form. The award registration fee is <strong>£255.00 GBP</strong>.
+      The registration fee is <strong>£${AWARDS_REGISTRATION_FEE_GBP}.00</strong>. Review the registration form and its details before submitting your payment.
     </p>
 
     <div style="text-align:center;margin:32px 0">
@@ -352,19 +380,20 @@ export async function sendSelectionInvitationEmail(
         Complete Final Award Registration &rarr;
       </a>
       <p style="font-size:11px;color:#64748B;margin:10px 0 0">
-        Your Nomination Reference ID (<strong>${escapeHtml(nomination.nomination_ref)}</strong>) will be pre-filled automatically.
+        Your nomination reference will be pre-filled. Please verify your details before submitting the form.
       </p>
     </div>
 
     <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;margin-top:28px">
       <p style="font-size:12px;color:#64748B;margin:0">
-        <strong>What your registration covers:</strong> Bespoke heavyweight engraved trophy, official hardcopy &amp; digital certificate, ceremony stage presentation / live stream recognition, international courier delivery, and permanent listing on the GlobalRSD Hall of Fame.
+        Your registration includes the award items and participation options described on the registration form.
       </p>
     </div>
 
     <p style="font-size:13px;color:#64748B;margin:28px 0 0;border-top:1px solid #E2E8F0;padding-top:16px">
       For questions regarding the ceremony or registration, please contact the Awards Committee at <a href="mailto:${SITE.awardsEmail}" style="color:#0B192C;font-weight:600">${SITE.awardsEmail}</a>.
     </p>
+    ${renderAwardsEmailFooter()}
   </div>
 </div>`;
 
@@ -372,7 +401,7 @@ export async function sendSelectionInvitationEmail(
     const { error } = await resend.emails.send({
       from,
       to: [nomination.nominee_email],
-      subject: `Official Invitation: GIRSD Award Selection & Final Registration – ${nomination.nomination_ref}`,
+      subject: `Congratulations on your GIRSD Global Awards 2026 selection | ${nomination.nomination_ref}`,
       html: invitationHtml,
       replyTo: SITE.awardsEmail,
     });
@@ -495,7 +524,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
   if (!resend) return;
 
   const from = getFromEmail();
-  const subject = `Confirmed: Your GIRSD Award Registration & Payment Receipt (£255 GBP) – ${reg.nomination_ref}`;
+  const subject = `GIRSD Global Awards 2026: Payment received | ${reg.nomination_ref}`;
 
   const attendanceModeLabel =
     reg.attendance_mode === "in_person"
@@ -506,16 +535,12 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
 
   const userHtml = `
 <div style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0B192C;max-width:620px;margin:0 auto;line-height:1.6;background:#FDFBF7;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden">
-  <div style="background:#0B192C;padding:32px 28px;text-align:center;border-bottom:3px solid #DDA853">
-    <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#DDA853">Global Institute of Research &amp; Skills Development</p>
-    <h1 style="margin:0;color:#FFFFFF;font-size:24px;font-weight:700">Payment &amp; Registration Confirmed</h1>
-    <p style="margin:8px 0 0;color:#94A3B8;font-size:13px">Official Award Receipt &amp; Production Docket</p>
-  </div>
+  ${renderAwardsEmailHeader("Payment & Registration Confirmed", "Official Award Receipt")}
 
   <div style="padding:28px">
     <p style="font-size:15px;margin:0 0 16px">Dear <strong>${escapeHtml(reg.full_name_engraving)}</strong>,</p>
     <p style="font-size:14px;color:#334155;margin:0 0 20px">
-      We are pleased to confirm that your <strong>GIRSD Global Awards 2026</strong> final registration and payment of <strong>£${AWARDS_REGISTRATION_FEE_GBP}.00 GBP</strong> have been successfully processed. Your award details have been queued for master engraving.
+      We confirm that your final registration for the <strong>GIRSD Global Awards 2026</strong> and payment of <strong>£${AWARDS_REGISTRATION_FEE_GBP}.00</strong> have been received. Your registration details are recorded for processing.
     </p>
 
     <!-- Receipt Box -->
@@ -539,7 +564,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
         </tr>
         <tr style="border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0">
           <td style="padding:12px 0;font-size:14px;font-weight:700;color:#0B192C">Amount Paid:</td>
-          <td style="padding:12px 0;font-size:16px;font-weight:800;color:#059669;text-align:right">£${AWARDS_REGISTRATION_FEE_GBP}.00 GBP</td>
+          <td style="padding:12px 0;font-size:16px;font-weight:800;color:#059669;text-align:right">£${AWARDS_REGISTRATION_FEE_GBP}.00</td>
         </tr>
         <tr>
           <td style="padding:8px 0;color:#64748B">Payment Method / ID:</td>
@@ -565,6 +590,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
     <p style="font-size:13px;color:#64748B;margin:24px 0 0;border-top:1px solid #E2E8F0;padding-top:16px">
       For any enquiries or assistance, please reach out directly to the Awards Secretariat at <a href="mailto:${SITE.awardsEmail}" style="color:#0B192C;font-weight:600">${SITE.awardsEmail}</a> quoting your reference <strong>${escapeHtml(reg.nomination_ref)}</strong>.
     </p>
+    ${renderAwardsEmailFooter()}
   </div>
 </div>`;
 

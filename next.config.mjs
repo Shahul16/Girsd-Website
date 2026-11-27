@@ -86,11 +86,6 @@ const nextConfig = {
         destination: "/awards/register",
         permanent: true,
       },
-      {
-        source: "/awards/Register",
-        destination: "/awards/register",
-        permanent: true,
-      },
     ];
   },
   async headers() {
