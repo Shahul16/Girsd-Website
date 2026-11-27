@@ -106,7 +106,7 @@ create index if not exists mem_app_membership_id_idx on public.membership_applic
 
 
 -- ============================================================
--- AWARDS: Nominations & Registrations (£255 GBP)
+-- AWARDS: Nominations & Registrations (£1 GBP)
 -- ============================================================
 create table if not exists public.award_nominations (
   id uuid primary key default gen_random_uuid(),
@@ -162,7 +162,7 @@ create table if not exists public.award_registrations (
   accompanying_guests_count integer not null default 0,
   guests_details jsonb not null default '[]'::jsonb,
   shipping_address jsonb,
-  amount_gbp integer not null default 255,
+  amount_gbp integer not null default 1,
   payment_status text not null default 'pending' check (payment_status in ('pending', 'paid', 'failed', 'refunded')),
   stripe_session_id text unique,
   stripe_payment_intent text,

@@ -8,6 +8,7 @@ import { getAccessToken } from "@/lib/supabase";
 import { events as defaultEvents, type Event } from "@/lib/data/events";
 import { courses as defaultCourses, type Course } from "@/lib/data/courses";
 import { openings, type JobOpening } from "@/lib/data/careers";
+import { AWARDS_REGISTRATION_FEE_GBP } from "@/lib/awards";
 
 const WHATSAPP_COMMUNITY_URL = "https://chat.whatsapp.com/Hzz8bB36if83vGNL9PFoRE?mode=gi_t";
 
@@ -1481,7 +1482,7 @@ export default function DashboardPage() {
                         Submit Official Nomination →
                       </Link>
                       <Link href="/awards/register" className="btn-secondary block text-center text-xs py-2">
-                        Have a Selection Code? Register &amp; Confirm Trophy (£255) →
+                        Have a Selection Code? Register &amp; Confirm Trophy (£{AWARDS_REGISTRATION_FEE_GBP}) →
                       </Link>
                     </div>
                   </div>

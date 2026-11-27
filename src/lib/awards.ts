@@ -64,7 +64,7 @@ export interface AwardRegistration {
   accompanying_guests_count: number;
   guests_details: GuestDetail[];
   shipping_address?: ShippingAddress;
-  amount_gbp: number; // 255
+  amount_gbp: number; // GBP
   payment_status: "pending" | "paid" | "failed" | "refunded";
   stripe_session_id?: string;
   stripe_payment_intent?: string;
@@ -92,6 +92,6 @@ export function generateNominationRef(): string {
   return `GIRSD-AWD-2026-${randomPart}`;
 }
 
-export const AWARDS_REGISTRATION_FEE_GBP = 255;
-export const AWARDS_REGISTRATION_FEE_PENCE = 25500;
+export const AWARDS_REGISTRATION_FEE_GBP = 1;
+export const AWARDS_REGISTRATION_FEE_PENCE = 100;
 

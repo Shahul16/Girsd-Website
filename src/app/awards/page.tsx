@@ -5,6 +5,7 @@ import { awardCategories } from "@/lib/data/awards";
 import { DemoForm, Field } from "@/components/forms";
 import { getSiteContent } from "@/lib/server/site-content";
 import type { AwardCategory } from "@/lib/data/awards";
+import { AWARDS_REGISTRATION_FEE_GBP } from "@/lib/awards";
 
 export const dynamic = "force-dynamic";
 
@@ -250,7 +251,7 @@ export default async function AwardsPage() {
               {
                 tag: "For Selected Recipients",
                 title: "Official Award Registration & Trophy Package",
-                price: "£255",
+                price: `£${AWARDS_REGISTRATION_FEE_GBP}`,
                 note: "Fixed registration fee",
                 perks: [
                   "Heavyweight laser-engraved crystal / brass trophy",

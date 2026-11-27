@@ -576,7 +576,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
     <!-- Notice -->
     <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:14px 16px;margin:20px 0">
       <p style="margin:0;font-size:12px;color:#92400E;line-height:1.6">
-        <strong>Important Notice:</strong> As acknowledged upon submission, the £255 GBP Award Registration Fee is strictly non-refundable, and engraving production begins immediately. Name spelling and titles cannot be modified once production has commenced.
+        <strong>Important Notice:</strong> As acknowledged upon submission, the £${AWARDS_REGISTRATION_FEE_GBP} GBP Award Registration Fee is strictly non-refundable, and engraving production begins immediately. Name spelling and titles cannot be modified once production has commenced.
       </p>
     </div>
 
@@ -616,7 +616,7 @@ async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentI
 
   const from = getFromEmail();
   const to = SITE.awardsEmail;
-  const subject = `NEW PAID AWARD REGISTRATION: ${reg.full_name_engraving} – ${reg.award_category} (£255 GBP)`;
+  const subject = `NEW PAID AWARD REGISTRATION: ${reg.full_name_engraving} – ${reg.award_category} (£${AWARDS_REGISTRATION_FEE_GBP} GBP)`;
 
   const guestRows = Array.isArray(reg.guests_details) && reg.guests_details.length > 0
     ? reg.guests_details.map((g, i) => `${i + 1}. ${g.name} (${g.relationship})`).join("<br>")
@@ -631,7 +631,7 @@ async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentI
   <div style="background:#0B192C;padding:24px 28px;border-bottom:3px solid #DDA853">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <h2 style="margin:0;color:#DDA853;font-size:20px">🎉 PAID AWARD REGISTRATION CONFIRMED</h2>
-      <span style="background:#059669;color:#FFFFFF;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:700">£255 GBP PAID</span>
+      <span style="background:#059669;color:#FFFFFF;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:700">£${AWARDS_REGISTRATION_FEE_GBP} GBP PAID</span>
     </div>
     <p style="margin:6px 0 0;color:#94A3B8;font-size:13px">
       Nomination Ref: <strong>${escapeHtml(reg.nomination_ref)}</strong> · Payment Intent: <strong>${escapeHtml(paymentIntentId)}</strong>

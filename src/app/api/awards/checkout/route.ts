@@ -302,7 +302,7 @@ export async function POST(req: NextRequest) {
           quantity: 1,
           price_data: {
             currency: "gbp",
-            unit_amount: AWARDS_REGISTRATION_FEE_PENCE, // 25500 (£255.00)
+            unit_amount: AWARDS_REGISTRATION_FEE_PENCE, // Pence
             product_data: {
               name: `GIRSD Global Awards 2026 Registration — ${nomination.category}`,
               description: `Laser-Engraved Trophy, Hardcopy & Digital Certificate, Live Recognition for ${full_name_engraving} (${nomination.nomination_ref})`,

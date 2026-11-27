@@ -1241,7 +1241,7 @@ function RegisterForm() {
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-gold focus:ring-gold"
               />
               <span className="text-xs text-slate-700 leading-relaxed">
-                <strong>No-Refund &amp; Engraving Finality Policy:</strong> I acknowledge and agree that the £255 GBP Award Registration Fee is strictly non-refundable once paid, and that my submitted name and title cannot be altered after trophy engraving production begins.
+                <strong>No-Refund &amp; Engraving Finality Policy:</strong> I acknowledge and agree that the £{AWARDS_REGISTRATION_FEE_GBP} GBP Award Registration Fee is strictly non-refundable once paid, and that my submitted name and title cannot be altered after trophy engraving production begins.
               </span>
             </label>
           </div>
@@ -1259,7 +1259,7 @@ function RegisterForm() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Initializing Secured Stripe Checkout (£255 GBP)...
+                  Initializing Secured Stripe Checkout (£{AWARDS_REGISTRATION_FEE_GBP} GBP)...
                 </span>
               ) : (
                 `Complete Registration & Pay £${AWARDS_REGISTRATION_FEE_GBP}.00 GBP →`
@@ -1284,7 +1284,7 @@ export default function AwardRegisterPage() {
       <PageHero
         eyebrow="GIRSD Global Awards 2026"
         title="Final Award Registration & Trophy Confirmation"
-        intro="Please confirm your exact trophy engraving details, media assets, attendance arrangements, and finalize your registration fee (£255 GBP)."
+        intro={`Please confirm your exact trophy engraving details, media assets, attendance arrangements, and finalize your registration fee (£${AWARDS_REGISTRATION_FEE_GBP} GBP).`}
       />
 
       <section className="bg-cream py-16">

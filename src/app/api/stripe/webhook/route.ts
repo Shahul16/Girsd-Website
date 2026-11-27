@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // If this is an award registration payment (£255 GBP)
+      // If this is an award registration payment
       if (m.kind === "award_registration") {
         try {
           await handlePaidAwardRegistration(

@@ -79,7 +79,7 @@ The GIRSD Awards system handles nominations, selections, and final registrations
 
 5. **Package Summary Display**:
    ```
-   Total Payable: £255.00 GBP
+   Total Payable: £1.00 GBP
    Inclusive:
    - Heavyweight laser-engraved trophy
    - Gold-embossed parchment certificate
@@ -98,7 +98,7 @@ The GIRSD Awards system handles nominations, selections, and final registrations
 2. Backend validates all required fields
 3. Creates Stripe checkout session with:
    - Product: Award Registration
-   - Amount: £255.00 GBP (25500 pence)
+   - Amount: £1.00 GBP (100 pence)
    - Metadata: Nomination reference, registration ID
    - Success URL: `/awards/register/success`
    - Cancel URL: `/awards/register`
@@ -223,7 +223,7 @@ proxy_phone: text
 accompanying_guests_count: integer
 guests_details: jsonb[]
 shipping_address: jsonb
-amount_gbp: integer (255)
+amount_gbp: integer (1)
 payment_status: pending | paid | failed | refunded
 stripe_session_id: text
 stripe_payment_intent: text
@@ -282,7 +282,7 @@ Available categories include:
 ## 💰 Pricing Structure
 
 ### Award Registration Fee
-- **Amount**: £255.00 GBP (25,500 pence)
+- **Amount**: £1.00 GBP (100 pence)
 - **Inclusive**: 
   - Laser-engraved crystal/brass trophy
   - Gold-embossed parchment certificate
