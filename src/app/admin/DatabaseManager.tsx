@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 
 const TABLES = [
   { id: "orders", label: "Paid Orders" },
+  { id: "user_accounts", label: "User Accounts" },
   { id: "certificates", label: "Certificates" },
   { id: "membership_applications", label: "Membership Applications" },
   { id: "award_nominations", label: "Award Nominations" },
@@ -16,11 +17,54 @@ const TABLES = [
 
 type TableId = (typeof TABLES)[number]["id"];
 type RecordRow = Record<string, unknown> & { id?: string; nomination_ref?: string; status?: string };
+type NominationEditValues = {
+  nominator_name: string;
+  nominator_email: string;
+  nomination_type: string;
+  category: string;
+  nominee_name: string;
+  nominee_email: string;
+  nominee_affiliation: string;
+  nominee_country: string;
+  statement: string;
+  supporting_links: string;
+  attachment_url: string;
+  attachment_filename: string;
+};
+
+const emptyNominationEdit: NominationEditValues = {
+  nominator_name: "",
+  nominator_email: "",
+  nomination_type: "Self-nomination",
+  category: "",
+  nominee_name: "",
+  nominee_email: "",
+  nominee_affiliation: "",
+  nominee_country: "",
+  statement: "",
+  supporting_links: "",
+  attachment_url: "",
+  attachment_filename: "",
+};
 
 function displayValue(value: unknown): string {
   if (value === null || value === undefined || value === "") return "—";
   if (typeof value === "object") return JSON.stringify(value);
   return String(value);
+}
+
+function nominationText(record: RecordRow, field: keyof NominationEditValues): string {
+  const value = record[field];
+  return typeof value === "string" ? value : "";
+}
+
+function membershipDocumentReference(value: string): string {
+  if (!value.includes("file=")) return value;
+  try {
+    return new URL(value, "https://girsd.invalid").searchParams.get("file") ?? "";
+  } catch {
+    return "";
+  }
 }
 
 export default function DatabaseManager() {
@@ -33,6 +77,9 @@ export default function DatabaseManager() {
   const [busyId, setBusyId] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [editingNomination, setEditingNomination] = useState<RecordRow | null>(null);
+  const [editValues, setEditValues] = useState<NominationEditValues>(emptyNominationEdit);
+  const [editError, setEditError] = useState("");
 
   const loadRecords = useCallback(async () => {
     setLoading(true);
@@ -64,11 +111,60 @@ export default function DatabaseManager() {
     return [...new Set(records.flatMap((row) => Object.keys(row)))];
   }, [records]);
 
-  async function runAction(record: RecordRow, action: "approve" | "reject" | "select" | "enquiry-status") {
+  function startEditingNomination(record: RecordRow) {
+    setEditingNomination(record);
+    setEditValues({
+      nominator_name: nominationText(record, "nominator_name"),
+      nominator_email: nominationText(record, "nominator_email"),
+      nomination_type: nominationText(record, "nomination_type") || "Self-nomination",
+      category: nominationText(record, "category"),
+      nominee_name: nominationText(record, "nominee_name"),
+      nominee_email: nominationText(record, "nominee_email"),
+      nominee_affiliation: nominationText(record, "nominee_affiliation"),
+      nominee_country: nominationText(record, "nominee_country"),
+      statement: nominationText(record, "statement"),
+      supporting_links: nominationText(record, "supporting_links"),
+      attachment_url: nominationText(record, "attachment_url"),
+      attachment_filename: nominationText(record, "attachment_filename"),
+    });
+    setEditError("");
+    setError("");
+    setNotice("");
+  }
+
+  async function saveNominationEdits(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const nominationRef = String(editingNomination?.nomination_ref ?? "");
+    if (!nominationRef) return;
+
+    setBusyId(nominationRef);
+    setEditError("");
+    try {
+      const response = await fetch("/api/admin/awards/edit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nominationRef, ...editValues }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not update the nomination.");
+      setNotice(body?.message || "Nomination updated.");
+      setEditingNomination(null);
+      await loadRecords();
+    } catch (saveError) {
+      setEditError(saveError instanceof Error ? saveError.message : "Could not update the nomination.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  async function runAction(record: RecordRow, action: "approve" | "reject" | "select" | "enquiry-status" | "resend-email") {
     const recordId = String(record.id ?? record.nomination_ref ?? "");
     if (!recordId) return;
     const rejectReason = action === "reject" && (table === "membership_applications" || table === "award_nominations")
-      ? window.prompt(table === "award_nominations" ? "Add a reason for rejecting this nomination:" : "Add a short reason for rejecting this application:")
+      ? window.prompt(
+          table === "award_nominations" ? "Add a reason for rejecting this nomination:" : "Add a short reason for rejecting this application:",
+          table === "award_nominations" ? String(record.reviewer_notes ?? "") : String(record.rejection_reason ?? "")
+        )
       : undefined;
     if (action === "reject" && (table === "membership_applications" || table === "award_nominations") && !rejectReason?.trim()) return;
 
@@ -83,7 +179,7 @@ export default function DatabaseManager() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             applicationId: recordId,
-            action: action === "approve" ? "APPROVE" : "REJECT",
+            action: action === "approve" ? "APPROVE" : action === "reject" ? "REJECT" : "RESEND_DECISION_EMAIL",
             rejectionReason: rejectReason,
           }),
         });
@@ -112,7 +208,7 @@ export default function DatabaseManager() {
 
       const body = await response.json().catch(() => null);
       if (!response.ok) throw new Error(body?.error || "Action could not be completed.");
-      setNotice(body?.message || "Record updated.");
+      setNotice([body?.message, body?.warning].filter(Boolean).join(" ") || "Record updated.");
       await loadRecords();
     } catch (actionError) {
       setError(actionError instanceof Error ? actionError.message : "Action could not be completed.");
@@ -139,6 +235,45 @@ export default function DatabaseManager() {
       await loadRecords();
     } catch (actionError) {
       setError(actionError instanceof Error ? actionError.message : "Could not update the submission.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  async function sendFulfillmentQuote(record: RecordRow) {
+    const registrationId = String(record.id ?? "");
+    if (!registrationId) return;
+
+    const currentQuote = Number(record.physical_fulfillment_quote_gbp);
+    const input = window.prompt(
+      "Enter the separate physical-item and destination-based courier quote in GBP:",
+      Number.isFinite(currentQuote) && currentQuote > 0 ? currentQuote.toFixed(2) : ""
+    );
+    if (input === null) return;
+    if (!/^\d+(?:\.\d{1,2})?$/.test(input.trim()) || Number(input) <= 0) {
+      setError("Enter a valid GBP quote with no more than two decimal places.");
+      return;
+    }
+
+    const amountGbp = Number(input);
+    if (!window.confirm(`Send a separate £${amountGbp.toFixed(2)} Stripe invoice to ${String(record.email ?? "the registrant")}?`)) return;
+
+    setBusyId(registrationId);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch("/api/admin/awards/fulfillment-quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ registrationId, amountGbp }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "Could not send the fulfillment invoice.");
+      setNotice(body?.message || "The separate fulfillment invoice was sent.");
+      await loadRecords();
+      if (body?.warning) setError(body.warning);
+    } catch (quoteError) {
+      setError(quoteError instanceof Error ? quoteError.message : "Could not send the fulfillment invoice.");
     } finally {
       setBusyId("");
     }
@@ -232,12 +367,35 @@ export default function DatabaseManager() {
                               {displayValue(record[column])}
                             </pre>
                           </details>
-                        ) : (
-                          column === "attachment_url" && typeof record[column] === "string" && /^https?:\/\//i.test(String(record[column])) ? (
-                            <a href={String(record[column])} target="_blank" rel="noopener noreferrer" className="font-semibold text-gold underline">
-                              Open supporting document
-                            </a>
-                          ) : column === "cv_path" && typeof record[column] === "string" ? (
+                        ) : column === "payment_review_required" && record[column] === true ? (
+                          <span className="font-bold text-rose-300">Manual payment review required</span>
+                        ) : column === "physical_fulfillment_invoice_url" && typeof record[column] === "string" && /^https:\/\//i.test(String(record[column])) ? (
+                          <a href={String(record[column])} target="_blank" rel="noopener noreferrer" className="font-semibold text-gold underline">
+                            Open Stripe invoice
+                          </a>
+                        ) : column === "attachment_url" && typeof record[column] === "string" && String(record[column]).startsWith("nominations/") ? (
+                          <a
+                            href={`/api/admin/awards/attachment?path=${encodeURIComponent(String(record[column]))}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-gold underline"
+                          >
+                            Open private supporting document
+                          </a>
+                        ) : column === "attachment_url" && typeof record[column] === "string" && /^https?:\/\//i.test(String(record[column])) ? (
+                          <a href={String(record[column])} target="_blank" rel="noopener noreferrer" className="font-semibold text-amber-300 underline">
+                            Legacy public attachment
+                          </a>
+                        ) : column === "document_file_url" && typeof record[column] === "string" ? (
+                          <a
+                            href={`/api/membership/document?file=${encodeURIComponent(membershipDocumentReference(String(record[column])))}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-gold underline"
+                          >
+                            Open private verification document
+                          </a>
+                        ) : column === "cv_path" && typeof record[column] === "string" ? (
                             <a
                               href={`/api/admin/member-file?path=${encodeURIComponent(String(record[column]))}`}
                               target="_blank"
@@ -251,7 +409,7 @@ export default function DatabaseManager() {
                               {displayValue(record[column])}
                             </span>
                           )
-                        )}
+                        }
                       </td>
                     ))}
                     <td className="sticky right-0 min-w-40 bg-slate-950/95 px-3 py-3 text-right">
@@ -269,16 +427,58 @@ export default function DatabaseManager() {
                           </button>
                         </div>
                       )}
+                      {table === "membership_applications" && record.decision_email_sent_at == null && !["PENDING", "SUBMITTED", "PAYMENT_COMPLETED", "UNDER_REVIEW"].includes(String(record.status).toUpperCase()) && (
+                        <button
+                          type="button"
+                          disabled={Boolean(busyId)}
+                          onClick={() => void runAction(record, "resend-email")}
+                          className="mt-2 rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50"
+                        >
+                          Resend decision email
+                        </button>
+                      )}
                       {table === "award_nominations" && record.status === "pending_review" && (
-                        <div className="flex justify-end gap-2">
+                        <div className="flex flex-wrap justify-end gap-2">
                           <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "select")} className="rounded-md bg-emerald-700 px-2.5 py-1.5 font-semibold text-white hover:bg-emerald-600 disabled:opacity-50">Select</button>
                           <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "reject")} className="rounded-md border border-rose-400/30 px-2.5 py-1.5 font-semibold text-rose-200 hover:bg-rose-950/40 disabled:opacity-50">Reject</button>
+                          <button type="button" disabled={Boolean(busyId)} onClick={() => startEditingNomination(record)} className="rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50">Edit</button>
                         </div>
                       )}
                       {table === "award_nominations" && record.status === "selected" && (
                         <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "select")} className="rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50">
                           Resend invitation
                         </button>
+                      )}
+                      {table === "award_nominations" && record.status === "rejected" && record.decision_email_sent_at == null && (
+                        <button
+                          type="button"
+                          disabled={Boolean(busyId)}
+                          onClick={() => void runAction(record, "reject")}
+                          className="rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50"
+                        >
+                          Retry rejection email
+                        </button>
+                      )}
+                      {table === "award_registrations" && record.payment_status === "paid" && Array.isArray(record.physical_fulfillment_items) && record.physical_fulfillment_items.length > 0 && record.physical_fulfillment_status !== "paid" && (
+                        record.physical_fulfillment_invoice_url ? (
+                          <a
+                            href={String(record.physical_fulfillment_invoice_url)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10"
+                          >
+                            View fulfillment invoice
+                          </a>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={Boolean(busyId)}
+                            onClick={() => void sendFulfillmentQuote(record)}
+                            className="rounded-md bg-gold px-2.5 py-1.5 font-semibold text-slate-950 hover:bg-amber-300 disabled:opacity-50"
+                          >
+                            {busyId === recordId ? "Sending…" : record.physical_fulfillment_status === "invoicing" ? "Retry invoice" : "Quote & invoice"}
+                          </button>
+                        )
                       )}
                       {table === "website_enquiries" && record.status !== "spam" && (
                         <button type="button" disabled={Boolean(busyId)} onClick={() => void runAction(record, "enquiry-status")} className="rounded-md border border-white/15 px-2.5 py-1.5 font-semibold text-white hover:bg-white/10 disabled:opacity-50">
@@ -323,6 +523,104 @@ export default function DatabaseManager() {
           <button type="button" disabled={page * 50 >= total || loading} onClick={() => setPage((value) => value + 1)} className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white disabled:opacity-40">Next</button>
         </div>
       </footer>
+
+      {editingNomination && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/70 p-4">
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-nomination-heading"
+            className="my-auto max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">Pending review</p>
+                <h2 id="edit-nomination-heading" className="mt-1 font-display text-xl font-bold text-white">Edit award nomination</h2>
+                <p className="mt-1 text-xs text-slate-400">
+                  Reference: <span className="font-mono">{String(editingNomination.nomination_ref ?? "")}</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingNomination(null)}
+                disabled={Boolean(busyId)}
+                className="rounded-md border border-white/15 px-3 py-1.5 text-sm text-slate-300 hover:bg-white/10 disabled:opacity-50"
+              >
+                Close
+              </button>
+            </div>
+
+            {editError && <p role="alert" className="mt-4 rounded-lg border border-rose-400/30 bg-rose-950/30 p-3 text-sm text-rose-200">{editError}</p>}
+
+            <form onSubmit={saveNominationEdits} className="mt-5 space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Nominator name *
+                  <input required maxLength={160} value={editValues.nominator_name} onChange={(event) => setEditValues({ ...editValues, nominator_name: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Nominator email *
+                  <input required type="email" maxLength={254} value={editValues.nominator_email} onChange={(event) => setEditValues({ ...editValues, nominator_email: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Nomination type *
+                  <select required value={editValues.nomination_type} onChange={(event) => setEditValues({ ...editValues, nomination_type: event.target.value })} className="input">
+                    <option value="Self-nomination">Self-nomination</option>
+                    <option value="Nominating someone else">Nominating someone else</option>
+                  </select>
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Award category *
+                  <input required maxLength={200} value={editValues.category} onChange={(event) => setEditValues({ ...editValues, category: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Nominee name *
+                  <input required maxLength={160} value={editValues.nominee_name} onChange={(event) => setEditValues({ ...editValues, nominee_name: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Nominee email *
+                  <input required type="email" maxLength={254} value={editValues.nominee_email} onChange={(event) => setEditValues({ ...editValues, nominee_email: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Affiliation
+                  <input maxLength={200} value={editValues.nominee_affiliation} onChange={(event) => setEditValues({ ...editValues, nominee_affiliation: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Country
+                  <input maxLength={100} value={editValues.nominee_country} onChange={(event) => setEditValues({ ...editValues, nominee_country: event.target.value })} className="input" />
+                </label>
+              </div>
+              <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                Nomination statement
+                <textarea maxLength={10000} rows={5} value={editValues.statement} onChange={(event) => setEditValues({ ...editValues, statement: event.target.value })} className="input" />
+              </label>
+              <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                Supporting links
+                <textarea maxLength={2000} rows={3} value={editValues.supporting_links} onChange={(event) => setEditValues({ ...editValues, supporting_links: event.target.value })} className="input" />
+              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Supporting document URL
+                  <input type="url" maxLength={2048} value={editValues.attachment_url} onChange={(event) => setEditValues({ ...editValues, attachment_url: event.target.value })} className="input" />
+                </label>
+                <label className="block space-y-1 text-xs font-semibold text-slate-300">
+                  Supporting document filename
+                  <input maxLength={255} value={editValues.attachment_filename} onChange={(event) => setEditValues({ ...editValues, attachment_filename: event.target.value })} className="input" />
+                </label>
+              </div>
+              <p className="text-xs text-slate-400">Only pending nominations can be edited. The nomination reference and decision status cannot be changed here.</p>
+              <div className="flex justify-end gap-3 border-t border-white/10 pt-4">
+                <button type="button" onClick={() => setEditingNomination(null)} disabled={Boolean(busyId)} className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/10 disabled:opacity-50">
+                  Cancel
+                </button>
+                <button type="submit" disabled={Boolean(busyId)} className="rounded-lg bg-gold px-4 py-2 text-sm font-bold text-navy hover:bg-gold/90 disabled:opacity-50">
+                  {busyId ? "Saving…" : "Save changes"}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
     </section>
   );
 }

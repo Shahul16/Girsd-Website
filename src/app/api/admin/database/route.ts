@@ -4,7 +4,7 @@ import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admi
 
 export const runtime = "nodejs";
 
-const TABLES = [
+const DATABASE_TABLES = [
   "orders",
   "certificates",
   "membership_applications",
@@ -15,6 +15,9 @@ const TABLES = [
   "abstract_submissions",
   "job_applications",
 ] as const;
+
+const USER_ACCOUNTS_TABLE = "user_accounts";
+const TABLES = [...DATABASE_TABLES, USER_ACCOUNTS_TABLE] as const;
 
 type TableName = (typeof TABLES)[number];
 type WorkflowTable = "website_enquiries" | "abstract_submissions" | "job_applications";
@@ -48,6 +51,45 @@ export async function GET(req: NextRequest) {
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
+
+  if (table === USER_ACCOUNTS_TABLE) {
+    try {
+      const { data, error } = await admin.auth.admin.listUsers({ page, perPage: pageSize });
+      if (error) {
+        console.error("Admin user account query failed:", error);
+        return NextResponse.json({ error: "Could not load user accounts." }, { status: 503 });
+      }
+
+      const records = data.users.map((user) => {
+        const metadata = user.user_metadata ?? {};
+        return {
+          id: user.id,
+          full_name:
+            (typeof metadata.full_name === "string" && metadata.full_name) ||
+            (typeof metadata.name === "string" && metadata.name) ||
+            null,
+          email: user.email ?? null,
+          phone: user.phone ?? null,
+          provider: typeof user.app_metadata.provider === "string" ? user.app_metadata.provider : null,
+          email_confirmed_at: user.email_confirmed_at ?? null,
+          created_at: user.created_at,
+          last_sign_in_at: user.last_sign_in_at ?? null,
+        };
+      });
+
+      return NextResponse.json({
+        table,
+        records,
+        total: data.total,
+        page,
+        pageSize,
+        availableTables: TABLES,
+      });
+    } catch (error) {
+      console.error("Admin user account query failed:", error);
+      return NextResponse.json({ error: "Could not load user accounts." }, { status: 503 });
+    }
+  }
 
   const { data, error, count } = await admin
     .from(table)

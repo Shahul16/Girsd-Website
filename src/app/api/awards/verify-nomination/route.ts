@@ -5,7 +5,7 @@ import { enforceRateLimit } from "@/lib/server/rate-limit";
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
-  const limited = enforceRateLimit(req, "verify_lookup");
+  const limited = await enforceRateLimit(req, "verify_lookup");
   if (limited) return limited;
 
   const ref = req.nextUrl.searchParams.get("ref")?.trim();

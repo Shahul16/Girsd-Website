@@ -5,6 +5,7 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { submitNomination } from "@/lib/server/awards-service";
 import { sanitizeEmailContent, isEmpty, isValidEmail } from "@/lib/server/rate-limit";
 import { getAdminClient } from "@/lib/server/supabase-admin";
+import { enforceRateLimit } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -43,7 +44,7 @@ async function verifyRecaptcha(token: string, remoteip: string | null, expectedA
     return { ok: true };
   } catch (err) {
     console.error("reCAPTCHA verify failed:", err);
-    return { ok: true }; // fail open on network errors so a Google outage never blocks real leads
+    return { ok: false, reason: "verification service unavailable" };
   }
 }
 
@@ -53,13 +54,8 @@ async function verifyRecaptcha(token: string, remoteip: string | null, expectedA
  * Cloudflare Turnstile or reCAPTCHA, and emails it to the admin via Resend.
  */
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: "The enquiry service is not configured yet. Please email us directly at " + SITE.email },
-      { status: 503 }
-    );
-  }
+  const limited = await enforceRateLimit(req, "lead");
+  if (limited) return limited;
 
   let form: FormData;
   try {
@@ -176,11 +172,26 @@ export async function POST(req: NextRequest) {
       attachmentBuffer: firstAtt?.content,
     });
 
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error || "Could not save your nomination." }, { status: 503 });
+    }
+
     return NextResponse.json({
       ok: true,
       nominationRef: result.nominationRef,
-      message: "Nomination submitted successfully.",
+      message: result.notificationWarning
+        ? `${result.notificationWarning} Reference: ${result.nominationRef}.`
+        : `Nomination submitted successfully. Reference: ${result.nominationRef}.`,
+      warning: result.notificationWarning,
     });
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: "The enquiry service is not configured yet. Please email us directly at " + SITE.email },
+      { status: 503 }
+    );
   }
 
   if (fields.length === 0) {

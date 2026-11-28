@@ -17,7 +17,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 | 6 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API (public client key) | ✅ |
 | 7 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API (server-side secret; never expose) | ✅ |
 | 8 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys | ✅ for payments |
-| 9 | `STRIPE_WEBHOOK_SECRET` | Stripe → Webhooks → endpoint signing secret | ✅ for order recording |
+| 9 | `STRIPE_WEBHOOK_SECRET` | Stripe → Webhooks → endpoint signing secret | ✅ for order and invoice recording |
 | 10 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | Google reCAPTCHA console | optional |
 | 11 | `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA console (server-side secret) | optional |
 | 12 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Dashboard → Turnstile | optional |
@@ -25,6 +25,8 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 > After adding/changing variables, Railway redeploys automatically.
 > `NEXT_PUBLIC_*` variables are baked in at build time — a redeploy is required.
+> If a real reCAPTCHA secret was previously committed in the example environment file,
+> rotate it in the Google console and deploy the replacement secret.
 
 ---
 
@@ -41,19 +43,30 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 1. supabase.com → New project (free tier). Region: London (`eu-west-2`).
 2. **SQL Editor → New query** → run `supabase/schema.sql`, then run
+   `supabase/migrations/20261123_email_verification.sql`,
    `supabase/migrations/20261123_awards_workflow.sql`,
-   `supabase/migrations/20261127_site_management.sql`, and
-   `supabase/migrations/20261127_awards_admin_review.sql` in that order. These create the
-   business tables, CMS collection store, enquiry table, and public media bucket.
-   For existing projects, run every migration too: `schema.sql` creates missing tables but
-   does not add columns to tables that already exist. The awards review migration adds the
-   reviewer fields required by admin select/reject actions.
-3. Project Settings → API → add the project URL, anon key, and service-role key
+   `supabase/migrations/20261127_site_management.sql`,
+   `supabase/migrations/20261127_awards_admin_review.sql`,
+   `supabase/migrations/20261127_awards_registration_fee_update.sql`, and
+   `supabase/migrations/20261128_cto_workflow_hardening.sql` in that order. For an
+   existing project, apply only migrations that have not already run; `schema.sql` does
+   not add columns to existing tables. The hardening migration is required before deploying
+   code that uses its private storage buckets, verification RPCs, rate-limit RPC, or
+   physical fulfillment invoice workflow.
+3. Before changing the award fee, expire any still-open £1 Stripe Checkout Sessions.
+   If a completed old session is later reported, the webhook flags that registration for
+   manual review instead of treating it as a paid £255 registration.
+4. Existing nomination documents uploaded to the public `awards-assets/nominations/`
+   path remain publicly accessible until migrated. Copy any records that must be retained
+   into the private `award-documents/nominations/` bucket, update their `attachment_url`
+   to the private object path, and delete the legacy public objects. Do not make
+   `awards-assets` private without migrating its public headshots and logos as well.
+5. Project Settings → API → add the project URL, anon key, and service-role key
    to Railway. Keep the service-role key server-side only.
-4. **Authentication → URL Configuration**:
+6. **Authentication → URL Configuration**:
    - Site URL: `https://www.globalrsd.co.uk` (or your railway.app URL until DNS is done)
    - Redirect URLs: add both `https://www.globalrsd.co.uk/**` and `https://xxxx.up.railway.app/**`
-5. Email/password login now works. (Authentication → Providers → Email:
+7. Email/password login now works. (Authentication → Providers → Email:
    you may turn OFF "Confirm email" for instant sign-up, or leave ON for verified emails —
    the register page handles both.)
 
@@ -87,7 +100,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 2. Developers → API keys → copy **Secret key** (`sk_test_…`) → set `STRIPE_SECRET_KEY` in Railway.
 3. Developers → **Webhooks → Add endpoint**:
    - URL: `https://www.globalrsd.co.uk/api/stripe/webhook` (or railway.app URL for now)
-   - Event: `checkout.session.completed`
+   - Events: `checkout.session.completed` and `invoice.paid`
    - Copy the **Signing secret** (`whsec_…`) → set `STRIPE_WEBHOOK_SECRET` in Railway.
 4. Test the full flow: buy a ticket with card `4242 4242 4242 4242`, any future
    expiry, any CVC → you land on the confirmation page → the order appears on
@@ -104,7 +117,7 @@ to make it live. Total hands-on time: roughly 60–90 minutes (plus DNS wait).
 
 - **Forms** → POST `/api/lead` stores enquiries in Supabase and sends Resend email with attachments, with bot protection.
 - **Auth** → real Supabase: email/password + Google/Microsoft/Apple OAuth, sessions persist across devices. `src/lib/auth.tsx` rewritten; localStorage demo removed.
-- **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). Prices recomputed **server-side**; member discounts (10% tickets / 5% courses) verified against the database, not the browser.
+- **Payments** → real Stripe Checkout (hosted page, PCI handled by Stripe). The award registration is £255 for the virtual/digital package; physical items and destination-based courier are quoted by an admin and billed on a separate Stripe invoice. Prices are recomputed **server-side**; member discounts (10% tickets / 5% courses) verified against the database, not the browser.
 - **Orders** → recorded by the Stripe webhook into Supabase; dashboard reads them live. Membership checkout is linked to the signed-in member's application, and cancellation revokes active membership benefits.
 - **Admin CMS** → `/admin` uses an HttpOnly admin session and Supabase for content and media. It includes a read-only business-data browser and workflow actions for membership and award approvals.
 - **Certificate verification** → reads the Supabase `certificates` table (add rows in Table Editor); the verification API never treats sample data as valid.

@@ -1482,7 +1482,7 @@ export default function DashboardPage() {
                         Submit Official Nomination →
                       </Link>
                       <Link href="/awards/register" className="btn-secondary block text-center text-xs py-2">
-                        Have a Selection Code? Register &amp; Confirm Trophy (£{AWARDS_REGISTRATION_FEE_GBP}) →
+                        Have a Selection Code? Complete Award Registration (£{AWARDS_REGISTRATION_FEE_GBP}) →
                       </Link>
                     </div>
                   </div>

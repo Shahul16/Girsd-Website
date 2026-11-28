@@ -14,7 +14,7 @@ const ALLOWED_MIME_TYPES: Record<string, string[]> = {
 };
 
 export async function POST(req: NextRequest) {
-  const limited = enforceRateLimit(req, "document_upload");
+  const limited = await enforceRateLimit(req, "document_upload");
   if (limited) return limited;
 
   try {

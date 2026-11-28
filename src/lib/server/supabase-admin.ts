@@ -45,7 +45,7 @@ export function getSupabaseSetupHint(error: unknown): string | null {
     ["42P01", "42703", "PGRST204", "PGRST205"].includes(code) ||
     /schema cache|relation .* does not exist|column .* does not exist/i.test(message)
   ) {
-    return "Supabase tables or columns are missing or out of date. Run supabase/schema.sql, then migrations 20261123_awards_workflow.sql, 20261127_site_management.sql, and 20261127_awards_admin_review.sql.";
+    return "Supabase tables or columns are missing or out of date. Run supabase/schema.sql, then apply any unapplied migrations in order: 20261123_email_verification.sql, 20261123_awards_workflow.sql, 20261127_site_management.sql, 20261127_awards_admin_review.sql, 20261127_awards_registration_fee_update.sql, and 20261128_cto_workflow_hardening.sql.";
   }
   return null;
 }

@@ -12,7 +12,7 @@ export const runtime = "nodejs";
  */
 export async function GET(req: NextRequest) {
   // Enforce rate limiting against automated scraping / enumeration
-  const rateLimitRes = enforceRateLimit(req, "verify_lookup");
+  const rateLimitRes = await enforceRateLimit(req, "verify_lookup");
   if (rateLimitRes) return rateLimitRes;
 
   try {

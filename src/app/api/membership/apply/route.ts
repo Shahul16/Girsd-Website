@@ -16,6 +16,21 @@ import { enforceRateLimit } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
+const supportedProofTypes: ProofType[] = [
+  "student_id",
+  "faculty_staff_id",
+  "employment_confirmation",
+  "enrolment_letter",
+  "academic_transcript",
+  "official_appointment",
+  "professional_license",
+  "other",
+];
+
+function isProofType(value: unknown): value is ProofType {
+  return typeof value === "string" && supportedProofTypes.includes(value as ProofType);
+}
+
 /**
  * Submits a new Membership Eligibility Application.
  *
@@ -26,7 +41,7 @@ export const runtime = "nodejs";
  */
 export async function POST(req: NextRequest) {
   // 1. Rate Limiting Protection against automated spam/bot attacks
-  const rateLimitRes = enforceRateLimit(req, "membership_apply");
+  const rateLimitRes = await enforceRateLimit(req, "membership_apply");
   if (rateLimitRes) return rateLimitRes;
 
   try {
@@ -51,8 +66,6 @@ export async function POST(req: NextRequest) {
       verificationMethod,
       proofType,
       documentFileName,
-      documentFileUrl,
-      emailVerified,
     } = body;
 
     // 2. Strict Input Validation & Length Limits
@@ -79,6 +92,13 @@ export async function POST(req: NextRequest) {
     if (cleanInstitution.length < 2 || cleanInstitution.length > 150) {
       return NextResponse.json({ error: "Institution name must be between 2 and 150 characters." }, { status: 400 });
     }
+    if (verificationMethod !== "domain" && verificationMethod !== "university") {
+      return NextResponse.json({ error: "Choose a supported membership verification method." }, { status: 400 });
+    }
+
+    if (proofType !== undefined && !isProofType(proofType)) {
+      return NextResponse.json({ error: "Choose a supported proof document type." }, { status: 400 });
+    }
 
     const tierContent = await getSiteContent("membership_tiers");
     const tiers = Array.isArray(tierContent) ? tierContent as MembershipTier[] : [];
@@ -90,15 +110,45 @@ export async function POST(req: NextRequest) {
     const classification = classifyEmailDomain(cleanEmail);
     const applicationId = generateApplicationId();
 
-    const isDomainVerified = Boolean(emailVerified) || verificationMethod === "domain";
+    const admin = getAdminClient();
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error:
+            getSupabaseSetupHint(new Error("Supabase service role is not configured")) ??
+            "Membership applications are temporarily unavailable.",
+        },
+        { status: 503 }
+      );
+    }
+
+    const { data: verification, error: verificationError } = await admin
+      .from("membership_email_verifications")
+      .select("verified_at, consumed_at, expires_at")
+      .eq("user_id", user.id)
+      .eq("email", cleanEmail)
+      .maybeSingle();
+    if (verificationError) {
+      console.error("Could not verify membership email ownership:", verificationError);
+      return NextResponse.json({ error: "Could not verify your email status. Please try again." }, { status: 503 });
+    }
+    const isDomainVerified = Boolean(
+      verification?.verified_at &&
+      !verification.consumed_at &&
+      new Date(verification.expires_at).getTime() > Date.now()
+    );
+    if (verificationMethod === "domain" && !isDomainVerified) {
+      return NextResponse.json(
+        { error: "Verify control of this email address before submitting a domain-based application." },
+        { status: 409 }
+      );
+    }
+
     const isUniversityProof = verificationMethod === "university" || classification.requiresDocumentProof;
 
     // Determine initial lifecycle state:
-    // If university proof selected and no document uploaded yet: VERIFICATION_REQUIRED
-    // If university proof selected and document uploaded: UNDER_REVIEW
-    // If domain verification confirmed: UNDER_REVIEW
     let initialStatus: MembershipStatus = "UNDER_REVIEW";
-    if (isUniversityProof && !documentFileName && !documentFileUrl) {
+    if (isUniversityProof) {
       initialStatus = "VERIFICATION_REQUIRED";
     }
 
@@ -119,17 +169,6 @@ export async function POST(req: NextRequest) {
       },
     ];
 
-    const admin = getAdminClient();
-    if (!admin) {
-      return NextResponse.json(
-        {
-          error:
-            getSupabaseSetupHint(new Error("Supabase service role is not configured")) ??
-            "Membership applications are temporarily unavailable.",
-        },
-        { status: 503 }
-      );
-    }
     const newRecord = {
       id: applicationId,
       user_id: user.id,
@@ -144,9 +183,9 @@ export async function POST(req: NextRequest) {
       tier_id: tier.id,
       tier_name: tier.name,
       annual_fee: tier.price,
-      proof_type: (proofType as ProofType) || (verificationMethod === "domain" ? "employment_confirmation" : "student_id"),
+      proof_type: isProofType(proofType) ? proofType : (verificationMethod === "domain" ? "employment_confirmation" : "student_id"),
       document_filename: documentFileName ? String(documentFileName).slice(0, 200) : null,
-      document_file_url: documentFileUrl ? String(documentFileUrl).slice(0, 300) : null,
+      document_file_url: null,
       payment_status: "unpaid",
       status: initialStatus,
       audit_log: initialAudit,
@@ -154,18 +193,32 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    const { error: dbError } = await admin
-      .from("membership_applications")
-      .insert(newRecord);
+    const { data: savedApplicationId, error: dbError } = await admin.rpc("submit_membership_application", {
+      p_application: newRecord,
+      p_require_email_verification: verificationMethod === "domain",
+    });
 
     if (dbError) {
       console.error("Database insert error for membership application:", dbError);
+      if (dbError.message.includes("membership_email_verification_required")) {
+        return NextResponse.json(
+          { error: "Your email verification expired or was already used. Request a new code and try again." },
+          { status: 409 }
+        );
+      }
       return NextResponse.json(
         {
           error:
             getSupabaseSetupHint(dbError) ??
             "Could not save your membership application. Please try again.",
         },
+        { status: 503 }
+      );
+    }
+    if (savedApplicationId !== applicationId) {
+      console.error("Membership application RPC returned an unexpected reference.");
+      return NextResponse.json(
+        { error: "Your application could not be confirmed as saved. Please contact support before retrying." },
         { status: 503 }
       );
     }

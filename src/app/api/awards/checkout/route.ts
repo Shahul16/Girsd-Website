@@ -34,7 +34,7 @@ function isAwardsAssetUrl(value: unknown): value is string {
 }
 
 export async function POST(req: NextRequest) {
-  const limited = enforceRateLimit(req, "checkout");
+  const limited = await enforceRateLimit(req, "checkout");
   if (limited) return limited;
 
   try {
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
       website_orcid_url,
       name_pronunciation,
       attendance_mode,
+      physical_fulfillment_items,
       proxy_name,
       proxy_relationship,
       proxy_email,
@@ -117,6 +118,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const allowedFulfillmentItems = new Set(["printed_certificate", "trophy"]);
+    if (
+      !Array.isArray(physical_fulfillment_items) ||
+      physical_fulfillment_items.some((item) => typeof item !== "string" || !allowedFulfillmentItems.has(item)) ||
+      new Set(physical_fulfillment_items).size !== physical_fulfillment_items.length
+    ) {
+      return NextResponse.json({ error: "Choose valid optional physical award items." }, { status: 400 });
+    }
+
     if (attendance_mode === "proxy") {
       if (
         !isNonEmptyString(proxy_name) ||
@@ -131,7 +141,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if (attendance_mode === "virtual") {
+    let normalizedShippingAddress: Record<string, string> | null = null;
+    if (physical_fulfillment_items.length > 0) {
       if (
         !isRecord(shipping_address) ||
         !isNonEmptyString(shipping_address.street) ||
@@ -141,10 +152,18 @@ export async function POST(req: NextRequest) {
         !isNonEmptyString(shipping_address.deliveryPhone)
       ) {
         return NextResponse.json(
-          { error: "Please complete all physical courier address fields for trophy shipment." },
+          { error: "Please complete the delivery address for your physical fulfillment quote." },
           { status: 400 }
         );
       }
+      normalizedShippingAddress = {
+        street: String(shipping_address.street).trim().slice(0, 200),
+        city: String(shipping_address.city).trim().slice(0, 100),
+        state: typeof shipping_address.state === "string" ? shipping_address.state.trim().slice(0, 100) : "",
+        postalCode: String(shipping_address.postalCode).trim().slice(0, 32),
+        country: String(shipping_address.country).trim().slice(0, 100),
+        deliveryPhone: String(shipping_address.deliveryPhone).trim().slice(0, 32),
+      };
     }
 
     if (!isNonEmptyString(billing_name) || !isNonEmptyString(billing_address)) {
@@ -249,7 +268,9 @@ export async function POST(req: NextRequest) {
       proxy_phone: attendance_mode === "proxy" && typeof proxy_phone === "string" ? proxy_phone.trim() : null,
       accompanying_guests_count: Math.max(0, Math.min(10, Math.floor(Number(accompanying_guests_count) || 0))),
       guests_details: Array.isArray(guests_details) ? guests_details : [],
-      shipping_address: isRecord(shipping_address) ? shipping_address : null,
+      shipping_address: normalizedShippingAddress,
+      physical_fulfillment_items: physical_fulfillment_items,
+      physical_fulfillment_status: physical_fulfillment_items.length > 0 ? "requested" : "not_requested",
       amount_gbp: AWARDS_REGISTRATION_FEE_GBP,
       payment_status: "pending",
       billing_entity_type: billing_entity_type === "organization" ? "organization" : "individual",
@@ -305,7 +326,7 @@ export async function POST(req: NextRequest) {
             unit_amount: AWARDS_REGISTRATION_FEE_PENCE, // Pence
             product_data: {
               name: `GIRSD Global Awards 2026 Registration — ${nomination.category}`,
-              description: `Laser-Engraved Trophy, Hardcopy & Digital Certificate, Live Recognition for ${full_name_engraving} (${nomination.nomination_ref})`,
+              description: `Award registration for ${full_name_engraving} (${attendance_mode}). Physical items and destination-based courier are excluded and quoted separately.`,
             },
           },
         },

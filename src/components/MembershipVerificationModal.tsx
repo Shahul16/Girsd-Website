@@ -108,9 +108,14 @@ export default function MembershipVerificationModal({
     setError("");
     setCodeNotice("");
     try {
+      const token = await getAccessToken();
+      if (!token) throw new Error("Please sign in again before verifying your email.");
       const res = await fetch("/api/membership/verify-email", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           name: name.trim(),
@@ -146,9 +151,14 @@ export default function MembershipVerificationModal({
     setVerifyingCode(true);
     setError("");
     try {
+      const token = await getAccessToken();
+      if (!token) throw new Error("Please sign in again before verifying your email.");
       const res = await fetch("/api/membership/verify-email", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           code: emailCode.trim(),

@@ -250,14 +250,14 @@ export default async function AwardsPage() {
             {[
               {
                 tag: "For Selected Recipients",
-                title: "Official Award Registration & Trophy Package",
+                title: "Award Registration",
                 price: `£${AWARDS_REGISTRATION_FEE_GBP}`,
-                note: "Fixed registration fee",
+                note: "Fixed fee for selected attendance mode",
                 perks: [
-                  "Heavyweight laser-engraved crystal / brass trophy",
-                  "Embossed gold-foil parchment certificate",
-                  "Worldwide courier delivery or ceremony pass",
+                  "Virtual, in-person, or proxy attendance",
+                  "Digital award certificate and credentials",
                   "Official media kit & Hall of Fame feature",
+                  "Optional physical items and courier quoted separately",
                 ],
                 cta: "Complete Registration",
                 href: "/awards/register",

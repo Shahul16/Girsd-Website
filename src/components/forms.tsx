@@ -15,9 +15,8 @@ declare global {
 /**
  * Gets a reCAPTCHA v3 token for this submission, if the site key is
  * configured and the script has loaded (see RecaptchaLoader). Resolves to ""
- * if reCAPTCHA isn't set up — the server treats a missing token as "not
- * configured" and lets the submission through unprotected, same as every
- * other optional integration in this codebase.
+ * if the key or script is unavailable. When the server-side secret is
+ * configured, the API rejects submissions without a valid token.
  */
 async function getRecaptchaToken(action: string): Promise<string> {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -57,6 +56,7 @@ export function DemoForm({
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -84,12 +84,13 @@ export function DemoForm({
 
     try {
       const res = await fetch("/api/lead", { method: "POST", body: data });
+      const body = await res.json().catch(() => null);
       if (!res.ok) {
-        const body = await res.json().catch(() => null);
         setError(body?.error ?? "Something went wrong — please try again or email us directly.");
         setStatus("idle");
         return;
       }
+      setResponseMessage(body?.message || successMessage);
       setStatus("sent");
       formEl.reset();
     } catch {
@@ -102,7 +103,7 @@ export function DemoForm({
     return (
       <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6 text-emerald-800" role="status">
         <p className="font-display text-lg font-bold">Thank you</p>
-        <p className="mt-1 text-sm leading-relaxed">{successMessage}</p>
+        <p className="mt-1 text-sm leading-relaxed">{responseMessage || successMessage}</p>
         <button onClick={() => setStatus("idle")} className="mt-4 text-sm font-semibold underline">
           Submit another
         </button>

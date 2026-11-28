@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import {
@@ -11,6 +10,14 @@ import { enforceRateLimit } from "@/lib/server/rate-limit";
 import { DOCUMENT_UPLOAD_CONSTRAINTS } from "@/lib/membership-verification";
 
 export const runtime = "nodejs";
+
+const MIME_TYPES: Record<string, string> = {
+  ".pdf": "application/pdf",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+};
 
 // Magic bytes signatures for permitted formats
 function validateMagicBytes(buffer: Buffer): boolean {
@@ -62,7 +69,7 @@ function validateMagicBytes(buffer: Buffer): boolean {
 
 export async function POST(req: NextRequest) {
   // 1. Rate limiting
-  const rateLimitRes = enforceRateLimit(req, "document_upload");
+  const rateLimitRes = await enforceRateLimit(req, "document_upload");
   if (rateLimitRes) return rateLimitRes;
 
   try {
@@ -115,6 +122,10 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    const contentType = MIME_TYPES[originalExt];
+    if (!contentType || (file.type && file.type !== contentType)) {
+      return NextResponse.json({ error: "The selected file type does not match its contents." }, { status: 415 });
+    }
 
     const admin = getAdminClient();
     if (!admin) {
@@ -130,7 +141,7 @@ export async function POST(req: NextRequest) {
 
     const { data: appRecord, error: lookupError } = await admin
       .from("membership_applications")
-      .select("user_id, audit_log, status")
+      .select("user_id, audit_log, status, document_file_url")
       .eq("id", applicationId)
       .maybeSingle();
 
@@ -149,17 +160,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Membership application not found." }, { status: 404 });
     }
 
-    // 5. Generate secure random filename outside public web root
-    const cleanExt = originalExt.replace(/[^a-z0-9]/g, "");
-    const safeStorageName = `girsd-doc-${crypto.randomUUID()}.${cleanExt}`;
-
-    // Stored in private directory outside web root
-    const privateDir = path.join(process.cwd(), "private_documents", "verifications");
-    await fs.mkdir(privateDir, { recursive: true });
-    const filePath = path.join(privateDir, safeStorageName);
-    await fs.writeFile(filePath, buffer);
-
-    const secureUrl = `/api/membership/document?file=${safeStorageName}`;
+    const storagePath = `${user.id}/${crypto.randomUUID()}${originalExt}`;
+    const { error: storageError } = await admin.storage
+      .from("membership-verifications")
+      .upload(storagePath, buffer, { contentType, upsert: false });
+    if (storageError) {
+      console.error("Could not store membership verification document:", storageError);
+      return NextResponse.json({ error: "Could not securely store your document. Please try again." }, { status: 503 });
+    }
     const currentAudit = Array.isArray(appRecord.audit_log) ? appRecord.audit_log : [];
     const newAudit = [
       ...currentAudit,
@@ -177,7 +185,7 @@ export async function POST(req: NextRequest) {
       .from("membership_applications")
       .update({
         document_filename: file.name,
-        document_file_url: secureUrl,
+        document_file_url: storagePath,
         status: "UNDER_REVIEW",
         audit_log: newAudit,
         updated_at: new Date().toISOString(),
@@ -189,9 +197,10 @@ export async function POST(req: NextRequest) {
 
     if (updateError || !updatedRecord) {
       console.error("Could not save membership document details:", updateError);
-      await fs.unlink(filePath).catch((cleanupError) => {
-        console.error("Could not remove unreferenced membership document:", cleanupError);
-      });
+      const { error: cleanupError } = await admin.storage
+        .from("membership-verifications")
+        .remove([storagePath]);
+      if (cleanupError) console.error("Could not remove unreferenced membership document:", cleanupError);
       if (!updatedRecord && !updateError) {
         return NextResponse.json({ error: "Membership application not found." }, { status: 404 });
       }
@@ -205,10 +214,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const previousPath = appRecord.document_file_url;
+    if (
+      typeof previousPath === "string" &&
+      /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(pdf|jpe?g|png|webp)$/i.test(previousPath) &&
+      previousPath !== storagePath
+    ) {
+      const { error: removeError } = await admin.storage
+        .from("membership-verifications")
+        .remove([previousPath]);
+      if (removeError) console.error("Could not remove replaced membership document:", removeError);
+    }
+
     return NextResponse.json({
       ok: true,
       fileName: file.name,
-      documentUrl: secureUrl,
+      documentUrl: `/api/membership/document?file=${encodeURIComponent(storagePath)}`,
       message: "Verification document uploaded successfully.",
     });
   } catch (err: any) {

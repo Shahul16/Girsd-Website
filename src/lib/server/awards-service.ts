@@ -1,4 +1,6 @@
 import "server-only";
+import { randomUUID } from "crypto";
+import path from "path";
 import { Resend } from "resend";
 import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 import { SITE } from "@/lib/site";
@@ -10,6 +12,21 @@ import {
 } from "@/lib/awards";
 
 export const runtime = "nodejs";
+
+const NOMINATION_DOCUMENT_TYPES: Record<string, string> = {
+  ".pdf": "application/pdf",
+  ".doc": "application/msword",
+  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+};
+
+function isValidNominationDocument(extension: string, buffer: Buffer): boolean {
+  if (extension === ".pdf") return buffer.subarray(0, 5).toString() === "%PDF-";
+  if (extension === ".doc") {
+    return buffer.subarray(0, 8).equals(Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]));
+  }
+  if (extension === ".docx") return buffer.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+  return false;
+}
 
 function getResendClient(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY;
@@ -83,14 +100,59 @@ export async function submitNomination(data: {
   nomineeCountry?: string;
   statement?: string;
   supportingLinks?: string;
-  attachmentUrl?: string;
   attachmentFilename?: string;
   attachmentBuffer?: Buffer;
-}): Promise<{ ok: boolean; nominationRef?: string; error?: string }> {
+}): Promise<{
+  ok: boolean;
+  nominationRef?: string;
+  error?: string;
+  notificationWarning?: string;
+}> {
   const nominationRef = generateNominationRef();
   const admin = getAdminClient();
   if (!admin) {
     return { ok: false, error: "Award nominations are temporarily unavailable. Please try again later." };
+  }
+
+  const requiredValues = [
+    data.nominatorName,
+    data.nominatorEmail,
+    data.category,
+    data.nomineeName,
+  ].map((value) => value.trim());
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (
+    requiredValues.some((value) => !value) ||
+    !emailPattern.test(data.nominatorEmail.trim()) ||
+    !emailPattern.test((data.nomineeEmail || data.nominatorEmail).trim())
+  ) {
+    return { ok: false, error: "Complete the required nomination fields and enter valid email addresses." };
+  }
+
+  let attachmentUrl = "";
+  const attachmentFilename = data.attachmentFilename ? path.basename(data.attachmentFilename).slice(0, 255) : "";
+  if (data.attachmentBuffer) {
+    const extension = path.extname(attachmentFilename).toLowerCase();
+    const contentType = NOMINATION_DOCUMENT_TYPES[extension];
+    if (!contentType || !isValidNominationDocument(extension, data.attachmentBuffer)) {
+      return { ok: false, error: "Upload a valid PDF or Word supporting document." };
+    }
+
+    const storagePath = `nominations/${randomUUID()}${extension}`;
+    const { error: uploadError } = await admin.storage.from("award-documents").upload(
+      storagePath,
+      data.attachmentBuffer,
+      { contentType, upsert: false }
+    );
+    if (uploadError) {
+      console.error("Could not save award nomination document:", uploadError);
+      return { ok: false, error: "Could not securely save the supporting document. Please try again." };
+    }
+    attachmentUrl = storagePath;
+  }
+
+  if (attachmentUrl && !/^nominations\/[0-9a-f-]{36}\.(pdf|doc|docx)$/i.test(attachmentUrl)) {
+    return { ok: false, error: "The supporting document reference is invalid." };
   }
 
   const record: AwardNomination = {
@@ -105,8 +167,8 @@ export async function submitNomination(data: {
     nominee_country: data.nomineeCountry?.trim() || "",
     statement: data.statement?.trim() || "",
     supporting_links: data.supportingLinks?.trim() || "",
-    attachment_url: data.attachmentUrl || "",
-    attachment_filename: data.attachmentFilename || "",
+    attachment_url: attachmentUrl,
+    attachment_filename: attachmentFilename,
     status: "pending_review",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -134,15 +196,42 @@ export async function submitNomination(data: {
 
     if (insertErr) {
       console.error("Supabase error saving award nomination:", insertErr);
+      if (attachmentUrl) {
+        const { error: cleanupError } = await admin.storage.from("award-documents").remove([attachmentUrl]);
+        if (cleanupError) console.error("Could not clean up unattached award nomination document:", cleanupError);
+      }
       return { ok: false, error: "Could not save your nomination. Please try again." };
     }
   } catch (dbErr) {
     console.error("Database connection exception saving nomination:", dbErr);
+    if (attachmentUrl) {
+      const { error: cleanupError } = await admin.storage.from("award-documents").remove([attachmentUrl]);
+      if (cleanupError) console.error("Could not clean up unattached award nomination document:", cleanupError);
+    }
     return { ok: false, error: "Could not save your nomination. Please try again." };
   }
 
-  // Send Emails via Resend
-  await sendNominationEmails(record, data.attachmentBuffer);
+  const emailResults = await sendNominationEmails(record, data.attachmentBuffer);
+
+  const emailSentAt = new Date().toISOString();
+  const emailStatusUpdate: Record<string, string> = {};
+  if (emailResults.nomineeSent) emailStatusUpdate.nominee_email_sent_at = emailSentAt;
+  if (emailResults.adminSent) emailStatusUpdate.admin_email_sent_at = emailSentAt;
+  if (Object.keys(emailStatusUpdate).length) {
+    const { error: emailStatusError } = await admin
+      .from("award_nominations")
+      .update(emailStatusUpdate)
+      .eq("nomination_ref", nominationRef);
+    if (emailStatusError) console.error("Could not save nomination email delivery status:", emailStatusError);
+  }
+
+  if (!emailResults.nomineeSent || !emailResults.adminSent) {
+    return {
+      ok: true,
+      nominationRef,
+      notificationWarning: "The nomination was saved, but one or more confirmation emails could not be delivered. The Awards team has the record.",
+    };
+  }
 
   return { ok: true, nominationRef };
 }
@@ -150,15 +239,20 @@ export async function submitNomination(data: {
 /**
  * Sends nomination receipt to nominee/nominator and admin notification
  */
-async function sendNominationEmails(nomination: AwardNomination, attachmentBuffer?: Buffer) {
+export async function sendNominationEmails(
+  nomination: AwardNomination,
+  attachmentBuffer?: Buffer
+): Promise<{ nomineeSent: boolean; adminSent: boolean }> {
   const resend = getResendClient();
   if (!resend) {
     console.warn("Resend API key not set — nomination emails skipped.");
-    return;
+    return { nomineeSent: false, adminSent: false };
   }
 
   const from = getFromEmail();
   const adminTo = SITE.awardsEmail;
+  let nomineeSent = false;
+  let adminSent = false;
 
   // 1. Nominee Receipt Email
   const nomineeHtml = `
@@ -204,13 +298,18 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
       recipients.push(nomination.nominator_email);
     }
 
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from,
       to: recipients,
       subject: `GIRSD Global Awards 2026: Nomination received | ${nomination.nomination_ref}`,
       html: nomineeHtml,
       replyTo: SITE.awardsEmail,
     });
+    if (error) {
+      console.error("Resend rejected nominee confirmation email:", error);
+    } else {
+      nomineeSent = true;
+    }
   } catch (err) {
     console.error("Error sending nominee confirmation email:", err);
   }
@@ -237,7 +336,7 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
       <tr><td style="padding:8px 12px;border:1px solid #E2E8F0;font-weight:700;background:#F8FAFC">Evidence Statement</td><td style="padding:8px 12px;border:1px solid #E2E8F0;white-space:pre-wrap">${escapeHtml(nomination.statement || "N/A")}</td></tr>
       ${
         nomination.attachment_url
-          ? `<tr style="background:#F8FAFC"><td style="padding:8px 12px;border:1px solid #E2E8F0;font-weight:700">Attachment</td><td style="padding:8px 12px;border:1px solid #E2E8F0"><a href="${escapeHtml(nomination.attachment_url)}" target="_blank" style="color:#0284C7;font-weight:600">Download Supporting Document</a></td></tr>`
+          ? `<tr style="background:#F8FAFC"><td style="padding:8px 12px;border:1px solid #E2E8F0;font-weight:700">Attachment</td><td style="padding:8px 12px;border:1px solid #E2E8F0">Supporting document is attached securely to this notification and available in the Admin portal.</td></tr>`
           : ""
       }
     </table>
@@ -255,7 +354,7 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
       ? [{ filename: nomination.attachment_filename, content: attachmentBuffer }]
       : undefined;
 
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from,
       to: [adminTo],
       subject: `[NOMINATION] ${nomination.nominee_name} – ${nomination.category} [${nomination.nomination_ref}]`,
@@ -263,9 +362,16 @@ async function sendNominationEmails(nomination: AwardNomination, attachmentBuffe
       replyTo: nomination.nominee_email,
       attachments,
     });
+    if (error) {
+      console.error("Resend rejected admin nomination alert:", error);
+    } else {
+      adminSent = true;
+    }
   } catch (err) {
     console.error("Error sending admin nomination alert:", err);
   }
+
+  return { nomineeSent, adminSent };
 }
 
 /**
@@ -332,7 +438,42 @@ export async function approveSelection(
       error: `Nomination is selected, but the invitation was not sent: ${invitation.error}`,
     };
   }
+  const { error: emailStatusError } = await admin
+    .from("award_nominations")
+    .update({ decision_email_sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq("nomination_ref", nominationRef)
+    .eq("status", "selected");
+  if (emailStatusError) {
+    console.error("Selection invitation was sent but its delivery status could not be saved:", emailStatusError);
+    return { ok: false, resent, error: "Invitation was sent, but its delivery status could not be saved." };
+  }
   return { ok: true, resent };
+}
+
+export async function sendNominationRejectionEmail(
+  nomination: Pick<AwardNomination, "nomination_ref" | "nominee_email" | "nominee_name" | "category">,
+  reason: string
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResendClient();
+  if (!resend) return { ok: false, error: "RESEND_API_KEY is not configured." };
+
+  try {
+    const { error } = await resend.emails.send({
+      from: getFromEmail(),
+      to: [nomination.nominee_email],
+      subject: `GIRSD Global Awards 2026 nomination update | ${nomination.nomination_ref}`,
+      replyTo: SITE.awardsEmail,
+      html: `<div style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;color:#0B192C;line-height:1.6"><div style="background:#0B192C;padding:24px;color:#fff"><img src="${escapeHtml(new URL("/email-logo.png", SITE.domain).toString())}" width="160" alt="${escapeHtml(SITE.shortName)}" style="display:block;margin-bottom:12px"><h1 style="margin:0;color:#DDA853;font-size:22px">Nomination review update</h1></div><div style="padding:24px"><p>Dear <strong>${escapeHtml(nomination.nominee_name)}</strong>,</p><p>Thank you for your nomination for the <strong>${escapeHtml(nomination.category)}</strong> category. After review, we are unable to select this nomination at this time.</p><p><strong>Review note:</strong> ${escapeHtml(reason)}</p><p>For questions, contact <a href="mailto:${escapeHtml(SITE.awardsEmail)}">${escapeHtml(SITE.awardsEmail)}</a> and quote reference <strong>${escapeHtml(nomination.nomination_ref)}</strong>.</p>${renderAwardsEmailFooter()}</div></div>`,
+    });
+    if (error) {
+      console.error("Could not send nomination rejection email:", error);
+      return { ok: false, error: "Email delivery failed." };
+    }
+    return { ok: true };
+  } catch (error) {
+    console.error("Error sending nomination rejection email:", error);
+    return { ok: false, error: "Email delivery failed." };
+  }
 }
 
 /**
@@ -510,18 +651,41 @@ export async function handlePaidAwardRegistration(stripeSessionId: string, payme
     }
   }
 
-  if (alreadyPaid) return;
-
-  await sendUserPaymentConfirmationEmail(reg, paymentIntentId);
-  await sendAdminCompleteDataEmail(reg, paymentIntentId);
+  if (!reg.confirmation_email_sent_at) {
+    if (!(await sendUserPaymentConfirmationEmail(reg, paymentIntentId))) {
+      throw new Error(`Could not send confirmation email for award registration ${reg.id}.`);
+    }
+    const { error: emailUpdateError } = await admin
+      .from("award_registrations")
+      .update({ confirmation_email_sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .eq("id", reg.id);
+    if (emailUpdateError) {
+      throw new Error(`Confirmation email was sent but its status could not be saved for registration ${reg.id}: ${emailUpdateError.message}`);
+    }
+  }
+  if (!reg.admin_notification_email_sent_at) {
+    if (!(await sendAdminCompleteDataEmail(reg, paymentIntentId))) {
+      throw new Error(`Could not send the admin notification for award registration ${reg.id}.`);
+    }
+    const { error: emailUpdateError } = await admin
+      .from("award_registrations")
+      .update({ admin_notification_email_sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .eq("id", reg.id);
+    if (emailUpdateError) {
+      throw new Error(`Admin notification was sent but its status could not be saved for registration ${reg.id}: ${emailUpdateError.message}`);
+    }
+  }
 }
 
 /**
  * User Confirmation Email via Resend from awards@globalrsd.co.uk
  */
-async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentIntentId: string) {
+async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentIntentId: string): Promise<boolean> {
   const resend = getResendClient();
-  if (!resend) return;
+  if (!resend) {
+    console.error("Resend is not configured; award registration confirmation was not sent.");
+    return false;
+  }
 
   const from = getFromEmail();
   const subject = `GIRSD Global Awards 2026: Payment received | ${reg.nomination_ref}`;
@@ -530,7 +694,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
     reg.attendance_mode === "in_person"
       ? "In-Person Attendance (Awards Ceremony)"
       : reg.attendance_mode === "virtual"
-      ? "Virtual Attendance (Live Stream + International Courier)"
+      ? "Virtual Attendance (Live Stream + Digital Recognition)"
       : "Proxy / Representative Attending on Behalf";
 
   const userHtml = `
@@ -540,7 +704,7 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
   <div style="padding:28px">
     <p style="font-size:15px;margin:0 0 16px">Dear <strong>${escapeHtml(reg.full_name_engraving)}</strong>,</p>
     <p style="font-size:14px;color:#334155;margin:0 0 20px">
-      We confirm that your final registration for the <strong>GIRSD Global Awards 2026</strong> and payment of <strong>£${AWARDS_REGISTRATION_FEE_GBP}.00</strong> have been received. Your registration details are recorded for processing.
+      We confirm that your <strong>GIRSD Global Awards 2026</strong> registration and payment of <strong>£${AWARDS_REGISTRATION_FEE_GBP}.00</strong> have been received. This fee covers your selected attendance mode and digital award recognition. Physical items and destination-based courier are excluded.
     </p>
 
     <!-- Receipt Box -->
@@ -576,15 +740,15 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
     <!-- Notice -->
     <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:14px 16px;margin:20px 0">
       <p style="margin:0;font-size:12px;color:#92400E;line-height:1.6">
-        <strong>Important Notice:</strong> As acknowledged upon submission, the £${AWARDS_REGISTRATION_FEE_GBP} GBP Award Registration Fee is strictly non-refundable, and engraving production begins immediately. Name spelling and titles cannot be modified once production has commenced.
+        <strong>Important Notice:</strong> As acknowledged during registration, the £${AWARDS_REGISTRATION_FEE_GBP} registration fee is non-refundable once paid. Physical certificates, trophies, and destination-based courier are excluded; if requested, the Awards team will provide a separate quote and invoice before arranging them.
       </p>
     </div>
 
     <h3 style="font-size:14px;font-weight:700;color:#0B192C;margin:24px 0 10px">What Happens Next:</h3>
     <ul style="font-size:13px;color:#475569;margin:0 0 24px;padding-left:20px;line-height:1.8">
-      <li><strong>Trophy &amp; Certificate Production:</strong> Our master craftsmen will engrave your personalized crystal trophy and print your gold-embossed parchment certificate.</li>
-      <li><strong>Ceremony Briefing &amp; Media Feature:</strong> You will receive a ceremony itinerary, live streaming link, and digital media banner assets.</li>
-      <li><strong>Dispatch &amp; Delivery:</strong> Virtual attendees will receive international courier tracking details once your package is dispatched.</li>
+      <li><strong>Digital Recognition:</strong> Your digital award credentials and registration details are recorded for the awards team.</li>
+      <li><strong>Optional Physical Items:</strong> If you requested hard copies or a trophy, the team will calculate the item and courier charges for your destination and send a separate invoice.</li>
+      <li><strong>Next Updates:</strong> Ceremony and media information will be shared separately by the Awards team.</li>
     </ul>
 
     <p style="font-size:13px;color:#64748B;margin:24px 0 0;border-top:1px solid #E2E8F0;padding-top:16px">
@@ -595,24 +759,33 @@ async function sendUserPaymentConfirmationEmail(reg: AwardRegistration, paymentI
 </div>`;
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from,
       to: [reg.email],
       subject,
       html: userHtml,
       replyTo: SITE.awardsEmail,
     });
+    if (error) {
+      console.error("Could not send user registration confirmation email:", error);
+      return false;
+    }
+    return true;
   } catch (err) {
     console.error("Error sending user registration confirmation email:", err);
+    return false;
   }
 }
 
 /**
  * Admin Notification Email: Contains 100% of all submitted data in a clean HTML table
  */
-async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentId: string) {
+async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentId: string): Promise<boolean> {
   const resend = getResendClient();
-  if (!resend) return;
+  if (!resend) {
+    console.error("Resend is not configured; award registration admin notification was not sent.");
+    return false;
+  }
 
   const from = getFromEmail();
   const to = SITE.awardsEmail;
@@ -705,15 +878,21 @@ async function sendAdminCompleteDataEmail(reg: AwardRegistration, paymentIntentI
 </div>`;
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from,
       to: [to],
       subject,
       html: adminHtml,
       replyTo: reg.email,
     });
+    if (error) {
+      console.error("Could not send complete data email to admin:", error);
+      return false;
+    }
+    return true;
   } catch (err) {
     console.error("Error sending complete data email to admin:", err);
+    return false;
   }
 }
 

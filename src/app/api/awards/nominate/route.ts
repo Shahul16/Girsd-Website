@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submitNomination } from "@/lib/server/awards-service";
-import { getAdminClient } from "@/lib/server/supabase-admin";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
 import path from "path";
-import crypto from "crypto";
 
 export const runtime = "nodejs";
 
 const MAX_ATTACHMENT = 10 * 1024 * 1024; // 10 MB
 
 export async function POST(req: NextRequest) {
-  const limited = enforceRateLimit(req, "award_nomination");
+  const limited = await enforceRateLimit(req, "award_nomination");
   if (limited) return limited;
 
   try {
@@ -39,46 +37,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please fill in all mandatory nomination fields." }, { status: 400 });
     }
 
-    // Attachment processing
-    let attachmentUrl = "";
-    let attachmentFilename = "";
-    let attachmentBuffer: Buffer | undefined;
-
-    const attachmentFile = form.get("attachment") as File | null;
-    if (attachmentFile && attachmentFile.size > 0) {
-      if (attachmentFile.size > MAX_ATTACHMENT) {
-        return NextResponse.json({ error: "Attachment exceeds 10 MB limit." }, { status: 413 });
-      }
-
-      attachmentFilename = attachmentFile.name || "supporting-document.pdf";
-      const arrayBuffer = await attachmentFile.arrayBuffer();
-      attachmentBuffer = Buffer.from(arrayBuffer);
-
-      // Attempt Supabase storage upload
-      const admin = getAdminClient();
-      if (admin) {
-        const ext = path.extname(attachmentFilename).toLowerCase() || ".pdf";
-        const uniqueKey = crypto.randomBytes(6).toString("hex");
-        const storagePath = `nominations/${Date.now()}_${uniqueKey}${ext}`;
-
-        const { data: uploadData, error: uploadErr } = await admin.storage
-          .from("awards-assets")
-          .upload(storagePath, attachmentBuffer, {
-            contentType: attachmentFile.type || "application/octet-stream",
-            upsert: true,
-          });
-
-        if (uploadErr || !uploadData) {
-          console.error("Could not save award nomination attachment:", uploadErr);
-          return NextResponse.json({ error: "Could not save the supporting document. Please try again." }, { status: 503 });
-        }
-        const { data: publicData } = admin.storage.from("awards-assets").getPublicUrl(storagePath);
-        attachmentUrl = publicData?.publicUrl || "";
-        if (!attachmentUrl) {
-          return NextResponse.json({ error: "Could not create a supporting document link." }, { status: 503 });
-        }
-      }
+    const attachmentFile = form.get("attachment");
+    if (!(attachmentFile instanceof File) || attachmentFile.size === 0) {
+      return NextResponse.json({ error: "Please attach a CV or other supporting document." }, { status: 400 });
     }
+    if (attachmentFile.size > MAX_ATTACHMENT) {
+      return NextResponse.json({ error: "Attachment exceeds 10 MB limit." }, { status: 413 });
+    }
+    const attachmentFilename = path.basename(attachmentFile.name || "supporting-document.pdf");
+    const attachmentBuffer = Buffer.from(await attachmentFile.arrayBuffer());
 
     const result = await submitNomination({
       nominatorName,
@@ -91,7 +58,6 @@ export async function POST(req: NextRequest) {
       nomineeCountry,
       statement,
       supportingLinks,
-      attachmentUrl,
       attachmentFilename,
       attachmentBuffer,
     });

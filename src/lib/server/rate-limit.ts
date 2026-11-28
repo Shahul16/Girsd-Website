@@ -1,24 +1,6 @@
+import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-
-interface RateLimitRecord {
-  count: number;
-  resetAt: number;
-}
-
-// In-memory sliding rate limit store
-const ipStore = new Map<string, RateLimitRecord>();
-
-// Cleanup stale entries every 10 minutes
-if (typeof setInterval !== "undefined") {
-  setInterval(() => {
-    const now = Date.now();
-    for (const [key, value] of ipStore.entries()) {
-      if (value.resetAt < now) {
-        ipStore.delete(key);
-      }
-    }
-  }, 10 * 60 * 1000);
-}
+import { getAdminClient } from "@/lib/server/supabase-admin";
 
 export interface RateLimitConfig {
   windowSeconds: number;
@@ -32,6 +14,8 @@ export const RATE_LIMIT_PROFILES: Record<string, RateLimitConfig> = {
   document_upload: { windowSeconds: 60 * 60, maxRequests: 10 }, // 10 uploads / hr
   verify_lookup: { windowSeconds: 60, maxRequests: 30 },        // 30 lookups / min
   checkout: { windowSeconds: 60, maxRequests: 15 },             // 15 checkouts / min
+  lead: { windowSeconds: 60 * 60, maxRequests: 10 },
+  admin_login: { windowSeconds: 15 * 60, maxRequests: 5 },
 };
 
 /**
@@ -58,29 +42,35 @@ export function getClientIp(req: NextRequest | Request): string {
  * Checks whether an incoming request exceeds the configured rate limit profile.
  * Returns null if allowed, or a 429 NextResponse if rate limit is exceeded.
  */
-export function enforceRateLimit(
+export async function enforceRateLimit(
   req: NextRequest | Request,
   profileKey: keyof typeof RATE_LIMIT_PROFILES
-): NextResponse | null {
+): Promise<NextResponse | null> {
   const config = RATE_LIMIT_PROFILES[profileKey] || { windowSeconds: 60, maxRequests: 30 };
-  const clientIp = getClientIp(req);
-  const cacheKey = `${profileKey}:${clientIp}`;
-  const now = Date.now();
-
-  const record = ipStore.get(cacheKey);
-
-  if (!record || record.resetAt < now) {
-    ipStore.set(cacheKey, {
-      count: 1,
-      resetAt: now + config.windowSeconds * 1000,
-    });
-    return null;
+  const admin = getAdminClient();
+  if (!admin) {
+    console.error("Could not enforce rate limit: Supabase service role is not configured.");
+    return NextResponse.json({ error: "Request protection is temporarily unavailable." }, { status: 503 });
   }
 
-  record.count += 1;
+  const ipHash = createHash("sha256").update(getClientIp(req)).digest("hex");
+  const { data, error } = await admin.rpc("consume_api_rate_limit", {
+    p_key: `${profileKey}:${ipHash}`,
+    p_window_seconds: config.windowSeconds,
+    p_max_requests: config.maxRequests,
+  });
+  if (error) {
+    console.error("Could not enforce distributed rate limit:", error);
+    return NextResponse.json({ error: "Request protection is temporarily unavailable." }, { status: 503 });
+  }
 
-  if (record.count > config.maxRequests) {
-    const retryAfter = Math.ceil((record.resetAt - now) / 1000);
+  const result = Array.isArray(data) ? data[0] : data;
+  if (!result || typeof result.allowed !== "boolean") {
+    console.error("Rate limit service returned an invalid response.");
+    return NextResponse.json({ error: "Request protection is temporarily unavailable." }, { status: 503 });
+  }
+  if (!result.allowed) {
+    const retryAfter = Math.max(1, Number(result.retry_after) || config.windowSeconds);
     return NextResponse.json(
       {
         error: "Too many requests. Please try again later.",
@@ -91,8 +81,8 @@ export function enforceRateLimit(
         headers: {
           "Retry-After": String(retryAfter),
           "X-RateLimit-Limit": String(config.maxRequests),
-          "X-RateLimit-Remaining": "0",
-          "X-RateLimit-Reset": String(Math.ceil(record.resetAt / 1000)),
+          "X-RateLimit-Remaining": String(Math.max(0, Number(result.remaining) || 0)),
+          "X-RateLimit-Reset": String(Math.ceil(Date.now() / 1000) + retryAfter),
         },
       }
     );

@@ -90,6 +90,7 @@ function RegisterForm() {
   const [courierPostal, setCourierPostal] = useState("");
   const [courierCountry, setCourierCountry] = useState("");
   const [courierPhone, setCourierPhone] = useState("");
+  const [physicalFulfillmentItems, setPhysicalFulfillmentItems] = useState<string[]>([]);
 
   // Section D: Billing & Policies
   const [billingEntityType, setBillingEntityType] = useState<"individual" | "organization">("individual");
@@ -266,7 +267,7 @@ function RegisterForm() {
       return;
     }
     if (!fullNameEngraving.trim()) {
-      setFormError("Please enter your Full Name as it should appear on your trophy.");
+      setFormError("Please enter your full name as it should appear on your official award record.");
       return;
     }
     if (!designation.trim() || !organization.trim()) {
@@ -296,9 +297,9 @@ function RegisterForm() {
       }
     }
 
-    if (attendanceMode === "virtual") {
+    if (physicalFulfillmentItems.length > 0) {
       if (!courierStreet.trim() || !courierCity.trim() || !courierPostal.trim() || !courierCountry.trim() || !courierPhone.trim()) {
-        setFormError("Please provide complete physical courier shipping address details for international trophy delivery.");
+        setFormError("Provide the complete delivery address so the Awards team can calculate your physical fulfillment quote.");
         return;
       }
     }
@@ -372,6 +373,7 @@ function RegisterForm() {
         website_orcid_url: websiteOrcidUrl.trim() || null,
         name_pronunciation: namePronunciation.trim() || null,
         attendance_mode: attendanceMode,
+        physical_fulfillment_items: physicalFulfillmentItems,
         proxy_name: attendanceMode === "proxy" ? proxyName.trim() : null,
         proxy_relationship: attendanceMode === "proxy" ? proxyRelationship.trim() : null,
         proxy_email: attendanceMode === "proxy" ? proxyEmail.trim() : null,
@@ -379,7 +381,7 @@ function RegisterForm() {
         accompanying_guests_count: accompanyingCount,
         guests_details: accompanyingCount > 0 ? guests : [],
         shipping_address:
-          attendanceMode === "virtual" || courierStreet.trim()
+          physicalFulfillmentItems.length > 0
             ? {
                 street: courierStreet.trim(),
                 city: courierCity.trim(),
@@ -519,10 +521,10 @@ function RegisterForm() {
             )}
           </div>
 
-          {/* Full Name for Engraving */}
+          {/* Official awardee name */}
           <div>
             <label htmlFor="full-name-engraving" className="block text-sm font-semibold text-navy">
-              Full Name (Exact Spelling for Certificate &amp; Trophy Engraving) <span className="text-gold">*</span>
+              Full Name (Exact Spelling for Official Award Records) <span className="text-gold">*</span>
             </label>
             <input
               type="text"
@@ -534,7 +536,7 @@ function RegisterForm() {
               className="input mt-1.5 font-medium"
             />
             <p className="mt-1.5 text-xs text-slate-500 italic">
-              Include academic/professional titles such as Dr., Prof., Eng. exactly as they should appear on your trophy and certificate.
+              Include academic or professional titles exactly as they should appear on your digital certificate and official award record.
             </p>
           </div>
 
@@ -804,7 +806,7 @@ function RegisterForm() {
                 {
                   id: "virtual",
                   label: "Virtual Attendance",
-                  desc: "Live Stream + International Courier of Trophy & Certificate",
+                  desc: "Live stream and digital recognition. Physical items are optional and quoted separately.",
                 },
                 {
                   id: "proxy",
@@ -969,19 +971,44 @@ function RegisterForm() {
             )}
           </div>
 
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
+            <h3 className="text-sm font-semibold text-navy">Optional physical award items</h3>
+            <p className="mt-1 text-xs text-muted">
+              The £255 registration fee applies to your selected attendance mode and digital credentials. If requested, hard-copy certificates, trophies, and destination-based courier are quoted and invoiced separately by the Awards team.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-5">
+              {[
+                { id: "printed_certificate", label: "Printed certificate" },
+                { id: "trophy", label: "Physical trophy" },
+              ].map((item) => (
+                <label key={item.id} className="flex items-center gap-2 text-sm text-navy">
+                  <input
+                    type="checkbox"
+                    checked={physicalFulfillmentItems.includes(item.id)}
+                    onChange={(event) => {
+                      setPhysicalFulfillmentItems((current) =>
+                        event.target.checked
+                          ? [...current, item.id]
+                          : current.filter((value) => value !== item.id)
+                      );
+                    }}
+                    className="rounded border-slate-300 text-gold focus:ring-gold"
+                  />
+                  {item.label}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Physical Courier Shipping Address */}
-          <div>
+          {physicalFulfillmentItems.length > 0 ? (
+            <div>
             <div className="border-t border-slate-100 pt-5">
               <label className="block text-sm font-semibold text-navy">
-                Physical Shipping / Courier Address
-                {attendanceMode === "virtual" ? (
-                  <span className="text-gold ml-1">* (Mandatory for International Courier Delivery)</span>
-                ) : (
-                  <span className="text-slate-400 font-normal ml-1">(Optional for in-person attendees)</span>
-                )}
+                Delivery address for physical items <span className="text-gold ml-1">*</span>
               </label>
               <p className="text-xs text-muted mt-0.5">
-                Ensure exact street address where heavy parcel delivery can be signed for.
+                The Awards team uses this destination to calculate hard-copy, trophy, and courier charges before sending a separate invoice.
               </p>
             </div>
 
@@ -993,7 +1020,7 @@ function RegisterForm() {
                 <input
                   type="text"
                   id="courier-street"
-                  required={attendanceMode === "virtual"}
+                  required={physicalFulfillmentItems.length > 0}
                   value={courierStreet}
                   onChange={(e) => setCourierStreet(e.target.value)}
                   placeholder="e.g. 100 University Avenue, Faculty of Science, Room 402"
@@ -1002,12 +1029,12 @@ function RegisterForm() {
               </div>
               <div>
                 <label htmlFor="courier-city" className="block text-xs font-medium text-slate-700">
-                  City {attendanceMode === "virtual" && <span className="text-gold">*</span>}
+                  City {physicalFulfillmentItems.length > 0 && <span className="text-gold">*</span>}
                 </label>
                 <input
                   type="text"
                   id="courier-city"
-                  required={attendanceMode === "virtual"}
+                  required={physicalFulfillmentItems.length > 0}
                   value={courierCity}
                   onChange={(e) => setCourierCity(e.target.value)}
                   placeholder="e.g. Manchester"
@@ -1029,12 +1056,12 @@ function RegisterForm() {
               </div>
               <div>
                 <label htmlFor="courier-postal" className="block text-xs font-medium text-slate-700">
-                  Postal / ZIP Code {attendanceMode === "virtual" && <span className="text-gold">*</span>}
+                  Postal / ZIP Code {physicalFulfillmentItems.length > 0 && <span className="text-gold">*</span>}
                 </label>
                 <input
                   type="text"
                   id="courier-postal"
-                  required={attendanceMode === "virtual"}
+                  required={physicalFulfillmentItems.length > 0}
                   value={courierPostal}
                   onChange={(e) => setCourierPostal(e.target.value)}
                   placeholder="e.g. M13 9PL"
@@ -1043,12 +1070,12 @@ function RegisterForm() {
               </div>
               <div>
                 <label htmlFor="courier-country" className="block text-xs font-medium text-slate-700">
-                  Country {attendanceMode === "virtual" && <span className="text-gold">*</span>}
+                  Country {physicalFulfillmentItems.length > 0 && <span className="text-gold">*</span>}
                 </label>
                 <input
                   type="text"
                   id="courier-country"
-                  required={attendanceMode === "virtual"}
+                  required={physicalFulfillmentItems.length > 0}
                   value={courierCountry}
                   onChange={(e) => setCourierCountry(e.target.value)}
                   placeholder="e.g. United Kingdom"
@@ -1057,12 +1084,12 @@ function RegisterForm() {
               </div>
               <div className="sm:col-span-2">
                 <label htmlFor="courier-phone" className="block text-xs font-medium text-slate-700">
-                  Local Delivery Contact Phone {attendanceMode === "virtual" && <span className="text-gold">*</span>}
+                  Local Delivery Contact Phone {physicalFulfillmentItems.length > 0 && <span className="text-gold">*</span>}
                 </label>
                 <input
                   type="tel"
                   id="courier-phone"
-                  required={attendanceMode === "virtual"}
+                  required={physicalFulfillmentItems.length > 0}
                   value={courierPhone}
                   onChange={(e) => setCourierPhone(e.target.value)}
                   placeholder="Local mobile number for courier SMS delivery notification"
@@ -1070,9 +1097,10 @@ function RegisterForm() {
                 />
               </div>
             </div>
+            </div>
+          ) : null}
           </div>
         </div>
-      </div>
 
       {/* ─────────────────────────────────────────────────────────────────────────────
           SECTION D: PACKAGE SUMMARY, BILLING & MANDATORY POLICIES
@@ -1090,10 +1118,10 @@ function RegisterForm() {
           <div className="rounded-xl border-2 border-gold/40 bg-navy p-6 text-white shadow-card">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-gold">Official Docket Fee</span>
-                <h3 className="font-display text-2xl font-bold text-white">Award Registration Fee</h3>
+                <span className="text-xs font-bold uppercase tracking-widest text-gold">Award Registration</span>
+                <h3 className="font-display text-2xl font-bold text-white">Recognition Package</h3>
                 <p className="mt-1 text-xs text-slate-300">
-                  Fixed fee covering master laser-engraving, crystal plaque production, and credentials.
+                  The £255 fee applies to your selected attendance mode and digital credentials. Physical items and courier are optional and invoiced separately.
                 </p>
               </div>
               <div className="text-right">
@@ -1103,13 +1131,13 @@ function RegisterForm() {
             </div>
 
             <div className="mt-6 border-t border-slate-700 pt-5">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Inclusive Comprehensive Package:</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Included in the £255 registration:</p>
               <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 text-xs text-slate-200">
                 <li className="flex items-center gap-2">
-                  <span className="text-gold font-bold">✓</span> Heavyweight laser-engraved crystal / brass trophy
+                  <span className="text-gold font-bold">✓</span> {attendanceMode === "in_person" ? "In-person ceremony attendance" : attendanceMode === "proxy" ? "Proxy / representative attendance" : "Virtual awards participation"}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-gold font-bold">✓</span> Gold-embossed parchment certificate &amp; digital credential
+                  <span className="text-gold font-bold">✓</span> Digital award certificate and credential
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-gold font-bold">✓</span> Ceremony stage presentation / live stream recognition
@@ -1118,10 +1146,10 @@ function RegisterForm() {
                   <span className="text-gold font-bold">✓</span> Official GlobalRSD press feature &amp; Hall of Fame entry
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-gold font-bold">✓</span> International priority courier packaging &amp; dispatch
+                  <span className="text-gold font-bold">✓</span> Online recognition and profile feature
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-gold font-bold">✓</span> CPD-Accredited Provider #788000 institutional endorsement
+                  <span className="text-gold font-bold">✓</span> Optional physical items are separately quoted
                 </li>
               </ul>
             </div>
@@ -1241,7 +1269,7 @@ function RegisterForm() {
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-gold focus:ring-gold"
               />
               <span className="text-xs text-slate-700 leading-relaxed">
-                <strong>No-Refund &amp; Engraving Finality Policy:</strong> I acknowledge and agree that the £{AWARDS_REGISTRATION_FEE_GBP} GBP Award Registration Fee is strictly non-refundable once paid, and that my submitted name and title cannot be altered after trophy engraving production begins.
+                <strong>Registration &amp; Physical Items Policy:</strong> I understand that the £{AWARDS_REGISTRATION_FEE_GBP} GBP award registration fee for my selected attendance mode is non-refundable once paid. Physical certificates, trophies, and destination-based courier are excluded and require a separate quote and invoice.
               </span>
             </label>
           </div>
@@ -1283,8 +1311,8 @@ export default function AwardRegisterPage() {
     <>
       <PageHero
         eyebrow="GIRSD Global Awards 2026"
-        title="Final Award Registration & Trophy Confirmation"
-        intro={`Please confirm your exact trophy engraving details, media assets, attendance arrangements, and finalize your registration fee (£${AWARDS_REGISTRATION_FEE_GBP} GBP).`}
+        title="Final Award Registration"
+        intro={`Please confirm your awardee details, media assets, attendance arrangements, and registration fee (£${AWARDS_REGISTRATION_FEE_GBP} GBP). Optional physical items and courier are quoted and invoiced separately.`}
       />
 
       <section className="bg-cream py-16">

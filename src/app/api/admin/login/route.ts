@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { setAdminSession } from "@/lib/server/admin-auth";
+import { enforceRateLimit } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -8,6 +9,9 @@ export const runtime = "nodejs";
  * Verifies the admin password and creates a short-lived HttpOnly session.
  */
 export async function POST(req: NextRequest) {
+  const limited = await enforceRateLimit(req, "admin_login");
+  if (limited) return limited;
+
   const adminKey = process.env.ADMIN_KEY;
   const body = await req.json().catch(() => null);
   const supplied = String(body?.key ?? "");

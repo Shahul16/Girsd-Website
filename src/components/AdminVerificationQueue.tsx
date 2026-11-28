@@ -40,6 +40,19 @@ export interface ApplicationRecord {
   created_at: string;
 }
 
+function getDocumentHref(value: string): string {
+  if (value.startsWith("/api/membership/document?")) return value;
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    try {
+      const file = new URL(value).searchParams.get("file");
+      if (file) return `/api/membership/document?file=${encodeURIComponent(file)}`;
+    } catch {
+      return "#";
+    }
+  }
+  return `/api/membership/document?file=${encodeURIComponent(value)}`;
+}
+
 export default function AdminVerificationQueue() {
   const [applications, setApplications] = useState<ApplicationRecord[]>([]);
   const [loading, setLoading] = useState(false);
@@ -148,7 +161,7 @@ export default function AdminVerificationQueue() {
       setActionType(null);
       setActionReason("");
       setActionNotes("");
-      showToast(`Decision recorded: ${selectedApp.id} → ${updatedStatus}`);
+      showToast(`Decision recorded: ${selectedApp.id} → ${updatedStatus}${data.warning ? ` — ${data.warning}` : ""}`);
     } catch (err: any) {
       alert("Failed to submit decision: " + (err.message || String(err)));
     } finally {
@@ -372,7 +385,7 @@ export default function AdminVerificationQueue() {
                   <td className="px-4 py-3.5">
                     {app.document_filename ? (
                       <a
-                        href={app.document_file_url || "#"}
+                        href={app.document_file_url ? getDocumentHref(app.document_file_url) : "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-[11px] text-gold hover:underline"
@@ -496,7 +509,7 @@ export default function AdminVerificationQueue() {
                     <span className="text-slate-400">Uploaded Supporting Document:</span>
                     {selectedApp.document_filename ? (
                       <a
-                        href={selectedApp.document_file_url || "#"}
+                        href={selectedApp.document_file_url ? getDocumentHref(selectedApp.document_file_url) : "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-gold/20 text-gold px-3 py-1 font-semibold hover:bg-gold hover:text-navy transition"

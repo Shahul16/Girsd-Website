@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getAdminClient } from "@/lib/server/supabase-admin";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
+import { AWARDS_REGISTRATION_FEE_PENCE } from "@/lib/awards";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
-  const limited = enforceRateLimit(req, "verify_lookup");
+  const limited = await enforceRateLimit(req, "verify_lookup");
   if (limited) return limited;
 
   const sessionId = req.nextUrl.searchParams.get("session_id") ?? "";
@@ -27,23 +28,28 @@ export async function GET(req: NextRequest) {
     if (session.payment_status !== "paid") {
       return NextResponse.json({ status: "unpaid" });
     }
-    if (session.currency !== "gbp" || session.amount_total !== 25_500) {
-      return NextResponse.json({ error: "Payment details do not match an award registration." }, { status: 409 });
-    }
-
     const registrationId = session.metadata.registration_id;
     if (!registrationId) {
       return NextResponse.json({ error: "Award registration reference is missing." }, { status: 503 });
     }
     const { data: registration, error: registrationError } = await admin
       .from("award_registrations")
-      .select("id, nomination_ref, payment_status")
+      .select("id, nomination_ref, payment_status, payment_review_required, payment_review_reason")
       .eq("id", registrationId)
       .eq("stripe_session_id", session.id)
       .maybeSingle();
     if (registrationError) {
       console.error("Could not verify award registration payment:", registrationError);
       return NextResponse.json({ error: "Could not verify award registration." }, { status: 503 });
+    }
+    if (registration?.payment_review_required) {
+      return NextResponse.json({
+        status: "review_required",
+        message: registration.payment_review_reason || "Your payment is being reviewed by the Awards team.",
+      });
+    }
+    if (session.currency !== "gbp" || session.amount_total !== AWARDS_REGISTRATION_FEE_PENCE) {
+      return NextResponse.json({ status: "processing" });
     }
     if (!registration || registration.payment_status !== "paid") {
       return NextResponse.json({ status: "processing" });

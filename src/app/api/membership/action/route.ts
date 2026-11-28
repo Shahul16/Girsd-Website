@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdminClient, getSupabaseSetupHint } from "@/lib/server/supabase-admin";
 import { generateMembershipId, type MembershipStatus } from "@/lib/membership-verification";
 import { isAdminRequest } from "@/lib/server/admin-auth";
+import { sendMembershipDecisionEmail } from "@/lib/server/membership-email";
 
 export const runtime = "nodejs";
 
@@ -58,10 +59,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Application not found." }, { status: 404 });
     }
 
+    if (String(action).toUpperCase() === "RESEND_DECISION_EMAIL") {
+      if (!app.status || ["PENDING", "SUBMITTED", "PAYMENT_COMPLETED", "UNDER_REVIEW"].includes(String(app.status).toUpperCase())) {
+        return NextResponse.json({ error: "A decision email is available after a membership status has been set." }, { status: 409 });
+      }
+      const emailResult = await sendMembershipDecisionEmail(app);
+      if (!emailResult.ok) {
+        return NextResponse.json({ error: emailResult.error || "Could not send decision email." }, { status: 502 });
+      }
+      const { error: emailStatusError } = await admin
+        .from("membership_applications")
+        .update({ decision_email_sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq("id", applicationId);
+      if (emailStatusError) {
+        console.error("Decision email was sent but its status could not be saved:", emailStatusError);
+        return NextResponse.json({
+          ok: true,
+          message: "Decision email sent.",
+          warning: "The email was sent, but its delivery status could not be saved.",
+        });
+      }
+      return NextResponse.json({ ok: true, message: "Decision email resent." });
+    }
+
     let toStatus: MembershipStatus = app.status;
     const updateFields: Record<string, any> = {
       reviewed_by: reviewerEmail || "GIRSD Academic Reviewer",
       reviewed_at: new Date().toISOString(),
+      decision_email_sent_at: null,
       updated_at: new Date().toISOString(),
     };
 
@@ -139,6 +164,37 @@ export async function POST(req: NextRequest) {
         { error: getSupabaseSetupHint(updateErr) ?? "Failed to record decision." },
         { status: 500 }
       );
+    }
+
+    const emailResult = await sendMembershipDecisionEmail({
+      ...app,
+      ...updateFields,
+      status: toStatus,
+      rejection_reason: updateFields.rejection_reason ?? app.rejection_reason,
+    });
+    if (!emailResult.ok) {
+      return NextResponse.json({
+        ok: true,
+        message: `Application updated to ${toStatus}.`,
+        warning: `The decision email was not sent: ${emailResult.error || "Email delivery failed."} Use the resend action after correcting email configuration.`,
+        status: toStatus,
+        membershipId: updateFields.membership_id || app.membership_id,
+      });
+    }
+
+    const { error: emailStatusError } = await admin
+      .from("membership_applications")
+      .update({ decision_email_sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .eq("id", applicationId);
+    if (emailStatusError) {
+      console.error("Membership decision email sent but the delivery status could not be saved:", emailStatusError);
+      return NextResponse.json({
+        ok: true,
+        message: `Application updated to ${toStatus}.`,
+        warning: "The decision email was sent, but its delivery status could not be saved.",
+        status: toStatus,
+        membershipId: updateFields.membership_id || app.membership_id,
+      });
     }
 
     return NextResponse.json({

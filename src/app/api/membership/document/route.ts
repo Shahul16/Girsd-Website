@@ -6,90 +6,90 @@ import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export const runtime = "nodejs";
 
-/**
- * Secure document retrieval endpoint.
- * Protected against IDOR (Insecure Direct Object Reference).
- * Only the applicant who uploaded the document OR an authorized administrator can view/download it.
- */
+const STORAGE_PATH_PATTERN = /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(pdf|jpe?g|png|webp)$/i;
+const LEGACY_NAME_PATTERN = /^girsd-doc-[0-9a-f-]{36}\.(pdf|jpe?g|png|webp)$/i;
+
 export async function GET(req: NextRequest) {
+  const fileRef = req.nextUrl.searchParams.get("file") ?? "";
+  if (!fileRef) return NextResponse.json({ error: "Missing document reference." }, { status: 400 });
+
+  const admin = getAdminClient();
+  if (!admin) return NextResponse.json({ error: "Document storage is unavailable." }, { status: 503 });
+
+  const isAdmin = isAdminRequest(req);
+  const user = isAdmin ? null : await getUserFromRequest(req);
+  const userId = user?.id;
+
+  if (STORAGE_PATH_PATTERN.test(fileRef)) {
+    let query = admin
+      .from("membership_applications")
+      .select("id, user_id")
+      .eq("document_file_url", fileRef);
+    if (!isAdmin && userId) query = query.eq("user_id", userId);
+    const { data: record, error } = await query.maybeSingle();
+    if (error) {
+      console.error("Could not verify membership document ownership:", error);
+      return NextResponse.json({ error: "Could not verify document access." }, { status: 503 });
+    }
+    if (!record) {
+      return NextResponse.json({ error: "Document not found." }, { status: 404 });
+    }
+    if (!isAdmin && !userId) {
+      return NextResponse.json({ error: "Please sign in to view this document." }, { status: 401 });
+    }
+
+    const { data, error: signedUrlError } = await admin.storage
+      .from("membership-verifications")
+      .createSignedUrl(fileRef, 60);
+    if (signedUrlError || !data?.signedUrl) {
+      console.error("Could not create membership document link:", signedUrlError);
+      return NextResponse.json({ error: "Could not access this document." }, { status: 503 });
+    }
+    return NextResponse.redirect(data.signedUrl, 302);
+  }
+
+  const safeName = path.basename(fileRef);
+  if (safeName !== fileRef || !LEGACY_NAME_PATTERN.test(safeName)) {
+    return NextResponse.json({ error: "Invalid document identifier." }, { status: 400 });
+  }
+
+  let legacyQuery = admin
+    .from("membership_applications")
+    .select("id, user_id")
+    .ilike("document_file_url", `%${safeName}%`);
+  if (!isAdmin && userId) legacyQuery = legacyQuery.eq("user_id", userId);
+  const { data: legacyRecord, error: lookupError } = await legacyQuery.maybeSingle();
+  if (lookupError) {
+    console.error("Could not verify legacy membership document ownership:", lookupError);
+    return NextResponse.json({ error: "Could not verify document access." }, { status: 503 });
+  }
+  if (!legacyRecord) return NextResponse.json({ error: "Document not found." }, { status: 404 });
+  if (!isAdmin && !userId) {
+    return NextResponse.json({ error: "Please sign in to view this document." }, { status: 401 });
+  }
+
   try {
-    const { searchParams } = new URL(req.url);
-    const fileName = searchParams.get("file");
-
-    if (!fileName) {
-      return NextResponse.json({ error: "Missing document reference." }, { status: 400 });
+    const filePath = path.join(process.cwd(), "private_documents", "verifications", safeName);
+    const fileBuffer = await fs.readFile(filePath);
+    const ext = path.extname(safeName).toLowerCase();
+    const contentType =
+      ext === ".pdf" ? "application/pdf" :
+      ext === ".png" ? "image/png" :
+      ext === ".webp" ? "image/webp" :
+      "image/jpeg";
+    return new NextResponse(fileBuffer, {
+      headers: {
+        "Content-Type": contentType,
+        "Content-Disposition": `inline; filename="${safeName}"`,
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "private, no-cache, no-store, must-revalidate",
+      },
+    });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return NextResponse.json({ error: "Legacy document is no longer available on this server." }, { status: 404 });
     }
-
-    // Sanitize filename to prevent directory traversal
-    const safeBaseName = path.basename(fileName);
-    if (!safeBaseName.startsWith("girsd-doc-") && !safeBaseName.match(/^[a-zA-Z0-9_\-\.]+$/)) {
-      return NextResponse.json({ error: "Invalid document identifier." }, { status: 400 });
-    }
-
-    // Check authorization:
-    let isAuthorized = false;
-    let reviewerEmail: string | null = null;
-
-    // 1. Check if admin credentials provided
-    if (isAdminRequest(req)) {
-      isAuthorized = true;
-      reviewerEmail = "admin";
-    }
-
-    // 2. Check if logged-in user owns the document
-    if (!isAuthorized) {
-      const user = await getUserFromRequest(req);
-      if (user) {
-        const admin = getAdminClient();
-        if (admin) {
-          const { data } = await admin
-            .from("membership_applications")
-            .select("id, user_id, document_file_url")
-            .eq("user_id", user.id)
-            .ilike("document_file_url", `%${safeBaseName}%`)
-            .maybeSingle();
-
-          if (data) {
-            isAuthorized = true;
-          }
-        }
-      }
-    }
-
-    if (!isAuthorized) {
-      return NextResponse.json(
-        { error: "Access denied. You are not authorized to view this document." },
-        { status: 403 }
-      );
-    }
-
-    // Locate file in private storage outside public root
-    const filePath = path.join(process.cwd(), "private_documents", "verifications", safeBaseName);
-
-    try {
-      const fileBuffer = await fs.readFile(filePath);
-      const ext = path.extname(safeBaseName).toLowerCase();
-      let contentType = "application/octet-stream";
-
-      if (ext === ".pdf") contentType = "application/pdf";
-      else if (ext === ".png") contentType = "image/png";
-      else if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-      else if (ext === ".webp") contentType = "image/webp";
-
-      return new NextResponse(fileBuffer, {
-        status: 200,
-        headers: {
-          "Content-Type": contentType,
-          "Content-Disposition": `inline; filename="${safeBaseName}"`,
-          "X-Content-Type-Options": "nosniff",
-          "Cache-Control": "private, no-cache, no-store, must-revalidate",
-        },
-      });
-    } catch {
-      return NextResponse.json({ error: "Document not found on storage." }, { status: 404 });
-    }
-  } catch (err: any) {
-    console.error("Document retrieval error:", err);
+    console.error("Could not retrieve legacy membership document:", error);
     return NextResponse.json({ error: "Failed to retrieve document." }, { status: 500 });
   }
 }

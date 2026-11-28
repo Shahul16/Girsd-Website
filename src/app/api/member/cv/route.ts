@@ -21,7 +21,7 @@ function isSupportedDocument(extension: string, buffer: Buffer): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  const limited = enforceRateLimit(req, "document_upload");
+  const limited = await enforceRateLimit(req, "document_upload");
   if (limited) return limited;
 
   const user = await getUserFromRequest(req);

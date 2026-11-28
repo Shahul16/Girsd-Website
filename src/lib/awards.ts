@@ -18,6 +18,9 @@ export interface AwardNomination {
   supporting_links?: string;
   attachment_url?: string;
   attachment_filename?: string;
+  nominee_email_sent_at?: string | null;
+  admin_email_sent_at?: string | null;
+  decision_email_sent_at?: string | null;
   status: "pending_review" | "selected" | "rejected" | "registered";
   selected_at?: string;
   registered_at?: string;
@@ -64,6 +67,12 @@ export interface AwardRegistration {
   accompanying_guests_count: number;
   guests_details: GuestDetail[];
   shipping_address?: ShippingAddress;
+  physical_fulfillment_items: ("printed_certificate" | "trophy")[];
+  physical_fulfillment_status: "not_requested" | "requested" | "invoicing" | "invoiced" | "paid";
+  physical_fulfillment_quote_gbp?: number | null;
+  physical_fulfillment_invoice_id?: string | null;
+  physical_fulfillment_invoice_url?: string | null;
+  physical_fulfillment_paid_at?: string | null;
   amount_gbp: number; // GBP
   payment_status: "pending" | "paid" | "failed" | "refunded";
   stripe_session_id?: string;
@@ -92,6 +101,6 @@ export function generateNominationRef(): string {
   return `GIRSD-AWD-2026-${randomPart}`;
 }
 
-export const AWARDS_REGISTRATION_FEE_GBP = 1;
-export const AWARDS_REGISTRATION_FEE_PENCE = 100;
+export const AWARDS_REGISTRATION_FEE_GBP = 255;
+export const AWARDS_REGISTRATION_FEE_PENCE = AWARDS_REGISTRATION_FEE_GBP * 100;
 

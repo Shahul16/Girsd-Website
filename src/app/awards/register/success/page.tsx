@@ -11,7 +11,8 @@ import { AWARDS_REGISTRATION_FEE_GBP } from "@/lib/awards";
 function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id") || "";
-  const [paymentStatus, setPaymentStatus] = useState<"checking" | "processing" | "confirmed" | "unpaid" | "error">("checking");
+  const [paymentStatus, setPaymentStatus] = useState<"checking" | "processing" | "confirmed" | "unpaid" | "error" | "review_required">("checking");
+  const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -33,6 +34,11 @@ function SuccessContent() {
         }
         if (body.status === "confirmed") {
           setPaymentStatus("confirmed");
+          return;
+        }
+        if (body.status === "review_required") {
+          setStatusMessage(body.message || "The Awards team is reviewing your payment.");
+          setPaymentStatus("review_required");
           return;
         }
         if (body.status === "processing" && attempts < 5) {
@@ -69,7 +75,7 @@ function SuccessContent() {
       </div>
 
       <span className="text-xs font-bold uppercase tracking-widest text-gold block">
-        {paymentStatus === "confirmed" ? "Payment & Registration Confirmed" : "Payment Status"}
+        {paymentStatus === "confirmed" ? "Payment & Registration Confirmed" : paymentStatus === "review_required" ? "Manual Review" : "Payment Status"}
       </span>
       <h1 className="mt-2 font-display text-3xl font-bold text-navy sm:text-4xl">
         {paymentStatus === "confirmed"
@@ -78,16 +84,20 @@ function SuccessContent() {
             ? "Confirming your registration"
             : paymentStatus === "checking"
               ? "Checking your payment"
-              : "We could not confirm payment"}
+                : paymentStatus === "review_required"
+                  ? "Payment under review"
+                  : "We could not confirm payment"}
       </h1>
       <p className="mt-3 text-base text-muted leading-relaxed">
         {paymentStatus === "confirmed"
-          ? <>Your registration fee of <strong>£{AWARDS_REGISTRATION_FEE_GBP}.00 GBP</strong> has been confirmed. Your registration is recorded.</>
+          ? <>Your award registration fee of <strong>£{AWARDS_REGISTRATION_FEE_GBP}.00 GBP</strong> has been confirmed. Your selected attendance mode and digital award registration are recorded. Physical items and courier are not included.</>
           : paymentStatus === "processing"
             ? "Stripe has returned you to the site, but our registration record is still updating. This page checks again automatically; please do not pay again."
             : paymentStatus === "checking"
               ? "We are verifying the checkout session with Stripe and the award registration record."
-              : "No completed award payment is recorded for this session. If you completed checkout, contact the Awards Committee before trying again."}
+              : paymentStatus === "review_required"
+                ? `${statusMessage} Please contact the Awards Committee before making another payment.`
+                : "No completed award payment is recorded for this session. If you completed checkout, contact the Awards Committee before trying again."}
       </p>
 
       {sessionId && (
@@ -108,19 +118,19 @@ function SuccessContent() {
             <li className="flex items-start gap-3">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold">1</span>
               <div>
-                <strong>Email Confirmation &amp; Receipt:</strong> An official payment receipt and registration confirmation docket have been dispatched to your email address from <code className="text-xs font-mono">{SITE.awardsEmail}</code>.
+                <strong>Email Confirmation &amp; Receipt:</strong> An official payment receipt and registration confirmation are being sent to the email address used at checkout.
               </div>
             </li>
             <li className="flex items-start gap-3">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold">2</span>
               <div>
-                <strong>Trophy Engraving &amp; Quality Check:</strong> Our master craftsmen are preparing your heavyweight crystal &amp; brass trophy with your verified name and institutional title.
+                <strong>Optional Physical Items:</strong> If you requested a printed certificate or trophy, the Awards team will calculate item and destination-based courier charges and send a separate invoice before fulfillment.
               </div>
             </li>
             <li className="flex items-start gap-3">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold">3</span>
               <div>
-                <strong>Ceremony Credentials &amp; Media Banner:</strong> Our media team will generate your personalized awardee press release graphics and deliver your ceremony pass or live streaming link.
+                <strong>Attendance &amp; Media Updates:</strong> The team will share ceremony information and relevant digital recognition materials separately.
               </div>
             </li>
           </ul>

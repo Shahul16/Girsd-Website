@@ -9,6 +9,42 @@ import { getSiteContent } from "@/lib/server/site-content";
 
 export const runtime = "nodejs";
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function getAllowedCheckoutOrigin(req: NextRequest): string | null {
+  const configuredOrigin = process.env.NEXT_PUBLIC_SITE_URL || SITE.domain;
+  let canonicalOrigin: string;
+  try {
+    canonicalOrigin = new URL(configuredOrigin).origin;
+  } catch {
+    console.error("NEXT_PUBLIC_SITE_URL is not a valid URL.");
+    return null;
+  }
+
+  const allowedOrigins = new Set([canonicalOrigin, new URL(SITE.domain).origin]);
+  const requestOrigin = req.headers.get("origin");
+  if (!requestOrigin) return canonicalOrigin;
+
+  try {
+    const parsedOrigin = new URL(requestOrigin);
+    if (parsedOrigin.origin === requestOrigin && allowedOrigins.has(parsedOrigin.origin)) {
+      return parsedOrigin.origin;
+    }
+    if (
+      process.env.NODE_ENV !== "production" &&
+      parsedOrigin.protocol === "http:" &&
+      ["localhost", "127.0.0.1"].includes(parsedOrigin.hostname)
+    ) {
+      return parsedOrigin.origin;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 /**
  * Creates a real Stripe Checkout Session. Prices are computed SERVER-SIDE
  * from the site's data files (never trusted from the client), and the member
@@ -44,7 +80,10 @@ export async function POST(req: NextRequest) {
   const currentEvents = Array.isArray(eventContent) ? eventContent as Event[] : [];
   const currentCourses = Array.isArray(courseContent) ? courseContent as Course[] : [];
   const currentTiers = Array.isArray(tierContent) ? tierContent as MembershipTier[] : [];
-  const site = siteContent && typeof siteContent === "object" ? siteContent as typeof SITE : SITE;
+  const site = {
+    ...SITE,
+    ...(isRecord(siteContent) ? siteContent : {}),
+  };
   let applicationId = "";
 
   // --- Build the priced item server-side --------------------------------
@@ -113,17 +152,41 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unknown item type." }, { status: 400 });
   }
 
+  const memberDiscount = typeof site.memberDiscount === "number" &&
+    Number.isFinite(site.memberDiscount) &&
+    site.memberDiscount >= 0 &&
+    site.memberDiscount < 1
+    ? site.memberDiscount
+    : SITE.memberDiscount;
+  const courseMemberDiscount = typeof site.courseMemberDiscount === "number" &&
+    Number.isFinite(site.courseMemberDiscount) &&
+    site.courseMemberDiscount >= 0 &&
+    site.courseMemberDiscount < 1
+    ? site.courseMemberDiscount
+    : SITE.courseMemberDiscount;
+  if (type === "ticket" && discountRate !== 0) discountRate = memberDiscount;
+  if (type === "course" && discountRate !== 0) discountRate = courseMemberDiscount;
+
   const qty = type === "ticket" ? quantity : 1;
   const unitPence = Math.round(unitPrice * (1 - discountRate) * 100);
+  if (!Number.isSafeInteger(unitPence) || unitPence <= 0) {
+    console.error("Invalid checkout amount calculated from published site content:", { type, unitPrice, discountRate });
+    return NextResponse.json({ error: "The checkout price is not configured correctly. Please contact support." }, { status: 503 });
+  }
   if (discountRate > 0) {
     description += ` · includes ${Math.round(discountRate * 100)}% member discount`;
   }
 
-  const origin =
-    req.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? SITE.domain;
-  const returnTo = typeof body.returnTo === "string" && body.returnTo.startsWith("/")
-    ? body.returnTo
-    : "/";
+  const origin = getAllowedCheckoutOrigin(req);
+  if (!origin) {
+    return NextResponse.json({ error: "Checkout must be started from the official website." }, { status: 403 });
+  }
+  const requestedReturnTo =
+    typeof body.returnTo === "string" && body.returnTo.startsWith("/") && !body.returnTo.startsWith("//")
+      ? body.returnTo
+      : "/";
+  const returnToUrl = new URL(requestedReturnTo, origin);
+  const returnTo = returnToUrl.origin === origin ? returnToUrl.toString() : `${origin}/`;
 
   try {
     const stripe = new Stripe(secretKey);
@@ -150,7 +213,7 @@ export async function POST(req: NextRequest) {
         application_id: applicationId,
       },
       success_url: `${origin}/checkout/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}${returnTo}`,
+      cancel_url: returnTo,
     });
     return NextResponse.json({ url: session.url });
   } catch (err) {

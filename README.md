@@ -87,7 +87,7 @@ Environment variables and provider setup steps are documented in **[SETUP_GUIDE.
 | Auth & database (Supabase) | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
 | Payments (Stripe) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
 
-Database setup: run [`supabase/schema.sql`](./supabase/schema.sql), then [`supabase/migrations/20261123_awards_workflow.sql`](./supabase/migrations/20261123_awards_workflow.sql), [`supabase/migrations/20261127_site_management.sql`](./supabase/migrations/20261127_site_management.sql), and [`supabase/migrations/20261127_awards_admin_review.sql`](./supabase/migrations/20261127_awards_admin_review.sql) in the Supabase SQL editor, in that order.
+Database setup: run [`supabase/schema.sql`](./supabase/schema.sql), then apply each migration that has not already been run, in order: `20261123_email_verification.sql`, `20261123_awards_workflow.sql`, `20261127_site_management.sql`, `20261127_awards_admin_review.sql`, `20261127_awards_registration_fee_update.sql`, and `20261128_cto_workflow_hardening.sql`. The last migration adds private document storage, membership verification and distributed rate-limit RPCs, and fulfillment invoicing; the API workflows depend on it.
 
 ## 6. Deployment
 
